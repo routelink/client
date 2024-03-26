@@ -74,8 +74,8 @@ jobs:
           tag: ${{ inputs.isRelease == true && steps.version.outputs.version_release || steps.version.outputs.version_stage  }}
           path: helm
           registry: ${{ env.REGISTRY }}
-          registry_username: routelinkbot
-          registry_password: ${{ secrets.ROUTELINKBOT_TOKEN }}
+          registry_username: ${{ github.actor }}
+          registry_password: ${{ secrets.GITHUB_TOKEN }}
 
 concurrency:
   group: building-${{ github.workflow }}-${{ github.ref }}
