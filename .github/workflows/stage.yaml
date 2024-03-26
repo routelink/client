@@ -1,0 +1,19 @@
+name: Stage
+
+on:
+  workflow_run:
+    workflows:
+      - Testing
+    types:
+      - completed
+    branches: [main]
+
+jobs:
+  build-push-image-chart:
+    name: Run build and push
+    permissions:
+      contents: read
+      packages: write
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    uses: routelink/client/.github/workflows/build_and_publish.yaml@main
+    secrets: inherit

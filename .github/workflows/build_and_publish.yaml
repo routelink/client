@@ -1,0 +1,82 @@
+name: Build/publish image/chart
+
+on:
+  workflow_call:
+    inputs:
+      dryRun:
+        type: boolean
+        required: false
+        description: --dry-run
+        default: false
+      isRelease:
+        type: boolean
+        required: false
+        description: Is release?
+        default: false
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build-push-image-chart:
+    name: Run build and push
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.ROUTELINKBOT_TOKEN }}
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3.1.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.ROUTELINKBOT_TOKEN }}
+      - name: Get version
+        shell: bash
+        id: get_version
+        run: |
+          echo "version=$(git describe --abbrev=0 --tags | sed 's/^.//')" >> $GITHUB_OUTPUT
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5.5.1
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=sha,prefix=
+            type=raw,value=${{ steps.get_version.outputs.version }},enable=${{ inputs.isRelease == true }}
+          flavor: latest=true
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5.3.0
+        if: ${{ inputs.dryRun != 'true' }}
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+      - name: Replace application version
+        shell: bash
+        id: version
+        run: |
+          sed -i "s/^appVersion:.*$/appVersion: ${{ env.DOCKER_METADATA_OUTPUT_VERSION }}/" helm/Chart.yaml
+          echo "version_release=${{ steps.get_version.outputs.version }}" >> $GITHUB_OUTPUT
+          echo "version_stage=${{ steps.get_version.outputs.version }}-${{ github.run_number }}" >> $GITHUB_OUTPUT
+      - name: Package and push Helm chart
+        uses: appany/helm-oci-chart-releaser@v0.3.0
+        with:
+          name: helm
+          repository: ${{ github.repository }}
+          tag: ${{ inputs.isRelease == true && steps.version.outputs.version_release || steps.version.outputs.version_stage  }}
+          path: helm
+          registry: ${{ env.REGISTRY }}
+          registry_username: ${{ github.actor }}
+          registry_password: ${{ secrets.GITHUB_TOKEN }}
+
+concurrency:
+  group: building-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true

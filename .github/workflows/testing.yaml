@@ -1,0 +1,38 @@
+name: Testing
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node: [20]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Cache node modules
+        id: cache-npm
+        uses: actions/cache@v4
+        env:
+          CACHE_NAME: cache-${{ github.repository }}
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ env.CACHE_NAME }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-${{ env.CACHE_NAME }}-
+            ${{ runner.os }}-npm-
+      - name: Install project
+        run: npm ci
+      - name: Testing project
+        run: npm run test
