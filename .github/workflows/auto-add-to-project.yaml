@@ -9,5 +9,5 @@ jobs:
     steps:
       - uses: actions/add-to-project@v1.0.0
         with:
-          project-url: https://github.com/orgs/routelink/projects/1
+          project-url: ${{ server_url }}/orgs/${{ repository_owner }}/projects/1
           github-token: ${{ secrets.ROUTELINKBOT_TOKEN }}
