@@ -36,8 +36,7 @@ export function Sidebar(props: SidebarProps) {
               justifyContent: 'space-between',
               px: 2.5,
               ...theme.mixins.toolbar,
-            }}
-          >
+            }}>
             <Stack
               className="Staaaaaaack"
               direction="row"
@@ -45,16 +44,14 @@ export function Sidebar(props: SidebarProps) {
               alignItems="center"
               gap={1}
               spacing={0}
-              sx={{ width: '100%' }}
-            >
+              sx={{ width: '100%' }}>
               <IconButton
                 size="large"
                 aria-label="account of current user"
                 aria-controls="menu-appbar"
                 aria-haspopup="true"
                 onClick={handleSidebarToggle}
-                color="inherit"
-              >
+                color="inherit">
                 <MenuOpenIcon
                   sx={{
                     color: theme.palette.common.white,
@@ -78,8 +75,7 @@ export function Sidebar(props: SidebarProps) {
                     textDecoration: 'none',
                     color: theme.palette.common.black,
                   },
-                }}
-              >
+                }}>
                 <img width={120} src={logo} className="logo" alt="RouteLink" />
               </Stack>
             </Stack>
@@ -101,16 +97,14 @@ export function Sidebar(props: SidebarProps) {
                     minHeight: 48,
                     justifyContent: 'center',
                     px: 2.5,
-                  }}
-                >
+                  }}>
                   <ListItemIcon
                     sx={{
                       minWidth: 0,
                       color: theme.palette.common.white,
                       mr: 2,
                       justifyContent: 'center',
-                    }}
-                  >
+                    }}>
                     {item.icon}
                   </ListItemIcon>
                   <ListItemText

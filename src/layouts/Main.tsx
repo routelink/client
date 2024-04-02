@@ -133,8 +133,7 @@ export function Main() {
                 open={open}
                 mobile={isMobile ? 'true' : undefined}
                 component="main"
-                sx={{ flexGrow: 1 }}
-              >
+                sx={{ flexGrow: 1 }}>
                 <Header
                   sidebarOpen={isMobile ? openMobile : open}
                   handleSidebarToggle={

@@ -1,13 +1,6 @@
 import * as React from 'react';
 import { AccountCircle } from '@mui/icons-material';
-import {
-  AppBar,
-  Box,
-  IconButton,
-  Menu,
-  MenuItem,
-  Toolbar,
-} from '@mui/material';
+import { AppBar, Box, IconButton, Menu, MenuItem, Toolbar } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 interface HeaderProps {
   sidebarOpen: boolean;
@@ -35,16 +28,14 @@ export function Header(props: HeaderProps) {
               alignItems: 'start',
               justifyItems: 'start',
               display: 'flex',
-            }}
-          >
+            }}>
             {!sidebarOpen ? (
               <IconButton
                 size="large"
                 edge="start"
                 color="inherit"
                 aria-label="menu"
-                onClick={handleSidebarToggle}
-              >
+                onClick={handleSidebarToggle}>
                 <MenuIcon />
               </IconButton>
             ) : null}
@@ -56,8 +47,7 @@ export function Header(props: HeaderProps) {
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleMenu}
-              color="inherit"
-            >
+              color="inherit">
               <AccountCircle />
             </IconButton>
             <Menu
@@ -73,8 +63,7 @@ export function Header(props: HeaderProps) {
                 horizontal: 'right',
               }}
               open={Boolean(anchorEl)}
-              onClose={handleClose}
-            >
+              onClose={handleClose}>
               <MenuItem onClick={handleClose}>Profile</MenuItem>
               <MenuItem onClick={handleClose}>My account</MenuItem>
             </Menu>
