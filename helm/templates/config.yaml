@@ -7,14 +7,15 @@ metadata:
 data:
   default.conf: |
     server {
-        listen       80;
-        listen  [::]:80;
-        server_name  localhost;
-
-        root /usr/share/nginx/html;
-        index index.html;
-        try_files $uri /index.html;
-        location / {
-            try_files $uri $uri/ =404;
-        }
+      listen       80;
+      listen  [::]:80;
+      server_name  localhost;
+  
+      root /usr/share/nginx/html;
+      index index.html;
+      try_files $uri /index.html;
+      
+      location / {
+        try_files $uri $uri/ = 404;
+      }
     }
