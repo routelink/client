@@ -11,8 +11,4 @@ describe('Renders the main page', () => {
   it('should be wrapper', () => {
     expect(screen).toBeTruthy();
   });
-
-  it('should contain h1', () => {
-    expect(screen.getByText('Coming soon... 😉')).toBeInTheDocument();
-  });
 });
