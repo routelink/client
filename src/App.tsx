@@ -1,51 +1,33 @@
-import { Main } from '@app/layouts';
-import { Route, Routes, useLocation } from 'react-router-dom';
-import OtherContent from './layouts/OtherContent';
-import { useEffect } from 'react';
+import logo from './assets/logo.webp';
+import { Container, Grid, Typography, Stack, Divider } from '@mui/material';
+import * as components from '@app/ui';
+import { ComponentProvider } from '@app/utils/useComponents.tsx';
+import TestComp from '@app/components/TestComp.tsx';
 
 function App() {
-  const pathname = useLocation();
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
-
   return (
     <>
-      <Routes>
-        <Route path="/" element={<Main />}>
-          <Route
-            index
-            path="/profile"
-            element={<OtherContent content="Profile" />}
-          />
-          <Route
-            index
-            path="/organization"
-            element={<OtherContent content="Organization" />}
-          />
-          <Route
-            index
-            path="/favorite"
-            element={<OtherContent content="Favorite" />}
-          />
-          <Route index path="/maps" element={<OtherContent content="Maps" />} />
-          <Route
-            index
-            path="/transport"
-            element={<OtherContent content="Transport" />}
-          />
-          <Route
-            index
-            path="/employees"
-            element={<OtherContent content="Employee" />}
-          />
-          <Route
-            index
-            path="/analytics"
-            element={<OtherContent content="Analytics" />}
-          />
-        </Route>
-      </Routes>
+      <ComponentProvider components={components}>
+
+        <Container maxWidth="xl">
+          <Grid
+            container
+            direction="column"
+            justifyContent="center"
+            alignItems="center"
+            sx={{ minHeight: '100vh' }}
+          >
+            <Stack
+              divider={<Divider orientation="horizontal" flexItem />}
+              spacing={4}
+            >
+              <img width={300} src={logo} className="logo" alt="RouteLink" />
+            <TestComp></TestComp>
+            </Stack>
+          </Grid>
+        </Container>
+      </ComponentProvider>
+
     </>
   );
 }
