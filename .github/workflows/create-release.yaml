@@ -6,7 +6,7 @@ on:
         type: choice
         description: release type
         required: true
-        default: "minor"
+        default: 'minor'
         options:
           - patch
           - minor
@@ -98,7 +98,7 @@ jobs:
           delete-branch: true
           token: ${{ secrets.ROUTELINKBOT_TOKEN }}
           branch: release/${{ steps.run-release.outputs.new_version }}
-          title: "🚀 Release/v${{ steps.run-release.outputs.new_version }}"
+          title: '🚀 Release/v${{ steps.run-release.outputs.new_version }}'
           committer: routelinkbot <support@routelink.ru>
           body: |
             ${{ steps.get-pr-body.outputs.body }}

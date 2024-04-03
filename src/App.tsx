@@ -27,7 +27,6 @@ function App() {
           </Grid>
         </Container>
       </ComponentProvider>
-
     </>
   );
 }

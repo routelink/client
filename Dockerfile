@@ -2,12 +2,12 @@ FROM node:20-alpine3.19 as builder
 
 WORKDIR /app
 
-COPY package.json package-lock.json /app
+COPY package.json package-lock.json .
 
 RUN set -eux; \
     npm ci
 
-COPY . /app
+COPY . .
 
 RUN set -eux; \
     npm run build
