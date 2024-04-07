@@ -5,7 +5,6 @@ import { Header } from './Header';
 import { Outlet } from 'react-router-dom';
 import { Observer } from 'mobx-react-lite';
 import { Sidebar } from './Sidebar';
-import { useState } from 'react';
 import MuiBox, { BoxProps as MuiBoxProps } from '@mui/material/Box';
 import PersonIcon from '@mui/icons-material/Person';
 import CorporateFareIcon from '@mui/icons-material/CorporateFare';
@@ -14,6 +13,7 @@ import NearMeIcon from '@mui/icons-material/NearMe';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import BadgeIcon from '@mui/icons-material/Badge';
 import InsertChartIcon from '@mui/icons-material/InsertChart';
+import { useStore } from '@app/store';
 
 const drawerWidth = 260;
 interface BoxProps extends MuiBoxProps {
@@ -81,20 +81,11 @@ export function Main() {
 
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-  const [open, setOpen] = useState(
-    (localStorage.getItem('open') === 'true' ? true : false) && !isMobile,
-  );
+  const { appStore } = useStore();
 
-  const [openMobile, setOpenMobile] = useState(false);
+  const handleMobile = () => appStore.toggleOpenMobile();
+  const handleSidebar = () => appStore.toggleOpenSidebar();
 
-  const handleSidebarMobileToggle = () => {
-    setOpenMobile(!openMobile);
-  };
-
-  const handleSidebarToggle = () => {
-    localStorage.setItem('open', String(!open));
-    setOpen(!open);
-  };
   return (
     <Observer>
       {() => {
@@ -103,20 +94,20 @@ export function Main() {
             <Box sx={{ display: 'flex', minHeight: '100vh' }}>
               {isMobile ? (
                 <Sidebar
-                  sidebarOpen={openMobile}
+                  sidebarOpen={appStore.openMobile}
                   PaperProps={{
                     style: { width: drawerWidth },
                   }}
                   links={items}
-                  handleSidebarToggle={handleSidebarMobileToggle}
+                  handleSidebarToggle={handleMobile}
                   variant="temporary"
-                  open={openMobile}
-                  onClose={handleSidebarMobileToggle}
+                  open={appStore.openMobile}
+                  onClose={handleMobile}
                 />
               ) : null}
 
               <Sidebar
-                sidebarOpen={open}
+                sidebarOpen={appStore.openSidebar}
                 PaperProps={{
                   style: { width: drawerWidth },
                 }}
@@ -127,18 +118,16 @@ export function Main() {
                   },
                 }}
                 links={items}
-                handleSidebarToggle={handleSidebarToggle}
+                handleSidebarToggle={handleSidebar}
               />
               <Box
-                open={open}
+                open={appStore.openSidebar}
                 mobile={isMobile ? 'true' : undefined}
                 component="main"
                 sx={{ flexGrow: 1 }}>
                 <Header
-                  sidebarOpen={isMobile ? openMobile : open}
-                  handleSidebarToggle={
-                    isMobile ? handleSidebarMobileToggle : handleSidebarToggle
-                  }
+                  sidebarOpen={isMobile ? appStore.openMobile : appStore.openSidebar}
+                  handleSidebarToggle={isMobile ? handleMobile : handleSidebar}
                 />
                 <Box component="main" sx={{ flex: 1, py: 4, px: 4 }}>
                   <Outlet />
