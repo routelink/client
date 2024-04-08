@@ -8,8 +8,8 @@ export interface ITransport extends IMetaContext {
   organisation?: IOrganization;
   unit?: string;
 }
-interface ITypeTransport {
-  id: string;
+export interface ITypeTransport {
+  id: number;
   name: string;
   image?: string;
 }
