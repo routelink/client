@@ -1,5 +1,5 @@
 import { IMetaContext, ITransport, IUser } from '@app/models';
-export interface IInsures extends IMetaContext {
+export interface IAccident extends IMetaContext {
   transport: ITransport;
   user: IUser;
   isUser: boolean;

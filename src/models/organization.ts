@@ -1,5 +1,5 @@
 import { IMetaContext } from '@app/models';
 
-export interface IOrganisation extends IMetaContext {
+export interface IOrganization extends IMetaContext {
   name: string;
 }

@@ -1,11 +1,11 @@
-import { IMetaContext, IOrganisation } from '@app/models';
+import { IMetaContext, IOrganization } from '@app/models';
 
 export interface ITransport extends IMetaContext {
   name: string;
   type: ITypeTransport;
   regNumber?: string;
   avgConsumption?: number;
-  organisation?: IOrganisation;
+  organisation?: IOrganization;
   unit?: string;
 }
 interface ITypeTransport {
