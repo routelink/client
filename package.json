@@ -81,5 +81,8 @@
         "section": "Deprecations"
       }
     ]
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "^4.14.1"
   }
 }
