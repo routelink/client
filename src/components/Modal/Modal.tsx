@@ -20,7 +20,7 @@ export function Modal(props: IModal) {
       <Drawer
         anchor={isMobile ? 'bottom' : 'left'}
         id="ddd"
-        sx={{ zIndex: 10, variant: 'persistent' }}
+        sx={{ zIndex: 1100, variant: 'persistent' }}
         PaperProps={{
           sx: {
             left: isMobile || !appStore.openSidebar ? 0 : 260,

@@ -27,7 +27,7 @@ export function Sidebar(props: SidebarProps) {
 
   return (
     <Drawer
-      sx={{ zIndex: 20 }}
+      sx={{ zIndex: 1200 }}
       variant="persistent"
       open={sidebarOpen}
       anchor="left"

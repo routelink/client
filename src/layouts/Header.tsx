@@ -19,7 +19,7 @@ export function Header(props: HeaderProps) {
 
   const { handleSidebarToggle, sidebarOpen } = props;
   return (
-    <AppBar sx={{ zIndex: 10 }} color="inherit" position="sticky">
+    <AppBar sx={{ zIndex: 1100 }} color="inherit" position="sticky">
       <Toolbar>
         <Box
           sx={{
