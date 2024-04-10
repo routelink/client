@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom';
-import { beforeEach, expect, describe, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
+
 import { AppStore } from './app';
 
 describe('app store', () => {
