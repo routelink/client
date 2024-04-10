@@ -8,7 +8,7 @@ describe('Users', () => {
     render(<Users/>);
   });
 
-  it('should be modal open', () => {
+  it('should be component initialize', () => {
     expect(screen).toBeTruthy();
   });
 });

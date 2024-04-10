@@ -85,9 +85,8 @@ interface TableUsersProps {
 }
 
 function TableUsers(props: TableUsersProps) {
-    const rows = props.userData;    
-    const onSelectChange = props.onSelectChange ? props.onSelectChange : (selectedIndexArray: readonly number[])=>{if(selectedIndexArray){}};
-    
+    const rows = props.userData;
+    const onSelectChange = props.onSelectChange ? props.onSelectChange : ( _ : readonly number[])=>{};
 
     const [order, setOrder] = React.useState<Order>('asc');
     const [orderBy, setOrderBy] = React.useState<keyof IUserData>('name');
@@ -95,8 +94,7 @@ function TableUsers(props: TableUsersProps) {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
-    const handleRequestSort = ( event: React.MouseEvent<unknown>, property: keyof IUserData,) => {
-        if(event){}
+    const handleRequestSort = ( _ : React.MouseEvent<unknown>, property: keyof IUserData,) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
@@ -113,8 +111,7 @@ function TableUsers(props: TableUsersProps) {
         setSelected([]);
     };
 
-    const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
-        if(event){}
+    const handleClick = ( _ : React.MouseEvent<unknown>, id: number) => {
         const selectedIndex = selected.indexOf(id);
         let newSelected: readonly number[] = [];
 
@@ -131,8 +128,7 @@ function TableUsers(props: TableUsersProps) {
         setSelected(newSelected);
     };
 
-    const handleChangePage = ( event: unknown, newPage: number) => {
-        if(event){}
+    const handleChangePage = ( _ : unknown, newPage: number) => {
         setPage(newPage);
     };
 
@@ -268,7 +264,7 @@ function getUserDataFromBackend():IUserData[] {
 export function Users() {
     const rawUserData:IUserData[] = getUserDataFromBackend();
     /* ToDo: добавить "живой поиск" (фильтрацию входного массива) */
-    
+
     const [disableEdit, setDisableEdit] = React.useState(true);
     const [selectedCount, setSelectedCount] = React.useState(0);
 
@@ -320,7 +316,7 @@ export function Users() {
                 </Toolbar>
 
                 {/* Таблица пользователей */}
-                <TableUsers userData={rawUserData} onSelectChange={handleSelectChange}/>
+                    <TableUsers userData={rawUserData} onSelectChange={handleSelectChange}/>
             </Paper>
         </Box>
     </>);
