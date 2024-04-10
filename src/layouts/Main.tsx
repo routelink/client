@@ -13,6 +13,7 @@ import NearMeIcon from '@mui/icons-material/NearMe';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import BadgeIcon from '@mui/icons-material/Badge';
 import InsertChartIcon from '@mui/icons-material/InsertChart';
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import { useStore } from '@app/store';
 
 const drawerWidth = 260;
@@ -75,6 +76,11 @@ const items: ILink[] = [
     text: 'Аналитика',
     icon: <InsertChartIcon />,
   },
+  {
+    href: '/users',
+    text: 'Пользователи',
+    icon: <PeopleAltIcon />,
+  },
 ];
 export function Main() {
   const theme = useTheme();
@@ -91,7 +97,7 @@ export function Main() {
       {() => {
         return (
           <ThemeProvider theme={theme}>
-            <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+            <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#F1F3F4'}}>
               {isMobile ? (
                 <Sidebar
                   sidebarOpen={appStore.openMobile}
