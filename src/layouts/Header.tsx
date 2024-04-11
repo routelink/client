@@ -1,7 +1,9 @@
 import * as React from 'react';
+
 import { AccountCircle } from '@mui/icons-material';
-import { AppBar, Box, IconButton, Menu, MenuItem, Toolbar } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
+import { AppBar, Box, IconButton, Menu, MenuItem, Toolbar } from '@mui/material';
+
 interface HeaderProps {
   sidebarOpen: boolean;
   handleSidebarToggle: () => void;
