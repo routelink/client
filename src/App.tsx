@@ -3,6 +3,7 @@ import { Route, Routes, useLocation } from 'react-router-dom';
 import OtherContent from './layouts/OtherContent';
 import { useEffect } from 'react';
 import { Users } from './components';
+import { Profile } from './components/Profile/Profile';
 
 function App() {
   const pathname = useLocation();
@@ -14,7 +15,7 @@ function App() {
     <>
       <Routes>
         <Route path="/" element={<Main />}>
-          <Route index path="/profile" element={<OtherContent content="Profile" />} />
+          <Route index path="/profile" element={<Profile />} />
           <Route
             index
             path="/organization"
@@ -25,7 +26,7 @@ function App() {
           <Route index path="/transport" element={<OtherContent content="Transport" />} />
           <Route index path="/employees" element={<OtherContent content="Employee" />} />
           <Route index path="/analytics" element={<OtherContent content="Analytics" />} />
-          <Route index path="/users" element={<Users/>} />
+          <Route index path="/users" element={<Users />} />
         </Route>
       </Routes>
     </>
