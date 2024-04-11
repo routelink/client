@@ -139,14 +139,10 @@ function TableUsers(props: TableUsersProps) {
 
     const isSelected = (id: number) => selected.indexOf(id) !== -1;
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
-    const visibleRows = React.useMemo(
-        () =>
-        stableSort(rows, getComparator(order, orderBy)).slice(
+    const visibleRows = stableSort(rows, getComparator(order, orderBy)).slice(
             page * rowsPerPage,
             page * rowsPerPage + rowsPerPage,
-        ),
-        [order, orderBy, page, rowsPerPage],
-    );
+        );
 
     const createSortHandler = (property: keyof IUserData) => (event: React.MouseEvent<unknown>) => {
         handleRequestSort(event, property);
@@ -263,10 +259,26 @@ function getUserDataFromBackend():IUserData[] {
 
 export function Users() {
     const rawUserData:IUserData[] = getUserDataFromBackend();
-    /* ToDo: добавить "живой поиск" (фильтрацию входного массива) */
-
+    const [showUserData, setShowUserData ] = React.useState<IUserData[]>(rawUserData);
     const [disableEdit, setDisableEdit] = React.useState(true);
     const [selectedCount, setSelectedCount] = React.useState(0);
+    const [findedCount, setFindedCount] = React.useState(0);
+
+    const handleSearchChange = (search: string) => {
+        const newUserData:IUserData[] = rawUserData.filter(
+                userData => 
+                userData.name.toLowerCase().includes(search.toLowerCase()) ||
+                userData.org.toLowerCase().includes(search.toLowerCase()) ||
+                userData.role.toLowerCase().includes(search.toLowerCase()) ||
+                userData.date.toLowerCase().includes(search.toLowerCase())
+            );
+        if( search.length ){
+            setFindedCount(newUserData.length);
+        }else{
+            setFindedCount(-1);
+        }
+        setShowUserData(newUserData);
+    };
 
     const handleSelectChange = (selectedIndexArray: readonly number[])=>{
         setSelectedCount( selectedIndexArray.length );
@@ -293,13 +305,13 @@ export function Users() {
                 
                 <Toolbar sx={{display:'flex', flexDirection:'row', justifyContent:'space-between', bgcolor:'white', '&.MuiToolbar-root':{padding:'5px'}}}>
                     { /* ToDo: добавить "живой поиск" */ }
-                    <Box sx={{display:'flex', flexDirection:'row', gap:'12px' }}>
-                            <IconButton><SearchIcon sx={{color:'#4C4C4C'}}/></IconButton>
-                            <TextField variant="standard" />
+                    <Box sx={{display:'flex', flexDirection:'row', gap:'12px', alignItems:'center' }}>
+                            <SearchIcon sx={{color:'#4C4C4C', ml:'5px'}}/>
+                            <TextField onChange={(event)=>{handleSearchChange(event.target.value.trim())}} variant="standard" />
+                            {findedCount >= 0 ? <Typography variant="body2" sx={{mr:'20px'}}>Найдено {findedCount} записей</Typography> : null}
                     </Box>
 
                     {/* ToDo: добавить редактирование/удаление выделенного */}
-                    {/* ToDo: вставить куда-то "выделено N записей" */}
                     <Box sx={{display:'flex', flexDirection:'row', alignItems:'center'}}>
                         {selectedCount ? <Typography variant="body2" sx={{mr:'20px'}}>Выбрано {selectedCount} записей</Typography> : null}
                         
@@ -316,7 +328,8 @@ export function Users() {
                 </Toolbar>
 
                 {/* Таблица пользователей */}
-                    <TableUsers userData={rawUserData} onSelectChange={handleSelectChange}/>
+                <TableUsers userData={showUserData} onSelectChange={handleSelectChange}/>
+                
             </Paper>
         </Box>
     </>);
