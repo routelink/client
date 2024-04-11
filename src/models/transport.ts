@@ -7,6 +7,7 @@ export interface ITransport extends IMetaContext {
   avgConsumption?: number;
   organisation?: IOrganization;
   unit?: string;
+  mileage?: string;
 }
 export interface ITypeTransport {
   id: number;

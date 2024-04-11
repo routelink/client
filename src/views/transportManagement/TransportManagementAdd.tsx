@@ -1,31 +1,33 @@
 import React, { useState } from 'react';
 import { Container, TextField, MenuItem, Typography, Button } from '@mui/material';
+import { ITransport } from '@app/models';
+import { TRANSPORT_TYPES } from '@app/utils/consts.ts';
 
-const VehicleForm = ({ onApply }) => {
-  const [formValues, setFormValues] = useState({
-    type_id: '',
-    reg_number: '',
-    mileage: '',
-    created_at: Date.now(),
+type State = Pick<ITransport, 'type' | 'regNumber' | 'mileage' | 'createdAt'>;
+
+type VehicleFormProps = {
+  onApply: (state: State) => void;
+};
+
+const VehicleForm: React.FC<VehicleFormProps> = ({ onApply }) => {
+  const [type, setType] = useState<State['type']>({
+    id: 0,
+    name: 'sss',
   });
+  const [regNumber, setRegNumber] = useState<State['regNumber']>('');
+  const [mileage, setMileage] = useState<State['mileage']>('');
 
-  const vehicleTypes = [
-    { label: 'Car', value: 'car' },
-    { label: 'Truck', value: 'truck' },
-    // Add more vehicle types here if needed
-  ];
-
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormValues({
-      ...formValues,
-      [name]: value,
-    });
+  const vehicleTypes = TRANSPORT_TYPES.map((i) => {
+    return { id: i.id, label: i.name.toUpperCase(), value: i.name };
+  });
+  const onSetTransportType = (value: any) => {
+    const vehicleType = TRANSPORT_TYPES.find((i) => i.id === value);
+    vehicleType && setType(vehicleType);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    onApply(formValues);
+    onApply({ type, regNumber, mileage, createdAt: new Date() });
   };
 
   return (
@@ -37,24 +39,24 @@ const VehicleForm = ({ onApply }) => {
         <TextField
           select
           label="Транспортное средство *"
-          name="type_id" // This must match the state object's property name
-          value={formValues.type_id}
-          onChange={handleChange}
+          name="type"
+          value={type.name}
+          onChange={({ target }) => onSetTransportType(target.value)}
           required
           fullWidth
           margin="normal"
           variant="outlined">
           {vehicleTypes.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
+            <MenuItem key={option.id} value={option.id}>
               {option.label}
             </MenuItem>
           ))}
         </TextField>
         <TextField
           label="Гос. номер *"
-          name="reg_number" // This must match the state object's property name
-          value={formValues.reg_number}
-          onChange={handleChange}
+          name="regNumber" // This must match the state object's property name
+          value={regNumber}
+          onChange={({ target }) => setRegNumber(target.value)}
           required
           fullWidth
           margin="normal"
@@ -63,8 +65,8 @@ const VehicleForm = ({ onApply }) => {
         <TextField
           label="Пробег *"
           name="mileage" // This must match the state object's property name
-          value={formValues.mileage}
-          onChange={handleChange}
+          value={mileage}
+          onChange={({ target }) => setMileage(target.value)}
           required
           fullWidth
           margin="normal"
