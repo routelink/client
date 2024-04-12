@@ -1,6 +1,30 @@
-import { Avatar, Button, Box, Container, Typography } from '@mui/material';
+import {
+    Box,
+    Container,
+    Typography,
+    Button,
+    Avatar,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle
+} from '@mui/material';
+import * as React from 'react';
+import AvatarDialog from './dialogs/Avatar';
+
 
 export default function Profile() {
+    const [openAvatar, setOpenAvatar] = React.useState(false);
+    const handleClickOpenAvatar = () => {
+        setOpenAvatar(true);
+    };
+    const handleCloseAvatar = () => {
+        setOpenAvatar(false);
+    };
+    const handleSaveAvatar = () => {
+        console.log('save avatar');
+    };
+
     return (
         <Box>
             <Container>
@@ -56,9 +80,28 @@ export default function Profile() {
                                     flexDirection: 'row',
                                     gap: '50px',
                                 }}>
-                                <Button variant="text" sx={{color: '#68B5B9'}}>изменить аватар</Button>
-                                <Button variant="text" sx={{color: '#68B5B9'}}>изменить фио</Button>
-                                <Button variant="text" sx={{color: '#68B5B9'}}>изменить пароль</Button>
+                                <Button variant="text" sx={{ color: '#68B5B9' }} onClick={handleClickOpenAvatar}>изменить аватар</Button>
+                                <Dialog
+                                    open={openAvatar}
+                                    onClose={handleCloseAvatar}
+                                    aria-labelledby="alert-dialog-title-avatar"
+                                    aria-describedby="alert-dialog-description-avatar"
+                                >
+                                    <DialogTitle id="alert-dialog-title-avatar">
+                                        {"Изменить аватар"}
+                                    </DialogTitle>
+                                    <DialogContent>
+                                        {<AvatarDialog />}
+                                    </DialogContent>
+                                    <DialogActions>
+                                        <Button sx={{ color: '#0E0E0E' }} onClick={handleCloseAvatar}>отмена</Button>
+                                        <Button sx={{ color: '#0E0E0E' }} onClick={handleSaveAvatar} autoFocus>
+                                            сохранить
+                                        </Button>
+                                    </DialogActions>
+                                </Dialog>
+                                <Button variant="text" sx={{ color: '#68B5B9' }}>изменить фио</Button>
+                                <Button variant="text" sx={{ color: '#68B5B9' }}>изменить аватар</Button>
                             </Box>
                         </Box>
                     </Box>
