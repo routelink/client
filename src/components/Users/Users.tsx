@@ -141,14 +141,10 @@ function TableUsers(props: TableUsersProps) {
 
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
-  const visibleRows = React.useMemo(
-    () =>
-      stableSort(rows, getComparator(order, orderBy)).slice(
+  const visibleRows = stableSort(rows, getComparator(order, orderBy)).slice(
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage,
-      ),
-    [order, orderBy, page, rowsPerPage],
-  );
+      );
 
   const createSortHandler =
     (property: keyof IUserData) => (event: React.MouseEvent<unknown>) => {
@@ -292,10 +288,29 @@ function getUserDataFromBackend(): IUserData[] {
 
 export function Users() {
   const rawUserData: IUserData[] = getUserDataFromBackend();
+  const [showUserData, setShowUserData ] = React.useState<IUserData[]>(rawUserData);
   /* ToDo: добавить "живой поиск" (фильтрацию входного массива) */
 
   const [disableEdit, setDisableEdit] = React.useState(true);
   const [selectedCount, setSelectedCount] = React.useState(0);
+  const [findedCount, setFindedCount] = React.useState(-1);
+
+
+  const handleSearchChange = (search: string) => {
+    const newUserData:IUserData[] = rawUserData.filter( userData => 
+        userData.name.toLowerCase().includes(search.toLowerCase())
+        || userData.org.toLowerCase().includes(search.toLowerCase())
+        || userData.role.toLowerCase().includes(search.toLowerCase())
+        || userData.date.toLowerCase().includes(search.toLowerCase())
+      );
+    if( search.length ){
+      setFindedCount(newUserData.length);
+    }else{
+      setFindedCount(-1);
+    }
+    setShowUserData(newUserData);
+};
+
 
   const handleSelectChange = (selectedIndexArray: readonly number[]) => {
     setSelectedCount(selectedIndexArray.length);
@@ -309,14 +324,14 @@ export function Users() {
 
   return (
     <>
-      <Box>
+      <Box margin={'20px'}>
         {/* кнопка "добавить" */}
         <Box
           display={'flex'}
           flexDirection={'row'}
           alignItems={'center'}
           gap={'18px'}
-          marginBottom={'18px'}>
+          marginBottom={'20px'}>
           <Fab
             color="primary"
             aria-label="add"
@@ -341,11 +356,15 @@ export function Users() {
               '&.MuiToolbar-root': { padding: '5px' },
             }}>
             {/* ToDo: добавить "живой поиск" */}
-            <Box sx={{ display: 'flex', flexDirection: 'row', gap: '12px' }}>
-              <IconButton>
-                <SearchIcon sx={{ color: '#4C4C4C' }} />
-              </IconButton>
-              <TextField variant="standard" />
+            <Box sx={{ display: 'flex', flexDirection: 'row', gap: '12px', alignItems:'center' }}>
+              <SearchIcon sx={{ ml:'5px'}} />
+              <TextField variant="standard"
+                onChange={(event)=>{handleSearchChange(event.target.value.trim())}}
+              />
+              { findedCount >= 0 
+                ? <Typography variant="body2" sx={{mr:'20px'}}>Найдено {findedCount} записей</Typography>
+                : null
+              }
             </Box>
 
             {/* ToDo: добавить редактирование/удаление выделенного */}
@@ -382,7 +401,7 @@ export function Users() {
           </Toolbar>
 
           {/* Таблица пользователей */}
-          <TableUsers userData={rawUserData} onSelectChange={handleSelectChange} />
+          <TableUsers userData={showUserData} onSelectChange={handleSelectChange} />
         </Paper>
       </Box>
     </>
