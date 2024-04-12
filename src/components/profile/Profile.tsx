@@ -7,15 +7,19 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
-    DialogTitle
+    DialogTitle,
+    IconButton,
+    TextField
 } from '@mui/material';
+import UploadIcon from '@mui/icons-material/Upload';
+import CloseIcon from '@mui/icons-material/Close';
 import * as React from 'react';
-import AvatarBox from './box/Avatar';
-
 
 export default function Profile() {
     const [openAvatar, setOpenAvatar] = React.useState(false);
-    const [openName, setOpenName] = React.useState(false);
+    const [openFullName, setOpenFullName] = React.useState(false);
+    const [fullName, setFullName] = React.useState('Иванов И.И.');
+
     const handleClickOpenAvatar = () => {
         setOpenAvatar(true);
     };
@@ -26,14 +30,14 @@ export default function Profile() {
         console.log('save avatar');
     };
 
-    const handleClickOpenName = () => {
-        setOpenName(true);
+    const handleClickOpenFullName = () => {
+        setOpenFullName(true);
     };
-    const handleCloseName = () => {
-        setOpenName(false);
+    const handleCloseFullName = () => {
+        setOpenFullName(false);
     };
-    const handleSaveName = () => {
-        console.log('save name');
+    const handleSaveFullName = () => {
+        console.log('save full name:', fullName);
     };
 
     return (
@@ -102,7 +106,32 @@ export default function Profile() {
                                         {"Изменить аватар"}
                                     </DialogTitle>
                                     <DialogContent>
-                                        {<AvatarBox />}
+                                        <Box sx={{ display: 'flex', flexDirection: 'row', gap: 7 }}>
+                                            <Box
+                                                sx={{
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    flexDirection: 'row',
+                                                    gap: '12px',
+                                                }}>
+                                                <Avatar alt="Иванов И.И." src="https://mui.com/static/images/avatar/1.jpg" />
+                                                <Typography variant="subtitle1">Иванов И.И.</Typography>
+                                            </Box>
+                                            <Box
+                                                sx={{
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    flexDirection: 'row',
+                                                    gap: '12px',
+                                                }}>
+                                                <IconButton aria-label="delete">
+                                                    <CloseIcon />
+                                                </IconButton>
+                                                <IconButton aria-label="delete">
+                                                    <UploadIcon />
+                                                </IconButton>
+                                            </Box>
+                                        </Box>
                                     </DialogContent>
                                     <DialogActions>
                                         <Button sx={{ color: '#0E0E0E' }} onClick={handleCloseAvatar}>отмена</Button>
@@ -112,27 +141,32 @@ export default function Profile() {
                                     </DialogActions>
                                 </Dialog>
 
-                                <Button variant="text" sx={{ color: '#68B5B9' }} onClick={handleClickOpenName}>изменить фио</Button>
+                                <Button variant="text" sx={{ color: '#68B5B9' }} onClick={handleClickOpenFullName}>Изменить ФИО</Button>
                                 <Dialog
-                                    open={openName}
-                                    onClose={handleCloseName}
+                                    open={openFullName}
+                                    onClose={handleCloseFullName}
                                     aria-labelledby="alert-dialog-title-name"
                                     aria-describedby="alert-dialog-description-name"
                                 >
                                     <DialogTitle id="alert-dialog-title-name">
-                                        {"изменить фио"}
+                                        {"Изменить ФИО"}
                                     </DialogTitle>
                                     <DialogContent>
-                                        {<AvatarBox />}
+                                        <TextField
+                                            id="text-full-name"
+                                            defaultValue="Иванов И.И."
+                                            variant="standard"
+                                            onChange={(e) => setFullName(e.target.value)}
+                                        />
                                     </DialogContent>
                                     <DialogActions>
-                                        <Button sx={{ color: '#0E0E0E' }} onClick={handleCloseName}>отмена</Button>
-                                        <Button sx={{ color: '#0E0E0E' }} onClick={handleSaveName} autoFocus>
+                                        <Button sx={{ color: '#0E0E0E' }} onClick={handleCloseFullName}>отмена</Button>
+                                        <Button sx={{ color: '#0E0E0E' }} onClick={handleSaveFullName} autoFocus>
                                             сохранить
                                         </Button>
                                     </DialogActions>
                                 </Dialog>
-                                <Button variant="text" sx={{ color: '#68B5B9' }}>изменить аватар</Button>
+                                <Button variant="text" sx={{ color: '#68B5B9' }}>Изменить аватар</Button>
                             </Box>
                         </Box>
                     </Box>
