@@ -11,8 +11,8 @@ import {
 import { styled, useTheme } from '@mui/material/styles';
 import MuiBox, { BoxProps as MuiBoxProps } from '@mui/material/Box';
 import { useState } from 'react';
-import { List, Search } from '@app/components/Maps/menu';
-import { MobileMenu } from '@app/components/Maps/menu';
+import { List, Search } from '@app/components/Maps/Menu';
+import { MobileMenu } from '@app/components/Maps/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import { IconButton } from '@mui/material';
 import { ITransport } from '@app/models';
