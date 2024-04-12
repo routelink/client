@@ -4,29 +4,26 @@ import '@ag-grid-community/styles/ag-theme-quartz.css';
 
 import { Add } from '@mui/icons-material';
 import RoundIconButton from '@app/ui/button/RoundIconButton.tsx';
-import './styles.scss';
-import Drawer from '@mui/material/Drawer';
 import VehicleForm from '@app/views/transportManagement/TransportManagementAdd.tsx';
-import { ColDef } from '@ag-grid-community/core';
+
+import RlTable from '@app/components/Table/Table.tsx';
+import { ColDef, ICellRendererParams } from '@ag-grid-community/core';
 import { DateRenderer } from '@app/ui';
 import { generateRows } from '@app/utils';
-import RlTable from '@app/components/Table/Table.tsx';
-export interface ITransport {
-  id: number; // auto-increment
-  name: string;
-  type_id: number;
-  org_id: number;
-  reg_number: string;
-  avg_consumption: number;
-  unit: string; //@Todo add type
-  created_at: string; //@Todo add type
-}
+import { Modal } from '@app/components';
+import { ITransport } from '@app/models';
+// import { TRANSPORT_TYPES } from '@app/utils/consts.ts';
+import './styles.scss';
+
 const TransportManagement: React.FC = () => {
+  // const getTransportType = (id: number) =>
+  //   TRANSPORT_TYPES.find((i) => i.id === id)?.name || '';
+
   const [open, setOpen] = useState(false);
   const [rowData, setRowData] = useState<ITransport[]>();
   const [columnDefs, setColumnDefs] = useState<ColDef[]>([
     {
-      field: 'reg_number',
+      field: 'regNumber',
       headerName: 'Гос. номер',
       cellDataType: 'text',
       headerCheckboxSelection: true,
@@ -34,37 +31,45 @@ const TransportManagement: React.FC = () => {
       showDisabledCheckboxes: true,
     },
     {
-      field: 'type_id',
+      field: 'type',
       headerName: 'Тип автомобиля',
+      cellRenderer: (props: ICellRendererParams) => {
+        console.log(props.value);
+        // return <span>{getTransportType(props.value.name)}</span>;
+        return <span>{props.value.name}</span>;
+      },
     },
     {
       field: 'name',
       headerName: 'Модель',
     },
     {
-      field: 'org_id',
+      field: 'organisation',
       headerName: 'Водятел',
+      cellRenderer: (props: ICellRendererParams) => {
+        return <span>{props.value?.name}</span>;
+      },
     },
     {
-      field: 'avg_consumption',
+      field: 'avgConsumption',
       headerName: 'Расход топлива',
       cellDataType: 'number',
     },
-    { field: 'created_at', headerName: 'Дата создания', cellRenderer: DateRenderer },
+    { field: 'createdAt', headerName: 'Дата создания', cellRenderer: DateRenderer },
   ]);
 
   const fieldDescription = {
     id: 'int' as const, // auto-increment,
     name: 'str' as const,
-    type_id: 'str' as const,
-    org_id: 'str' as const,
-    reg_number: 'int' as const,
-    avg_consumption: 'float' as const,
-    unit: 'str' as const, //@Todo add type
-    created_at: 'date' as const, //@Todo add type
+    type: {
+      name: 'str',
+    } as const,
+    organisation: 'str' as const,
+    regNumber: 'int' as const,
+    avgConsumption: 'float' as const,
+    createdAt: 'date' as const, //@Todo add type
   };
-  useEffect(() => setRowData(generateRows(4, fieldDescription)), []);
-
+  useEffect(() => setRowData(generateRows(4, fieldDescription) as ITransport[]), []);
   const onRowAdd = () => {
     toggleDrawer(true);
   };
@@ -73,7 +78,7 @@ const TransportManagement: React.FC = () => {
   };
   const onApply = (val) => {
     setRowData((prev) => [...prev, val]);
-    console.log(rowData);
+    toggleDrawer(false);
   };
 
   return (
@@ -91,9 +96,9 @@ const TransportManagement: React.FC = () => {
         <span>Транспортное средство</span>
       </div>
       <RlTable columns={columnDefs} rowData={rowData}></RlTable>
-      <Drawer open={open} onClose={() => toggleDrawer(false)} anchor="right">
+      <Modal isOpen={open} toggle={() => toggleDrawer(false)}>
         <VehicleForm onApply={(val) => onApply(val)}></VehicleForm>
-      </Drawer>
+      </Modal>
     </section>
   );
 };

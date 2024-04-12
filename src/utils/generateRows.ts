@@ -1,4 +1,5 @@
-type FieldType = 'str' | 'int' | 'float' | 'date';
+type BaseFieldType = 'str' | 'int' | 'float' | 'date';
+type FieldType = BaseFieldType | Record<string, BaseFieldType>;
 type FieldDescription = { [key: string]: FieldType };
 
 function randomStr(length: number = 10): string {
@@ -18,28 +19,34 @@ function randomFloat(min: number = 0.0, max: number = 100.0): number {
   return Math.random() * (max - min) + min;
 }
 
-function randomDate(start: Date = new Date(2000, 0, 1), end: Date = new Date()): Date {
+function randomDate(start: Date = new Date(2000, 0, 1), end: Date = new Date()): number {
   return new Date(
     start.getTime() + Math.random() * (end.getTime() - start.getTime()),
   ).getTime();
 }
 
-function generateFields(fields: FieldDescription): any {
-  const row: { [key: string]: any } = {};
+function generateFields(fields: FieldDescription): unknown {
+  const row: { [key: string]: unknown } = {};
   Object.entries(fields).forEach(([column, type]) => {
-    switch (type) {
-      case 'str':
-        row[column] = randomStr();
-        break;
-      case 'int':
-        row[column] = randomInt();
-        break;
-      case 'float':
-        row[column] = randomFloat();
-        break;
-      case 'date':
-        row[column] = randomDate();
-        break;
+    if (typeof type === 'string') {
+      // Base case
+      switch (type) {
+        case 'str':
+          row[column] = randomStr();
+          break;
+        case 'int':
+          row[column] = randomInt();
+          break;
+        case 'float':
+          row[column] = randomFloat();
+          break;
+        case 'date':
+          row[column] = randomDate();
+          break;
+      }
+    } else {
+      // If the type is an object, handle it recursively
+      row[column] = generateFields(type);
     }
   });
   return row;

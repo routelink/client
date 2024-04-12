@@ -1,23 +1,23 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   ColDef,
   FirstDataRenderedEvent,
-  GridReadyEvent,
   IRowNode,
   ModuleRegistry,
 } from '@ag-grid-community/core';
 
 import { AgGridReact } from 'ag-grid-react';
-import '@ag-grid-community/styles/ag-grid.css';
-import '@ag-grid-community/styles/ag-theme-quartz.css';
+
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
-type TableProps = {
-  rowData: any;
-  columns: ColDef;
+
+type TableProps<T, B> = {
+  rowData: T;
+  columns: B;
 };
-const RlTable: React.FC<TableProps> = <T,>({ rowData, columns }) => {
+
+const RlTable = <T, B>({ rowData, columns }: TableProps<T, B>): React.ReactElement => {
   const containerStyle = useMemo(() => ({ width: '100%', height: '900px' }), []);
   const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), []);
 
@@ -27,8 +27,6 @@ const RlTable: React.FC<TableProps> = <T,>({ rowData, columns }) => {
       minWidth: 100,
     };
   }, []);
-
-  const onGridReady = useCallback((params: GridReadyEvent) => {}, []);
 
   const onFirstDataRendered = useCallback((params: FirstDataRenderedEvent<T>) => {
     const nodesToSelect: IRowNode[] = [];
@@ -41,14 +39,13 @@ const RlTable: React.FC<TableProps> = <T,>({ rowData, columns }) => {
   }, []);
   return (
     <div style={containerStyle}>
-      <div style={gridStyle} className={'ag-theme-quartz'}>
+      <div style={gridStyle} className={'ag-theme-material'}>
         <AgGridReact<T>
           rowData={rowData}
           columnDefs={columns}
           defaultColDef={defaultColDef}
           rowSelection={'multiple'}
           suppressRowClickSelection={true}
-          onGridReady={onGridReady}
           onFirstDataRendered={onFirstDataRendered}
         />
       </div>

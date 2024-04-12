@@ -16,6 +16,6 @@ export const TRANSPORT_TYPES: ITypeTransport[] = [
   },
   {
     id: 4,
-    name: 'C',
+    name: 'D',
   },
 ] as const;
