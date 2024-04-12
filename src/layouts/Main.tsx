@@ -85,6 +85,18 @@ const items: ILink[] = [
     icon: <PeopleAltIcon />,
   },
 ];
+
+const style = {
+  main: {
+    background: '#F1F3F4',
+    '--header-height': '64px',
+    '--header-height-mobile': '56px',
+    height: `calc(100vh - var(--header-height))`,
+    '@media (maxWidth: 768px)': {
+      height: `calc(100vh - var(--header-height-mobile))`,
+    },
+  },
+};
 export function Main() {
   const theme = useTheme();
 
@@ -138,7 +150,7 @@ export function Main() {
                   sidebarOpen={isMobile ? appStore.openMobile : appStore.openSidebar}
                   handleSidebarToggle={isMobile ? handleMobile : handleSidebar}
                 />
-                <Box component="main" sx={{ flex: 1, py: 4, px: 4 }}>
+                <Box style={{ ...style.main }} sx={{ flex: 1 }}>
                   <Outlet />
                 </Box>
               </Box>
