@@ -1,8 +1,8 @@
-import { Main } from '@app/layouts';
-import { Route, Routes, useLocation } from 'react-router-dom';
-import OtherContent from './layouts/OtherContent';
 import { useEffect } from 'react';
 import { Users, Maps } from '@app/components';
+import { Route, Routes, useLocation } from 'react-router-dom';
+import { Main } from '@app/layouts';
+import OtherContent from './layouts/OtherContent';
 
 function App() {
   const pathname = useLocation();
