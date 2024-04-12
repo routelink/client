@@ -10,11 +10,12 @@ import {
     DialogTitle
 } from '@mui/material';
 import * as React from 'react';
-import AvatarDialog from './dialogs/Avatar';
+import AvatarBox from './box/Avatar';
 
 
 export default function Profile() {
     const [openAvatar, setOpenAvatar] = React.useState(false);
+    const [openName, setOpenName] = React.useState(false);
     const handleClickOpenAvatar = () => {
         setOpenAvatar(true);
     };
@@ -23,6 +24,16 @@ export default function Profile() {
     };
     const handleSaveAvatar = () => {
         console.log('save avatar');
+    };
+
+    const handleClickOpenName = () => {
+        setOpenName(true);
+    };
+    const handleCloseName = () => {
+        setOpenName(false);
+    };
+    const handleSaveName = () => {
+        console.log('save name');
     };
 
     return (
@@ -91,7 +102,7 @@ export default function Profile() {
                                         {"Изменить аватар"}
                                     </DialogTitle>
                                     <DialogContent>
-                                        {<AvatarDialog />}
+                                        {<AvatarBox />}
                                     </DialogContent>
                                     <DialogActions>
                                         <Button sx={{ color: '#0E0E0E' }} onClick={handleCloseAvatar}>отмена</Button>
@@ -100,7 +111,27 @@ export default function Profile() {
                                         </Button>
                                     </DialogActions>
                                 </Dialog>
-                                <Button variant="text" sx={{ color: '#68B5B9' }}>изменить фио</Button>
+
+                                <Button variant="text" sx={{ color: '#68B5B9' }} onClick={handleClickOpenName}>изменить фио</Button>
+                                <Dialog
+                                    open={openName}
+                                    onClose={handleCloseName}
+                                    aria-labelledby="alert-dialog-title-name"
+                                    aria-describedby="alert-dialog-description-name"
+                                >
+                                    <DialogTitle id="alert-dialog-title-name">
+                                        {"изменить фио"}
+                                    </DialogTitle>
+                                    <DialogContent>
+                                        {<AvatarBox />}
+                                    </DialogContent>
+                                    <DialogActions>
+                                        <Button sx={{ color: '#0E0E0E' }} onClick={handleCloseName}>отмена</Button>
+                                        <Button sx={{ color: '#0E0E0E' }} onClick={handleSaveName} autoFocus>
+                                            сохранить
+                                        </Button>
+                                    </DialogActions>
+                                </Dialog>
                                 <Button variant="text" sx={{ color: '#68B5B9' }}>изменить аватар</Button>
                             </Box>
                         </Box>
