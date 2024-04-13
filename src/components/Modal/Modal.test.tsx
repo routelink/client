@@ -1,6 +1,8 @@
 import '@testing-library/jest-dom';
-import { beforeEach, expect, describe, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
+
 import { render, screen } from '@app/tests';
+
 import { Modal } from './Modal';
 
 describe('Modal', () => {

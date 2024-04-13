@@ -1,6 +1,8 @@
 import { ReactNode } from 'react';
-import Drawer from '@mui/material/Drawer';
+
 import { useMediaQuery, useTheme } from '@mui/material';
+import Drawer from '@mui/material/Drawer';
+
 import { useStore } from '@app/store';
 
 export interface IModal {

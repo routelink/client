@@ -1,7 +1,8 @@
+import { RenderOptions, RenderResult, render } from '@testing-library/react';
 import React, { ReactNode } from 'react';
-import { render, RenderOptions, RenderResult } from '@testing-library/react';
-import { StoreProvider } from '@app/store';
 import { MemoryRouter } from 'react-router-dom';
+
+import { StoreProvider } from '@app/store';
 
 interface TestWrapperProps {
   children: ReactNode;
