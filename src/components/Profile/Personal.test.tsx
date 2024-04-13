@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import { beforeEach, expect, describe, it, vi } from 'vitest';
 import { render, screen } from '@app/tests';
-import { Personal } from '@app/components/Profile';
+import { Personal } from './Personal';
 
 describe('Renders the personal component', () => {
   beforeEach(() => {

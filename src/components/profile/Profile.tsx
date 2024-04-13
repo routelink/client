@@ -21,7 +21,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import * as React from 'react';
 
-export default function Profile() {
+export function Profile() {
     const [openAvatar, setOpenAvatar] = React.useState(false);
     const [openFullName, setOpenFullName] = React.useState(false);
     const [fullName, setFullName] = React.useState('Иванов И.И.');

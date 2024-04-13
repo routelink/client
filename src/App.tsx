@@ -1,11 +1,8 @@
 import { useEffect } from 'react';
-import { Users, Maps } from '@app/components';
+import { Users, Maps, Profile } from '@app/components';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { Main } from '@app/layouts';
 import OtherContent from './layouts/OtherContent';
-import { useEffect } from 'react';
-import { Users } from './components';
-import { Profile } from './components/Profile/Profile';
 
 function App() {
   const pathname = useLocation();
