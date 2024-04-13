@@ -155,9 +155,14 @@ function TableUsers(props: TableUsersProps) {
     };
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <TableContainer>
-        <Table sx={{ minWidth: 600 }} aria-labelledby="tableTitle" size={'medium'}>
+    <Box>
+      <TableContainer sx={{
+        maxHeight: 'calc( 100vh - 296px )',
+        '&::-webkit-scrollbar': {width:'8px',},
+        '&::-webkit-scrollbar-thumb': { backgroundColor: '#c5c5c5', borderRadius: '4px',},
+        '&::-webkit-scrollbar-track': { backgroundColor: '#f1f1f1',},
+      }}>
+        <Table stickyHeader sx={{ minWidth: 600 }} aria-labelledby="tableTitle" size={'medium'}>
           <TableHead>
             <TableRow>
               <TableCell sx={{ borderWidth: '0px', padding: '0px', width: '30px' }}>
@@ -238,16 +243,16 @@ function TableUsers(props: TableUsersProps) {
               );
             })}
             {emptyRows > 0 && (
-              <TableRow style={{ height: 45 * emptyRows }}>
+              <TableRow style={{ height: 44.02 * emptyRows }}>
                 {' '}
-                <TableCell colSpan={6} />
+                <TableCell colSpan={6} sx={{borderWidth: '0px'}}/>
               </TableRow>
             )}
           </TableBody>
         </Table>
       </TableContainer>
       <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
+        rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
         component="div"
         count={rows.length}
         rowsPerPage={rowsPerPage}
@@ -446,17 +451,17 @@ export function Users() {
 
   return (
     <>
-      <Box margin={'20px'}>
+      <Box margin={'0px 20px 0px 20px'} >
         {/* вызов панели "добавление пользователя" */}
         <Box
           display={'flex'}
           flexDirection={'row'}
           alignItems={'center'}
-          gap={'18px'}
-          marginBottom={'20px'}>
+          gap={'18px'}>
           <Fab
             color="primary"
             aria-label="add"
+            sx={{margin:'20px 0px 20px 0px'}}
             onClick={()=>{setAddUserOpen(true)}}
             >
             <AddIcon />
