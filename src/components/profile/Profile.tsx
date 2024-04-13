@@ -9,16 +9,23 @@ import {
     DialogContent,
     DialogTitle,
     IconButton,
-    TextField
+    TextField,
+    FormControl,
+    InputAdornment,
+    InputLabel,
+    OutlinedInput,
 } from '@mui/material';
 import UploadIcon from '@mui/icons-material/Upload';
 import CloseIcon from '@mui/icons-material/Close';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import * as React from 'react';
 
 export default function Profile() {
     const [openAvatar, setOpenAvatar] = React.useState(false);
     const [openFullName, setOpenFullName] = React.useState(false);
     const [fullName, setFullName] = React.useState('Иванов И.И.');
+    const [openPass, setOpenPass] = React.useState(false);
 
     const handleClickOpenAvatar = () => {
         setOpenAvatar(true);
@@ -28,6 +35,7 @@ export default function Profile() {
     };
     const handleSaveAvatar = () => {
         console.log('save avatar');
+        setOpenAvatar(false);
     };
 
     const handleClickOpenFullName = () => {
@@ -38,6 +46,49 @@ export default function Profile() {
     };
     const handleSaveFullName = () => {
         console.log('save full name:', fullName);
+        setOpenFullName(false);
+    };
+
+    const handleClickOpenPass = () => {
+        setOpenPass(true);
+    };
+    const handleClosePass = () => {
+        setOpenPass(false);
+    };
+
+    const [currPass, setCurrPass] = React.useState('');
+    const [newPass, setNewPass] = React.useState('');
+    const [confirmPass, setConfirmPass] = React.useState('');
+
+    const [showCurrPass, setShowCurrPass] = React.useState(false);
+    const [showNewPass, setShowNewPass] = React.useState(false);
+    const [showConfirmPass, setShowConfirmPass] = React.useState(false);
+
+    const handleClickShowCurrPass = () => {
+        if (showCurrPass) {
+            setShowCurrPass(false);
+        } else {
+            setShowCurrPass(true);
+        }
+    }
+    const handleClickShowNewPass = () => {
+        if (showNewPass) {
+            setShowNewPass(false);
+        } else {
+            setShowNewPass(true);
+        }
+    }
+    const handleClickShowConfirmPass = () => {
+        if (showConfirmPass) {
+            setShowConfirmPass(false);
+        } else {
+            setShowConfirmPass(true);
+        }
+    }
+
+    const handleSavePass = () => {
+        console.log('save pass:', newPass);
+        setOpenPass(false);
     };
 
     return (
@@ -83,7 +134,7 @@ export default function Profile() {
                                         gap: '12px',
                                     }}>
                                     <Avatar alt="Remy Sharp" src="https://mui.com/static/images/avatar/1.jpg" />
-                                    <Typography variant="subtitle1">Иванов И.И.</Typography>
+                                    <Typography variant="subtitle1">{fullName}</Typography>
                                 </Box>
                                 <Typography variant="subtitle1">iivanov@gmail.com</Typography>
                             </Box>
@@ -115,7 +166,7 @@ export default function Profile() {
                                                     gap: '12px',
                                                 }}>
                                                 <Avatar alt="Иванов И.И." src="https://mui.com/static/images/avatar/1.jpg" />
-                                                <Typography variant="subtitle1">Иванов И.И.</Typography>
+                                                <Typography variant="subtitle1">{fullName}</Typography>
                                             </Box>
                                             <Box
                                                 sx={{
@@ -166,7 +217,83 @@ export default function Profile() {
                                         </Button>
                                     </DialogActions>
                                 </Dialog>
-                                <Button variant="text" sx={{ color: '#68B5B9' }}>Изменить аватар</Button>
+
+                                <Button variant="text" sx={{ color: '#68B5B9' }} onClick={handleClickOpenPass}>Изменить пароль</Button>
+                                <Dialog
+                                    open={openPass}
+                                    onClose={handleClosePass}
+                                    aria-labelledby="alert-dialog-title-pass"
+                                    aria-describedby="alert-dialog-description-pass"
+                                >
+                                    <DialogTitle id="alert-dialog-title-pass">
+                                        {"Изменить пароль"}
+                                    </DialogTitle>
+                                    <DialogContent>
+                                        <Box
+                                            component={'form'}
+                                            sx={{
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                gap: '30px',
+                                                p: '20px'
+                                            }}>
+                                            <FormControl>
+                                                <InputLabel htmlFor="outlined-cur-pass">Текущий пароль</InputLabel>
+                                                <OutlinedInput
+                                                    value={currPass}
+                                                    onChange={(e) => setCurrPass(e.target.value)}
+                                                    type={showCurrPass ? 'text' : 'password'}
+                                                    endAdornment={
+                                                        <InputAdornment position="end">
+                                                            <IconButton onClick={handleClickShowCurrPass} edge="end">
+                                                                {showCurrPass ? <Visibility /> : <VisibilityOff />}
+                                                            </IconButton>
+                                                        </InputAdornment>
+                                                    }
+                                                    label="Текущий пароль"
+                                                />
+                                            </FormControl>
+                                            <FormControl>
+                                                <InputLabel htmlFor="outlined-new-pass">Новый пароль</InputLabel>
+                                                <OutlinedInput
+                                                    value={newPass}
+                                                    onChange={(e) => setNewPass(e.target.value)}
+                                                    type={showNewPass ? 'text' : 'password'}
+                                                    endAdornment={
+                                                        <InputAdornment position="end">
+                                                            <IconButton onClick={handleClickShowNewPass} edge="end">
+                                                                {showNewPass ? <Visibility /> : <VisibilityOff />}
+                                                            </IconButton>
+                                                        </InputAdornment>
+                                                    }
+                                                    label="Новый пароль"
+                                                />
+                                            </FormControl>
+                                            <FormControl>
+                                                <InputLabel htmlFor="outlined-confirm-pass">Повторите пароль</InputLabel>
+                                                <OutlinedInput
+                                                    value={confirmPass}
+                                                    onChange={(e) => setConfirmPass(e.target.value)}
+                                                    type={showConfirmPass ? 'text' : 'password'}
+                                                    endAdornment={
+                                                        <InputAdornment position="end">
+                                                            <IconButton onClick={handleClickShowConfirmPass} edge="end">
+                                                                {showConfirmPass ? <Visibility /> : <VisibilityOff />}
+                                                            </IconButton>
+                                                        </InputAdornment>
+                                                    }
+                                                    label="Повторите пароль"
+                                                />
+                                            </FormControl>
+                                        </Box>
+                                    </DialogContent>
+                                    <DialogActions>
+                                        <Button sx={{ color: '#0E0E0E' }} onClick={handleClosePass}>отмена</Button>
+                                        <Button sx={{ color: '#0E0E0E' }} onClick={handleSavePass} autoFocus>
+                                            сохранить
+                                        </Button>
+                                    </DialogActions>
+                                </Dialog>
                             </Box>
                         </Box>
                     </Box>
