@@ -1,27 +1,19 @@
-import { EmployeeManagementTable } from './employeeManagementTable'
+import { EMTable } from './emTable'
 import { AddEmployeeButton } from './AddEmployeeButton'
-import { Box, Stack } from '@mui/material'
+import { Stack } from '@mui/material'
 
 export function EmployeeManagement() {
     return (
-        <Box>
+        <Stack direction="column" spacing="10px">
             <Stack direction="row"
             justifyContent="flex-start"
             alignItems="center"
-            spacing={2}>
+            spacing="10px">
                 <AddEmployeeButton />
-                <div>Сотрудник</div>
+                <span>Сотрудник</span>
             </Stack>
-            <Stack direction="row"
-            justifyContent="flex-start"
-            alignItems="center"
-            spacing={2}
-            padding={1}>
-            </Stack>
-
-
-            <EmployeeManagementTable />
-        </Box>
+            <EMTable />
+        </Stack>
     )
 
 }

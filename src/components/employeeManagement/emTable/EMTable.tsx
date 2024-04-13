@@ -15,50 +15,50 @@ import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-// import FormControlLabel from '@mui/material/FormControlLabel';
-// import Switch from '@mui/material/Switch';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material';
-import SearchIcon from '@mui/icons-material';
-import FilterListIcon from '@mui/icons-material';
+import SearchIcon from '@mui/icons-material/Search';
+import EditIcon from '@mui/icons-material/Edit';
+import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
-import { Stack } from '@mui/material';
-// import { AddButton } from '../addButton';
+import { Stack } from '@mui/material'
+
 
 interface Data {
-  id: number;
-  name: string;
-  role: string;
-  transport: string;
-  creationDate: string;
-}
+    id: number;
+    name: string;
+    role: string;
+    transport: string;
+    creationDate: string;
+  }
 
-function createData(
-  id: number,
-  name: string,
-  role: string,
-  transport: string,
-  creationDate: string,
-): Data {
-  return {
-    id,
-    name,
-    role,
-    transport,
-    creationDate,
-  };
-}
+  function createData(
+    id: number,
+    name: string,
+    role: string,
+    transport: string,
+    creationDate: string,
+  ): Data {
+    return {
+      id,
+      name,
+      role,
+      transport,
+      creationDate,
+    };
+  }
 
-const rows = [
-  createData(1, 'Иванов И.И.', 'Водитель', 'MAN, У123УМ152', '2024-04-10'),
-  createData(2, 'Петров П.П.', 'Аналитик', '-', '2024-04-09'),
-  createData(3, 'Сидоров Ф.В.', 'Водитель', 'Lada, М234РМ152', '2024-04-09'),
-  createData(4, 'Семёнов И.И.', 'Водитель', 'Volvo, У193УМ152', '2024-04-10'),
-  createData(5, 'Прохин Д.П.', 'Аналитик', '-', '2024-04-09'),
-  createData(6, 'Вилков А.В.', 'Водитель', 'BMW, М345РМ152', '2024-04-09'),
-  createData(7, 'Трудов С.И.', 'Водитель', 'Daff, У233УМ152', '2024-04-10'),
-  createData(9, 'Кантов В.В.', 'Водитель', 'Hundai, М342РМ152', '2024-04-09'),
-];
+  const rows = [
+    createData(1, 'Иванов И.И.', 'Водитель', 'MAN, У123УМ152', '2024-04-10'),
+    createData(2, 'Петров П.П.', 'Аналитик', '-', '2024-04-09'),
+    createData(3, 'Сидоров Ф.В.', 'Водитель', 'Lada, М234РМ152', '2024-04-09'),
+    createData(4, 'Семёнов И.И.', 'Водитель', 'Volvo, У193УМ152', '2024-04-10'),
+    createData(5, 'Прохин Д.П.', 'Аналитик', '-', '2024-04-09'),
+    createData(6, 'Вилков А.В.', 'Водитель', 'BMW, М345РМ152', '2024-04-09'),
+    createData(7, 'Трудов С.И.', 'Водитель', 'Daff, У233УМ152', '2024-04-10'),
+    createData(9, 'Кантов В.В.', 'Водитель', 'Hundai, М342РМ152', '2024-04-09'),
+  ];
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -97,38 +97,38 @@ function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) 
 }
 
 interface HeadCell {
-  disablePadding: boolean;
-  id: keyof Data;
-  label: string;
-  numeric: boolean;
+    disablePadding: boolean;
+    id: keyof Data;
+    label: string;
+    numeric: boolean;
 }
 
 const headCells: readonly HeadCell[] = [
-  {
-    id: 'name',
-    numeric: false,
-    disablePadding: true,
-    label: 'ФИО',
-  },
-  {
-    id: 'role',
-    numeric: false,
-    disablePadding: false,
-    label: 'Роль',
-  },
-  {
-    id: 'transport',
-    numeric: false,
-    disablePadding: false,
-    label: 'Транспортное средство',
-  },
-  {
-    id: 'creationDate',
-    numeric: false,
-    disablePadding: false,
-    label: 'Дата создания',
-  },
-];
+    {
+      id: 'name',
+      numeric: false,
+      disablePadding: true,
+      label: 'ФИО',
+    },
+    {
+      id: 'role',
+      numeric: false,
+      disablePadding: false,
+      label: 'Роль',
+    },
+    {
+      id: 'transport',
+      numeric: false,
+      disablePadding: false,
+      label: 'Транспортное средство',
+    },
+    {
+      id: 'creationDate',
+      numeric: false,
+      disablePadding: false,
+      label: 'Дата создания',
+    },
+  ];
 
 interface EnhancedTableProps {
   numSelected: number;
@@ -167,6 +167,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
             align={headCell.numeric ? 'right' : 'left'}
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
+            sx={{fontWeight: "Bold"}}
           >
             <TableSortLabel
               active={orderBy === headCell.id}
@@ -192,67 +193,67 @@ interface EnhancedTableToolbarProps {
 }
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-  const { numSelected } = props;
-
-  return (
-    <Toolbar
-      sx={{
-        pl: { sm: 2 },
-        pr: { xs: 1, sm: 1 },
-        ...(numSelected > 0 && {
-          bgcolor: (theme) =>
-            alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
-        }),
-      }}
-    >
-      {numSelected > 0 ? (
-        <Typography
-          sx={{ flex: '1 1 100%' }}
-          color="inherit"
-          variant="subtitle1"
-          component="div"
-        >
-          {numSelected} выбрано
-        </Typography>
-      ) : (
-        <Typography
-          sx={{ flex: '1 1 100%', fontSize: "14px"}}
-          variant="h6"
-          id="tableTitle"
-          component="div"
-        >
-        Группировать по
-        </Typography>
-      )}
-      {numSelected > 0 ? (
-        <Tooltip title="Удалить">
-          <IconButton>
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Stack direction="row">
-        <Tooltip title="Фильтр">
-          <IconButton>
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Поиск">
-          <IconButton>
-            <SearchIcon />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Редактировать">
-          <IconButton>
-            <EditIcon />
-          </IconButton>
-        </Tooltip>
-        </Stack>
-      )}
-    </Toolbar>
-  );
-}
-export function EmployeeManagementTable() {
+    const { numSelected } = props;
+  
+    return (
+      <Toolbar
+        sx={{
+          pl: { sm: 2 },
+          pr: { xs: 1, sm: 1 },
+          ...(numSelected > 0 && {
+            bgcolor: (theme) =>
+              alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
+          }),
+        }}
+      >
+        {numSelected > 0 ? (
+          <Typography
+            sx={{ flex: '1 1 100%' }}
+            color="inherit"
+            variant="subtitle1"
+            component="div"
+          >
+            {numSelected} выбрано
+          </Typography>
+        ) : (
+          <Typography
+            sx={{ flex: '1 1 100%', fontSize: "14px"}}
+            variant="h6"
+            id="tableTitle"
+            component="div"
+          >
+          
+          </Typography>
+        )}
+        {numSelected > 0 ? (
+          <Tooltip title="Удалить">
+            <IconButton>
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        ) : (
+          <Stack direction="row">
+          <Tooltip title="Поиск">
+            <IconButton>
+              <SearchIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Фильтр">
+            <IconButton>
+              <FilterListIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Редактировать">
+            <IconButton>
+              <EditIcon />
+            </IconButton>
+          </Tooltip>
+          </Stack>
+        )}
+      </Toolbar>
+    );
+  }
+export function EMTable() {
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof Data>('name');
   const [selected, setSelected] = React.useState<readonly number[]>([]);
@@ -261,7 +262,7 @@ export function EmployeeManagementTable() {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const handleRequestSort = (
-    event: React.MouseEvent<unknown>,
+    _event: React.MouseEvent<unknown>,
     property: keyof Data,
   ) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -278,8 +279,7 @@ export function EmployeeManagementTable() {
     setSelected([]);
   };
 
-  const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
-
+  const handleClick = (_event: React.MouseEvent<unknown>, id: number) => {
     const selectedIndex = selected.indexOf(id);
     let newSelected: readonly number[] = [];
 
@@ -298,7 +298,7 @@ export function EmployeeManagementTable() {
     setSelected(newSelected);
   };
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage);
   };
 
@@ -307,9 +307,9 @@ export function EmployeeManagementTable() {
     setPage(0);
   };
 
-  // const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   setDense(event.target.checked);
-  // };
+  const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setDense(event.target.checked);
+  };
 
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
@@ -328,11 +328,12 @@ export function EmployeeManagementTable() {
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Paper sx={{ width: '100%', mb: 2 }}>
+      <Paper sx={{ width: '100%', mb: 2, overflow: 'hidden' }}>
         <EnhancedTableToolbar numSelected={selected.length} />
-        <TableContainer>
+        <TableContainer sx={{height: "100vh"}}>
           <Table
             sx={{ minWidth: 750 }}
+            stickyHeader
             aria-labelledby="tableTitle"
             size={dense ? 'small' : 'medium'}
           >
@@ -386,8 +387,7 @@ export function EmployeeManagementTable() {
               {emptyRows > 0 && (
                 <TableRow
                   style={{
-                    height: 33*emptyRows,
-                    // height: (dense ? 33 : 53) * emptyRows,
+                    height: (dense ? 33 : 53) * emptyRows,
                   }}
                 >
                   <TableCell colSpan={6} />
@@ -406,10 +406,10 @@ export function EmployeeManagementTable() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
-      {/* <FormControlLabel
+      <FormControlLabel
         control={<Switch checked={dense} onChange={handleChangeDense} />}
-        label="Dense padding"
-      /> */}
+        label="Уменьшить высоту строки"
+      />
     </Box>
   );
 }
