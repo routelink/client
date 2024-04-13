@@ -3,6 +3,8 @@ import { Users, Maps } from '@app/components';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { Main } from '@app/layouts';
 import OtherContent from './layouts/OtherContent';
+import { useEffect } from 'react';
+import Profile from './components/profile/Profile';
 
 function App() {
   const pathname = useLocation();
@@ -14,7 +16,7 @@ function App() {
     <>
       <Routes>
         <Route path="/" element={<Main />}>
-          <Route index path="/profile" element={<OtherContent content="Profile" />} />
+          <Route index path="/profile" element={<Profile />} />
           <Route
             index
             path="/organization"
