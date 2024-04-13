@@ -4,7 +4,8 @@ import { Route, Routes, useLocation } from 'react-router-dom';
 import { Main } from '@app/layouts';
 import OtherContent from './layouts/OtherContent';
 import { useEffect } from 'react';
-import Profile from './components/profile/Profile';
+import { Users } from './components';
+import { Profile } from './components/Profile/Profile';
 
 function App() {
   const pathname = useLocation();
