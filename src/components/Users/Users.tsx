@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import AddIcon from '@mui/icons-material/Add';
+import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import SearchIcon from '@mui/icons-material/Search';
@@ -20,7 +21,9 @@ import TableSortLabel from '@mui/material/TableSortLabel';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { visuallyHidden } from '@mui/utils';
+import { Modal } from '../Modal';
 
+{/* таблица пользователей */}
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -141,14 +144,10 @@ function TableUsers(props: TableUsersProps) {
 
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
-  const visibleRows = React.useMemo(
-    () =>
-      stableSort(rows, getComparator(order, orderBy)).slice(
+  const visibleRows = stableSort(rows, getComparator(order, orderBy)).slice(
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage,
-      ),
-    [order, orderBy, page, rowsPerPage],
-  );
+      );
 
   const createSortHandler =
     (property: keyof IUserData) => (event: React.MouseEvent<unknown>) => {
@@ -259,6 +258,128 @@ function TableUsers(props: TableUsersProps) {
     </Box>
   );
 }
+/* таблица пользователей (конец) */
+
+/* панель "добавление пользователя" */
+interface PanelUserAddProps {
+  isOpen: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+function PanelUserAdd(props: PanelUserAddProps) {
+  const [fio, setFio] = React.useState('');
+  const [login, setLogin] = React.useState('');
+  const [email, setEmail] = React.useState('');
+
+  const isFormValid = (fio.trim() !== '') &&
+    (login.trim() !== '') && (email.trim() !== '');
+
+  const handleCancel = () => {
+    props.setOpen(false)
+    setFio('');
+    setLogin('');
+    setEmail('');
+  }
+
+  const handleAdd = () => {
+    props.setOpen(false)
+    setFio('');
+    setLogin('');
+    setEmail('');
+  }
+
+  return (
+    <Modal isOpen={props.isOpen}>
+      <Box
+        display={'flex'}
+        flexDirection={'row'}
+        justifyContent={'space-evenly'}
+        height={'100vh'}
+      >
+        <Box
+          display={'flex'}
+          flexDirection={'column'}
+          alignItems={'stretch'}
+          maxWidth={'500px'}
+          margin={'50px'}
+        >
+          <Typography sx={{fontSize:'20px', textAlign:'center'}}>
+            Добавить пользователя
+          </Typography>
+          
+          <Box sx={{
+            display:'flex',
+            flexDirection:'column',
+            alignItems:'stretch'
+          }}>
+            <TextField
+              variant="standard"
+              label="ФИО"
+              onChange={(event)=>{ setFio(event.target.value) }}
+            />
+            <Typography sx={{fontSize:'12px', mt:'5px'}}>
+              Обязательное поле
+            </Typography>
+          </Box>
+
+          <Box sx={{
+            display:'flex',
+            flexDirection:'column',
+            alignItems:'stretch'
+          }}>
+            <TextField
+              variant="standard"
+              label="Логин"
+              onChange={(event)=>{ setLogin(event.target.value) }}
+            />
+            <Typography sx={{fontSize:'12px', mt:'5px'}}>
+              Обязательное поле
+            </Typography>
+          </Box>
+
+          <Box sx={{
+            display:'flex',
+            flexDirection:'column',
+            alignItems:'stretch'
+          }}>
+            <TextField
+              variant="standard"
+              label="E-mail"
+              onChange={(event)=>{ setEmail(event.target.value) }}
+            />
+            <Typography sx={{fontSize:'12px', mt:'5px'}}>
+              Обязательное поле
+            </Typography>
+          </Box>
+
+          <Box
+            display={'flex'}
+            flexDirection={'row'}
+            justifyContent={'space-between'}
+            mt={'30px'}
+            gap={'30px'}
+          >
+            <Button
+              variant="outlined"
+              onClick={()=>{handleCancel()}} sx={{ width:'140px'}}
+            >
+              Отмена
+            </Button>
+            
+            <Button
+              disabled={!isFormValid}
+              variant="contained"
+              onClick={()=>{handleAdd()}} sx={{ width:'140px'}}
+            >
+              Добавить
+            </Button>
+          </Box>
+        </Box>
+      </Box>
+    </Modal>
+  )
+}
+/* панель "добавление пользователя" (конец) */
 
 function getUserDataFromBackend(): IUserData[] {
   /* заглушка для получения данных с сервера */
@@ -292,10 +413,26 @@ function getUserDataFromBackend(): IUserData[] {
 
 export function Users() {
   const rawUserData: IUserData[] = getUserDataFromBackend();
-  /* ToDo: добавить "живой поиск" (фильтрацию входного массива) */
-
+  const [showUserData, setShowUserData ] = React.useState<IUserData[]>(rawUserData);
   const [disableEdit, setDisableEdit] = React.useState(true);
   const [selectedCount, setSelectedCount] = React.useState(0);
+  const [findedCount, setFindedCount] = React.useState(-1);
+  const [addUserOpen, setAddUserOpen] = React.useState(false);
+
+  const handleSearchChange = (search: string) => {
+    const newUserData:IUserData[] = rawUserData.filter( userData => 
+        userData.name.toLowerCase().includes(search.toLowerCase())
+        || userData.org.toLowerCase().includes(search.toLowerCase())
+        || userData.role.toLowerCase().includes(search.toLowerCase())
+        || userData.date.toLowerCase().includes(search.toLowerCase())
+      );
+    if( search.length ){
+      setFindedCount(newUserData.length);
+    }else{
+      setFindedCount(-1);
+    }
+    setShowUserData(newUserData);
+};
 
   const handleSelectChange = (selectedIndexArray: readonly number[]) => {
     setSelectedCount(selectedIndexArray.length);
@@ -309,29 +446,30 @@ export function Users() {
 
   return (
     <>
-      <Box>
-        {/* кнопка "добавить" */}
+      <Box margin={'20px'}>
+        {/* вызов панели "добавление пользователя" */}
         <Box
           display={'flex'}
           flexDirection={'row'}
           alignItems={'center'}
           gap={'18px'}
-          marginBottom={'18px'}>
+          marginBottom={'20px'}>
           <Fab
             color="primary"
             aria-label="add"
-            sx={{
-              '&&.MuiFab-root ': { bgcolor: '#4C4C4C' },
-              '&&.MuiFab-root:hover': { bgcolor: '#6C6C6C' },
-            }}>
+            onClick={()=>{setAddUserOpen(true)}}
+            >
             <AddIcon />
           </Fab>
           <Typography sx={{ fontSize: '20px' }}>Пользователь</Typography>
         </Box>
+        
+        {/* панель "добавление пользователя" */}
+        <PanelUserAdd isOpen={addUserOpen} setOpen={setAddUserOpen} />
 
         <Paper sx={{ width: '100%' }}>
-          {/* панель инструментов */}
 
+          {/* панель инструментов */}
           <Toolbar
             sx={{
               display: 'flex',
@@ -340,16 +478,21 @@ export function Users() {
               bgcolor: 'white',
               '&.MuiToolbar-root': { padding: '5px' },
             }}>
-            {/* ToDo: добавить "живой поиск" */}
-            <Box sx={{ display: 'flex', flexDirection: 'row', gap: '12px' }}>
-              <IconButton>
-                <SearchIcon sx={{ color: '#4C4C4C' }} />
-              </IconButton>
-              <TextField variant="standard" />
+            
+            {/* панель поиска */}
+            <Box sx={{ display: 'flex', flexDirection: 'row', gap: '12px', alignItems:'center' }}>
+              <SearchIcon sx={{ ml:'5px'}} />
+              <TextField variant="standard" label="Поиск"
+                onChange={(event)=>{handleSearchChange(event.target.value.trim())}}
+              />
+              { findedCount >= 0 
+                ? <Typography variant="body2" sx={{mr:'20px'}}>Найдено {findedCount} записей</Typography>
+                : null
+              }
             </Box>
 
+            {/* панель редактирования */}
             {/* ToDo: добавить редактирование/удаление выделенного */}
-            {/* ToDo: вставить куда-то "выделено N записей" */}
             <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
               {selectedCount ? (
                 <Typography variant="body2" sx={{ mr: '20px' }}>
@@ -374,15 +517,15 @@ export function Users() {
               <Tooltip title="Обновить данные" placement="top">
                 <span>
                   <IconButton>
-                    <SyncIcon /*sx={{color:'#4C4C4C'}}*/ />
+                    <SyncIcon />
                   </IconButton>
                 </span>
               </Tooltip>
             </Box>
           </Toolbar>
 
-          {/* Таблица пользователей */}
-          <TableUsers userData={rawUserData} onSelectChange={handleSelectChange} />
+          {/* таблица пользователей */}
+          <TableUsers userData={showUserData} onSelectChange={handleSelectChange} />
         </Paper>
       </Box>
     </>
