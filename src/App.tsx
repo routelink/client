@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Users, Maps, Profile, Analytics, Employees } from '@app/components';
 import { Route, Routes, useLocation } from 'react-router-dom';
-import { Main } from '@app/layouts';
+import { Main, Auth } from '@app/layouts';
 import OtherContent from './layouts/OtherContent';
 
 function App() {
@@ -15,6 +15,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Main />}>
           <Route index path="/profile" element={<Profile />} />
+          <Route index path="/auth" element={<Auth state="login" />} />
           <Route
             index
             path="/organization"
