@@ -7,9 +7,9 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   plugins: [react(), tsconfigPaths(), cesium()],
   server: {
-    host: 'localhost',
+    host: '0.0.0.0',
     port: 3000,
-    open: true,
+    open: false,
   },
   test: {
     globals: true,
