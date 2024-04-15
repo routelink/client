@@ -17,7 +17,10 @@ type TableProps<T, B> = {
   columns: B;
 };
 
-const RlTable = <T, B>({ rowData, columns }: TableProps<T, B>): React.ReactElement => {
+const TransportTable = <T extends [], B extends ColDef>({
+  rowData,
+  columns,
+}: TableProps<T, B>): React.ReactElement => {
   const containerStyle = useMemo(() => ({ width: '100%', height: '900px' }), []);
   const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), []);
 
@@ -40,6 +43,7 @@ const RlTable = <T, B>({ rowData, columns }: TableProps<T, B>): React.ReactEleme
   return (
     <div style={containerStyle}>
       <div style={gridStyle} className={'ag-theme-material'}>
+        {/* @ts-expect-error: Олег, помоги плиз разобраться с конфликтом типов */}
         <AgGridReact<T>
           rowData={rowData}
           columnDefs={columns}
@@ -52,4 +56,4 @@ const RlTable = <T, B>({ rowData, columns }: TableProps<T, B>): React.ReactEleme
     </div>
   );
 };
-export default RlTable;
+export default TransportTable;

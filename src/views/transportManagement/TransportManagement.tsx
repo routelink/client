@@ -1,26 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import '@ag-grid-community/styles/ag-grid.css';
-import '@ag-grid-community/styles/ag-theme-quartz.css';
 
 import { Add } from '@mui/icons-material';
 import RoundIconButton from '@app/ui/button/RoundIconButton.tsx';
-import VehicleForm from '@app/views/transportManagement/TransportManagementAdd.tsx';
+import TransportAddForm, {
+  TransportAddState,
+} from '@app/views/transportManagement/TransportAddForm.tsx';
 
-import RlTable from '@app/components/Table/Table.tsx';
 import { ColDef, ICellRendererParams } from '@ag-grid-community/core';
 import { DateRenderer } from '@app/ui';
-import { generateRows } from '@app/utils';
+import { generateRows, v4Int } from '@app/utils';
 import { Modal } from '@app/components';
 import { ITransport } from '@app/models';
-// import { TRANSPORT_TYPES } from '@app/utils/consts.ts';
+
+// import { TRANSPORT_TYPES } from '@app/utils';
 import './styles.scss';
+import TransportTable from '@app/views/transportManagement/TransportTable.tsx';
 
 const TransportManagement: React.FC = () => {
   // const getTransportType = (id: number) =>
   //   TRANSPORT_TYPES.find((i) => i.id === id)?.name || '';
 
   const [open, setOpen] = useState(false);
-  const [rowData, setRowData] = useState<ITransport[]>();
+  const [rowData, setRowData] = useState<ITransport[]>([]);
   const [columnDefs, setColumnDefs] = useState<ColDef[]>([
     {
       field: 'regNumber',
@@ -69,15 +70,20 @@ const TransportManagement: React.FC = () => {
     avgConsumption: 'float' as const,
     createdAt: 'date' as const, //@Todo add type
   };
-  useEffect(() => setRowData(generateRows(4, fieldDescription) as ITransport[]), []);
+  useEffect(() => {
+    //@TODO
+    setColumnDefs(columnDefs);
+    setRowData(generateRows(4, fieldDescription) as ITransport[]);
+  }, []);
+
   const onRowAdd = () => {
     toggleDrawer(true);
   };
   const toggleDrawer = (value: boolean) => {
     setOpen(value);
   };
-  const onApply = (val) => {
-    setRowData((prev) => [...prev, val]);
+  const onApply = (val: TransportAddState) => {
+    setRowData((prev) => [...prev, { ...val, name: 'REPLACE', id: v4Int() }]);
     toggleDrawer(false);
   };
 
@@ -95,9 +101,10 @@ const TransportManagement: React.FC = () => {
         </RoundIconButton>
         <span>Транспортное средство</span>
       </div>
-      <RlTable columns={columnDefs} rowData={rowData}></RlTable>
+      {/* @ts-expect-error: Олег, помоги плиз разобраться с конфликтом типов */}
+      <TransportTable columns={columnDefs} rowData={rowData}></TransportTable>
       <Modal isOpen={open} toggle={() => toggleDrawer(false)}>
-        <VehicleForm onApply={(val) => onApply(val)}></VehicleForm>
+        <TransportAddForm onApply={(val) => onApply(val)}></TransportAddForm>
       </Modal>
     </section>
   );

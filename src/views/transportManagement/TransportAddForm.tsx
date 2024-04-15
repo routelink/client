@@ -1,27 +1,28 @@
 import React, { useState } from 'react';
 import { Container, TextField, MenuItem, Typography, Button } from '@mui/material';
 import { ITransport } from '@app/models';
-import { TRANSPORT_TYPES } from '@app/utils/consts.ts';
+import { TRANSPORT_TYPES } from '@app/utils';
 import { IMaskMixin } from 'react-imask';
 
-type State = Pick<ITransport, 'type' | 'regNumber' | 'mileage' | 'createdAt'>;
+export type TransportAddState = Pick<
+  ITransport,
+  'type' | 'regNumber' | 'mileage' | 'createdAt'
+>;
 
-type VehicleFormProps = {
-  onApply: (state: State) => void;
+type TransportAddFormProps = {
+  onApply: (state: TransportAddState) => void;
 };
 
-const VehicleForm: React.FC<VehicleFormProps> = ({ onApply }) => {
-  const [type, setType] = useState<State['type']>({
-    id: 1,
-    name: '',
-  });
-  const [regNumber, setRegNumber] = useState<State['regNumber']>('');
-  const [mileage, setMileage] = useState<State['mileage']>('');
+const VehicleForm: React.FC<TransportAddFormProps> = ({ onApply }) => {
+  const [type, setType] = useState<TransportAddState['type']>(TRANSPORT_TYPES[0]);
+  const [regNumber, setRegNumber] = useState<TransportAddState['regNumber']>('');
+  const [mileage, setMileage] = useState<TransportAddState['mileage']>('');
 
   const vehicleTypes = TRANSPORT_TYPES.map((i) => {
     return { id: i.id, value: i.name };
   });
-  const onSetTransportType = (value: any) => {
+
+  const onSetTransportType = (value: TransportAddState['type']['id']) => {
     const vehicleType = TRANSPORT_TYPES.find((i) => i.id === value);
     vehicleType && setType(vehicleType);
   };
@@ -32,6 +33,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({ onApply }) => {
   };
 
   const IMaskPhoneInput = IMaskMixin(({ ...props }) => {
+    // @ts-expect-error: kakaya to xren with size
     return <TextField {...props} />;
   });
 
@@ -46,7 +48,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({ onApply }) => {
           label="Транспортное средство *"
           name="type"
           value={type.id}
-          onChange={({ target }) => onSetTransportType(target.value)}
+          onChange={({ target }) => onSetTransportType(target.value as unknown as number)}
           required
           fullWidth
           margin="normal"
@@ -62,7 +64,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({ onApply }) => {
           label="Гос. номер *"
           name="regNumber" // This must match the state object's property name
           value={regNumber}
-          onAccept={(value, mask) => setRegNumber(value)}
+          onAccept={(value: string) => setRegNumber(value)} // (value, mask) =>
           required
           fullWidth
           margin="normal"
