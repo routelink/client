@@ -1,1 +1,0 @@
-export { Employee } from './Employee';
