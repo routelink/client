@@ -1,1 +1,1 @@
-export { EmployeeManagement } from '@app/components/employeeManagement';
+export { Employee } from '@app/components/employee';
