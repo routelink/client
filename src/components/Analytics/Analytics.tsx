@@ -31,7 +31,7 @@ function AnalyticsSwitch({ analyticsType }: AnalyticsSwitchProps) {
 }
 
 
-function AnalyticsReport() {
+export function Analytics() {
   const [analyticsType, setAnalyticsType] = useState('');
 
   const handleAnalyticsTypeChange = (event: SelectChangeEvent<string>) => {
@@ -60,5 +60,3 @@ function AnalyticsReport() {
     </div>
   );
 }
-
-export default AnalyticsReport;
