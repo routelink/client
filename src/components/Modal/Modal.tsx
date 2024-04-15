@@ -1,6 +1,8 @@
 import { ReactNode } from 'react';
-import Drawer from '@mui/material/Drawer';
+
 import { useMediaQuery, useTheme } from '@mui/material';
+import Drawer from '@mui/material/Drawer';
+
 import { useStore } from '@app/store';
 
 export interface IModal {
@@ -20,7 +22,7 @@ export function Modal(props: IModal) {
       <Drawer
         anchor={isMobile ? 'bottom' : 'left'}
         id="ddd"
-        sx={{ zIndex: 10, variant: 'persistent' }}
+        sx={{ zIndex: 1100, variant: 'persistent' }}
         PaperProps={{
           sx: {
             left: isMobile || !appStore.openSidebar ? 0 : 260,

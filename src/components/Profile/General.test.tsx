@@ -1,15 +1,13 @@
 import '@testing-library/jest-dom';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-
+import { beforeEach, expect, describe, it, vi } from 'vitest';
 import { render, screen } from '@app/tests';
+import { General } from './General';
 
-import App from './App';
-
-describe('Renders the main page', () => {
+describe('Renders the General component', () => {
   beforeEach(() => {
     const scrollToMock = vi.fn();
     Object.defineProperty(window, 'scrollTo', { value: scrollToMock });
-    render(<App />);
+    render(<General />);
   });
 
   it('should be wrapper', () => {

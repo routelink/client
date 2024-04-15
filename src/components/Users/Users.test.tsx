@@ -3,14 +3,14 @@ import { beforeEach, describe, expect, it } from 'vitest';
 
 import { render, screen } from '@app/tests';
 
-import { Modal } from './Modal';
+import { Users } from './Users';
 
-describe('Modal', () => {
+describe('Users', () => {
   beforeEach(() => {
-    render(<Modal isOpen={true} />);
+    render(<Users />);
   });
 
-  it('should be modal open', () => {
+  it('should be component initialize', () => {
     expect(screen).toBeTruthy();
   });
 });
