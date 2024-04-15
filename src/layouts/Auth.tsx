@@ -186,7 +186,7 @@ class ForgotPasswordPage extends React.Component {
   }
 }
 
-export default function Auth({ state }: { state: string }) {
+export function Auth({ state }: { state: string }) {
   return (
     <div>
       {state == 'forgot' ? (

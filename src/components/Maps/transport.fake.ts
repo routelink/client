@@ -1,4 +1,4 @@
-import { ITransport, IOrganization, ITypeTransport } from '@app/models';
+import { IOrganization, ITransport, ITypeTransport } from '@app/models';
 
 const orgranization: IOrganization = {
   id: 1,
