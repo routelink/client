@@ -1,6 +1,6 @@
 import React from 'react';
 
-import '../assets/Styles/authStyle.css';
+import './style.module.scss';
 
 const handleFocusEmail = (event: React.FocusEvent<HTMLInputElement>) => {
   event.target.placeholder = '';
