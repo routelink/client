@@ -23,6 +23,11 @@ import Typography from '@mui/material/Typography';
 import { visuallyHidden } from '@mui/utils';
 import { Modal } from '../Modal';
 
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogTitle from '@mui/material/DialogTitle';
+
+
 {/* таблица пользователей */}
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -386,6 +391,44 @@ function PanelUserAdd(props: PanelUserAddProps) {
 }
 /* панель "добавление пользователя" (конец) */
 
+/* диалог "подтверждение удаленияпользователя" */
+interface DialogRemoveUsersProps {
+  isOpen: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+function DialogRemoveUsers(props: DialogRemoveUsersProps) {
+  const handleCancel = () => {
+    props.setOpen(false);
+  };
+  const handleRemove = () => {
+    props.setOpen(false);
+  };
+
+  return (
+    <>
+      <Dialog
+        open={props.isOpen}
+        onClose={handleCancel}
+        aria-labelledby="responsive-dialog-title"
+      >
+        <DialogTitle>
+          Удалить выбранных пользователей?
+        </DialogTitle>
+        <DialogActions>
+          <Button autoFocus onClick={handleCancel}>
+            Отмена
+          </Button>
+          <Button onClick={handleRemove} autoFocus>
+            Удалить
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  );
+}
+/* диалог "подтверждение удаленияпользователя" (конец) */
+
 function getUserDataFromBackend(): IUserData[] {
   /* заглушка для получения данных с сервера */
   function createUserData(
@@ -422,7 +465,9 @@ export function Users() {
   const [disableEdit, setDisableEdit] = React.useState(true);
   const [selectedCount, setSelectedCount] = React.useState(0);
   const [findedCount, setFindedCount] = React.useState(-1);
+
   const [addUserOpen, setAddUserOpen] = React.useState(false);
+  const [removeUsersOpen, setRemoveUsersOpen] = React.useState(false);
 
   const handleSearchChange = (search: string) => {
     const newUserData:IUserData[] = rawUserData.filter( userData => 
@@ -451,6 +496,12 @@ export function Users() {
 
   return (
     <>
+      {/* панель "добавление пользователя" */}
+      <PanelUserAdd isOpen={addUserOpen} setOpen={setAddUserOpen} />
+
+      <DialogRemoveUsers isOpen={removeUsersOpen} setOpen={setRemoveUsersOpen} />
+
+
       <Box margin={'0px 20px 0px 20px'} >
         {/* вызов панели "добавление пользователя" */}
         <Box
@@ -469,8 +520,6 @@ export function Users() {
           <Typography sx={{ fontSize: '20px' }}>Пользователь</Typography>
         </Box>
         
-        {/* панель "добавление пользователя" */}
-        <PanelUserAdd isOpen={addUserOpen} setOpen={setAddUserOpen} />
 
         <Paper sx={{ width: '100%' }}>
 
@@ -515,7 +564,7 @@ export function Users() {
               <Tooltip title="Удалить выбранное" placement="top">
                 <span>
                   <IconButton disabled={disableEdit}>
-                    <DeleteIcon />
+                    <DeleteIcon onClick={()=>{setRemoveUsersOpen(true)}} />
                   </IconButton>
                 </span>
               </Tooltip>
