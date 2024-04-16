@@ -1,21 +1,23 @@
-import { Stack } from '@mui/material';
-import Button from '@mui/material/Button';
+import { Box, Fab } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import Typography from '@mui/material/Typography';
 
 export function AddEmployeeButton() {
   return (
-    <Stack direction="row" justifyContent="flex-start" alignItems="center" spacing="10px">
-      <Button
-        variant="contained"
-        sx={{
-          fontSize: '30px',
-          background: '#315556',
-          borderRadius: '50%',
-          height: '56px',
-          width: '56px',
-        }}>
-        +
-      </Button>
-      <span>Сотрудник</span>
-    </Stack>
+    <Box
+          display={'flex'}
+          flexDirection={'row'}
+          alignItems={'center'}
+          gap={'18px'}>
+          <Fab
+            color="primary"
+            aria-label="add"
+            sx={{margin:'20px 0px 20px 0px'}}
+            // onClick={()=>{setAddEmployeeOpen(true)}}
+            >
+            <AddIcon />
+          </Fab>
+          <Typography sx={{ fontSize: '20px' }}>Сотрудник</Typography>
+        </Box>
   );
 }
