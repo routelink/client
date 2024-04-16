@@ -3,10 +3,13 @@ import { Outlet } from 'react-router-dom';
 
 import { useMediaQuery, useTheme } from '@mui/material';
 import { Box, Grid } from '@mui/material';
+import { Stack } from '@mui/material';
+import { Container } from '@mui/material';
 
 import authImage from '@app/assets/Auth/auth-image.svg';
 import confirmImage from '@app/assets/Auth/confirm-image.svg';
 import registerImage from '@app/assets/Auth/register-image.svg';
+import logo from '@app/assets/logo.webp';
 
 interface IImage {
   image: string;
@@ -38,7 +41,37 @@ export function Auth() {
           minWidth: '100vw',
         }}>
         <Grid item container xs={12} md={4}>
-          <Outlet />
+          <Box
+            sx={{
+              height: '100vh',
+              width: '100%',
+              p: 4,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Stack direction="column" spacing={1}>
+              <Container
+                sx={{
+                  maxHeight: '100vh',
+                  overflow: 'auto',
+                  width: '256px',
+                }}>
+                <Box
+                  sx={{
+                    width: '100%',
+                    height: '100px',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: 'center',
+                    backgroundSize: 'contain',
+                    backgroundImage: `url(${logo})`,
+                  }}
+                />
+                <Outlet />
+              </Container>
+            </Stack>
+          </Box>
         </Grid>
         {!isMobile ? (
           <Grid sx={{ position: 'relative' }} item xs={8}>
