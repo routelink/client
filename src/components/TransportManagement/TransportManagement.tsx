@@ -2,11 +2,9 @@ import React, { useEffect, useState } from 'react';
 
 import { Add } from '@mui/icons-material';
 import RoundIconButton from '@app/ui/button/RoundIconButton.tsx';
-import TransportAddForm, {
-  TransportAddState,
-} from '@app/views/transportManagement/TransportAddForm.tsx';
+import TransportAddForm, { TransportAddState } from './TransportAddForm';
 
-import { ColDef, ICellRendererParams } from '@ag-grid-community/core';
+import { ICellRendererParams } from '@ag-grid-community/core';
 import { DateRenderer } from '@app/ui';
 import { generateRows, v4Int } from '@app/utils';
 import { Modal } from '@app/components';
@@ -14,15 +12,16 @@ import { ITransport } from '@app/models';
 
 // import { TRANSPORT_TYPES } from '@app/utils';
 import './styles.scss';
-import TransportTable from '@app/views/transportManagement/TransportTable.tsx';
+import { AgGridReact } from 'ag-grid-react';
+import { Box, Paper } from '@mui/material';
 
-const TransportManagement: React.FC = () => {
+export const TransportManagement: React.FC = () => {
   // const getTransportType = (id: number) =>
   //   TRANSPORT_TYPES.find((i) => i.id === id)?.name || '';
 
   const [open, setOpen] = useState(false);
   const [rowData, setRowData] = useState<ITransport[]>([]);
-  const [columnDefs, setColumnDefs] = useState<ColDef[]>([
+  const [colDefs, setColDefs] = useState<any>([
     {
       field: 'regNumber',
       headerName: 'Гос. номер',
@@ -72,8 +71,8 @@ const TransportManagement: React.FC = () => {
   };
   useEffect(() => {
     //@TODO
-    setColumnDefs(columnDefs);
-    setRowData(generateRows(4, fieldDescription) as ITransport[]);
+    setColDefs(colDefs);
+    setRowData(generateRows(100, fieldDescription) as ITransport[]);
   }, []);
 
   const onRowAdd = () => {
@@ -101,12 +100,26 @@ const TransportManagement: React.FC = () => {
         </RoundIconButton>
         <span>Транспортное средство</span>
       </div>
-      {/* @ts-expect-error: Олег, помоги плиз разобраться с конфликтом типов */}
-      <TransportTable columns={columnDefs} rowData={rowData}></TransportTable>
+      <Box sx={{ width: '100%' }}>
+        <Paper sx={{ width: '100%', mb: 2 }}>
+          <div
+            className="ag-theme-material" // applying the grid theme
+            style={{ height: 'calc(100vh / 1.5)' }} // the grid will fill the size of the parent container
+          >
+            <AgGridReact
+              rowData={rowData}
+              columnDefs={colDefs}
+              rowSelection={'multiple'}
+              suppressRowClickSelection={true}
+              suppressColumnVirtualisation={true}
+              suppressRowVirtualisation={true}
+            />
+          </div>
+        </Paper>
+      </Box>
       <Modal isOpen={open} toggle={() => toggleDrawer(false)}>
         <TransportAddForm onApply={(val) => onApply(val)}></TransportAddForm>
       </Modal>
     </section>
   );
 };
-export default TransportManagement;

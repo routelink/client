@@ -2,7 +2,7 @@ import { Main } from '@app/layouts';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import OtherContent from './layouts/OtherContent';
 import { useEffect } from 'react';
-import TransportManagement from '@app/views/transportManagement/TransportManagement.tsx';
+import { TransportManagement } from '@app/components';
 
 function App() {
   const pathname = useLocation();

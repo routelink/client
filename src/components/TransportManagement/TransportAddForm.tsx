@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Container, TextField, MenuItem, Typography, Button } from '@mui/material';
+import { Container, TextField, MenuItem, Typography, Button, TextFieldProps } from '@mui/material';
 import { ITransport } from '@app/models';
 import { TRANSPORT_TYPES } from '@app/utils';
 import { IMaskMixin } from 'react-imask';
@@ -32,9 +32,8 @@ const VehicleForm: React.FC<TransportAddFormProps> = ({ onApply }) => {
     onApply({ type, regNumber, mileage, createdAt: new Date() });
   };
 
-  const IMaskPhoneInput = IMaskMixin(({ ...props }) => {
-    // @ts-expect-error: kakaya to xren with size
-    return <TextField {...props} />;
+  const IMaskPhoneInput = IMaskMixin(({ color, size, ...props }) => {
+    return <TextField size={size as TextFieldProps['size']} {...props} />;
   });
 
   return (

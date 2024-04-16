@@ -9,6 +9,9 @@ export interface ITransport extends IMetaContext {
   unit?: string;
   mileage?: string;
 }
+
+export interface ITransportHeaders {}
+
 export interface ITypeTransport {
   id: number;
   name: string;
