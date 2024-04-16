@@ -256,7 +256,6 @@ function TableUsers(props: TableUsersProps) {
             })}
             {emptyRows > 0 && (
               <TableRow style={{ height: 44.02 * emptyRows }}>
-                {' '}
                 <TableCell colSpan={6} sx={{borderWidth: '0px'}}/>
               </TableRow>
             )}
