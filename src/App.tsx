@@ -1,8 +1,8 @@
-import { Main } from '@app/layouts';
-import { Route, Routes, useLocation } from 'react-router-dom';
-import OtherContent from './layouts/OtherContent';
 import { useEffect } from 'react';
-import { TransportManagement } from '@app/components';
+import { Users, Maps, Profile, Analytics, Employees, TransportManagement } from '@app/components';
+import { Route, Routes, useLocation } from 'react-router-dom';
+import { Main, Auth } from '@app/layouts';
+import OtherContent from './layouts/OtherContent';
 
 function App() {
   const pathname = useLocation();
@@ -14,17 +14,19 @@ function App() {
     <>
       <Routes>
         <Route path="/" element={<Main />}>
-          <Route index path="/profile" element={<OtherContent content="Profile" />} />
+          <Route index path="/profile" element={<Profile />} />
+          <Route index path="/auth" element={<Auth state="login" />} />
           <Route
             index
             path="/organization"
             element={<OtherContent content="Organization" />}
           />
           <Route index path="/favorite" element={<OtherContent content="Favorite" />} />
-          <Route index path="/maps" element={<OtherContent content="Maps" />} />
+          <Route index path="/maps" element={<Maps />} />
           <Route index path="/transport" element={<TransportManagement />} />
-          <Route index path="/employees" element={<OtherContent content="Employee" />} />
-          <Route index path="/analytics" element={<OtherContent content="Analytics" />} />
+          <Route index path="/employees" element={<Employees />} />
+          <Route index path="/analytics" element={<Analytics />} />
+          <Route index path="/users" element={<Users />} />
         </Route>
       </Routes>
     </>

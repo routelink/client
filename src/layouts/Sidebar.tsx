@@ -1,4 +1,7 @@
+import { NavLink } from 'react-router-dom';
+
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
+import { IconButton, Stack, useMediaQuery, useTheme } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import Drawer, { DrawerProps } from '@mui/material/Drawer';
 import List from '@mui/material/List';
@@ -6,10 +9,9 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import { IconButton, Stack, useMediaQuery, useTheme } from '@mui/material';
-import { NavLink } from 'react-router-dom';
+
+import logo from '@app/assets/logo-white.png';
 import { Link as ILink } from '@app/models';
-import logo from '../assets/logo-white.png';
 
 interface SidebarProps extends DrawerProps {
   links: ILink[];
