@@ -9,6 +9,7 @@ import {
   ForgotPassword,
   Login,
   Maps,
+  Organizations,
   Profile,
   Register,
   TransportManagement,
@@ -30,11 +31,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Main />}>
           <Route index path="/profile" element={<Profile />} />
-          <Route
-            index
-            path="/organization"
-            element={<OtherContent content="Organization" />}
-          />
+          <Route index path="/organizations" element={<Organizations />} />
           <Route index path="/favorite" element={<OtherContent content="Favorite" />} />
           <Route index path="/maps" element={<Maps />} />
           <Route index path="/transport" element={<TransportManagement />} />
