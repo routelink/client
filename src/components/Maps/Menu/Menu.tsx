@@ -29,10 +29,11 @@ const BoxWrapper = styled(MuiBox, {
   shouldForwardProp: (prop) => prop !== 'open',
 })<BoxProps>(({ theme, open, mobile }) => ({
   width: listWidth,
-  top: '5rem',
-  left: '10px',
-  maxHeight: '600px',
-  position: 'absolute',
+  background: '#ffff',
+  border: '1px solid #E4E5E6',
+  borderRadius: '5px',
+  padding: '10px',
+
   zIndex: 1,
   transition: theme.transitions.create(['margin', 'width'], {
     easing: theme.transitions.easing.sharp,
@@ -77,71 +78,75 @@ export function Menu(props: MenuProps) {
 
   return (
     <>
-      <OpenMenuButton
-        isMobile={isMobile}
-        handleMenuToggle={handleMenuToggle}
-        handleMenuToggleMobile={handleMenuToggleMobile}
-      />
-      <BoxWrapper open={view} mobile={isMobile ? 'true' : undefined}>
-        {isMobile ? (
-          <>
-            {viewMobile ? (
-              <MobileMenu
-                open={viewMobile}
-                onClose={handleMenuToggleMobile}
-                onOpen={handleMenuToggleMobile}
-                items={items}
-              />
-            ) : null}
-          </>
-        ) : (
-          <>
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 2,
-              }}>
-              <Box
-                sx={{
-                  background: '#ffff',
-                  border: '1px solid #E4E5E6',
-                  borderRadius: '5px',
-                  p: 2,
-                }}>
-                <FormControl fullWidth>
-                  <InputLabel>Источник карт</InputLabel>
-                  <Select value={maps} label="Источник карт" onChange={handleChangeMaps}>
-                    <MenuItem value={'yandex'}>Яндекс</MenuItem>
-                    <MenuItem value={'cesium'}>Cesium</MenuItem>
-                  </Select>
-                </FormControl>
-              </Box>
-              <Box
-                className="wrapper"
-                sx={{
-                  overflow: 'auto',
-                  maxHeight: '500px',
-                  background: '#ffff',
-                  border: '1px solid #E4E5E6',
-                  borderRadius: '5px',
+      <Box
+        sx={{
+          position: 'absolute',
+          width: listWidth,
+          height: '100%',
 
-                  p: 2,
-                }}>
-                <Typography variant="h6" noWrap component="div">
-                  Транспортное средство
-                </Typography>
+          zIndex: 1,
+        }}>
+        <Box
+          className="wrapper-test"
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
 
-                <Search />
-                <List items={items} />
-                <List items={items} />
-                <List items={items} />
-                <List items={items} />
-              </Box>
-            </Box>
-          </>
-        )}
-      </BoxWrapper>
+            p: 2,
+            gap: '15px',
+            height: '100%',
+          }}>
+          <Box>
+            <OpenMenuButton
+              isMobile={isMobile}
+              handleMenuToggle={handleMenuToggle}
+              handleMenuToggleMobile={handleMenuToggleMobile}
+            />
+          </Box>
+          {isMobile ? (
+            <>
+              {viewMobile ? (
+                <MobileMenu
+                  open={viewMobile}
+                  onClose={handleMenuToggleMobile}
+                  onOpen={handleMenuToggleMobile}
+                  items={items}
+                />
+              ) : null}
+            </>
+          ) : null}
+          <BoxWrapper open={view} mobile={isMobile ? 'true' : undefined}>
+            <FormControl fullWidth>
+              <InputLabel>Источник карт</InputLabel>
+              <Select value={maps} label="Источник карт" onChange={handleChangeMaps}>
+                <MenuItem value={'yandex'}>Яндекс</MenuItem>
+                <MenuItem value={'cesium'}>Cesium</MenuItem>
+              </Select>
+            </FormControl>
+          </BoxWrapper>
+          <BoxWrapper
+            open={view}
+            mobile={isMobile ? 'true' : undefined}
+            sx={{
+              flexGrow: 1,
+              overflow: 'auto',
+              height: '100%',
+            }}>
+            <Typography variant="h6" noWrap component="div">
+              Транспортное средство
+            </Typography>
+
+            <Search />
+            <List items={items} />
+            <List items={items} />
+            <List items={items} />
+            <List items={items} />
+            <List items={items} />
+            <List items={items} />
+            <List items={items} />
+          </BoxWrapper>
+        </Box>
+      </Box>
     </>
   );
 }
@@ -155,14 +160,7 @@ function OpenMenuButton({
   handleMenuToggleMobile: () => void;
 }) {
   return (
-    <Box
-      className="box-button"
-      sx={{
-        position: 'absolute',
-        top: 10,
-        left: 10,
-        zIndex: 1,
-      }}>
+    <Box>
       <IconButton
         sx={{
           color: 'black',
