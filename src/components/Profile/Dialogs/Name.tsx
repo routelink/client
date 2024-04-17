@@ -1,5 +1,7 @@
-import { Button, DialogActions, TextField } from '@mui/material';
 import { useState } from 'react';
+
+import { Button, DialogActions, TextField } from '@mui/material';
+
 export function NameDialog({
   handleClose,
   name,

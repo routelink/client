@@ -1,17 +1,25 @@
-import { IconButton } from '@mui/material';
 import React, { ReactNode } from 'react';
 
-export type RoundIconButtonProps = {
-  background: string,
-  color: string,
-  width: string
-  height: string
-  fontSize: string
-  children: ReactNode
-  onClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
-}
+import { IconButton } from '@mui/material';
 
-const RoundIconButton: React.FC<RoundIconButtonProps> = ({ background = '#004d40', color = 'white', width = '48', fontSize = '24', children, onClick }) => {
+export type RoundIconButtonProps = {
+  background: string;
+  color: string;
+  width: string;
+  height: string;
+  fontSize: string;
+  children: ReactNode;
+  onClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+};
+
+const RoundIconButton: React.FC<RoundIconButtonProps> = ({
+  background = '#004d40',
+  color = 'white',
+  width = '48',
+  fontSize = '24',
+  children,
+  onClick,
+}) => {
   return (
     <IconButton
       style={{
@@ -19,12 +27,11 @@ const RoundIconButton: React.FC<RoundIconButtonProps> = ({ background = '#004d40
         color: color,
         width: `${width}px`,
         height: `${width}px`,
-        fontSize: `${fontSize}px`
+        fontSize: `${fontSize}px`,
       }}
-      onClick={onClick}
-    >
+      onClick={onClick}>
       {children}
     </IconButton>
   );
 };
-export default RoundIconButton
+export default RoundIconButton;

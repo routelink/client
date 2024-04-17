@@ -1,9 +1,12 @@
-import { SelectChangeEvent } from '@mui/material/Select';
 import { useEffect, useState } from 'react';
-import { Yandex, Cesium, Menu } from '@app/components/Maps';
-import { Box, Button } from '@mui/material';
-import { items as fakeItems } from './transport.fake';
 import { createRoot } from 'react-dom/client';
+
+import { Box, Button } from '@mui/material';
+import { SelectChangeEvent } from '@mui/material/Select';
+
+import { Cesium, Menu, Yandex } from '@app/components/Maps';
+
+import { items as fakeItems } from './transport.fake';
 
 const style = {
   box: {

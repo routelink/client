@@ -1,5 +1,7 @@
 import { Box, Container, Typography } from '@mui/material';
+
 import { General, Personal } from './index';
+
 export function Profile() {
   return (
     <Box>

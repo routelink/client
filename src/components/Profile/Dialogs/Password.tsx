@@ -1,3 +1,7 @@
+import { useState } from 'react';
+
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import {
   Box,
   Button,
@@ -8,9 +12,6 @@ import {
   InputLabel,
   OutlinedInput,
 } from '@mui/material';
-import { useState } from 'react';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 export function PasswordDialog({ handleClose }: { handleClose: () => void }) {
   const handleSummit = () => {

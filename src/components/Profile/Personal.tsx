@@ -1,11 +1,13 @@
+import { useState } from 'react';
+
 import { Avatar, Box, Button, Typography } from '@mui/material';
+
 import {
-  Dialog,
   AvatarDialog,
+  Dialog,
   NameDialog,
   PasswordDialog,
 } from '@app/components/Profile/Dialogs';
-import { useState } from 'react';
 
 export function Personal() {
   const [openAvatar, setOpenAvatar] = useState(false);

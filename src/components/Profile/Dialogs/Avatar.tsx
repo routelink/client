@@ -1,3 +1,5 @@
+import CloseIcon from '@mui/icons-material/Close';
+import UploadIcon from '@mui/icons-material/Upload';
 import {
   Avatar,
   Box,
@@ -6,8 +8,6 @@ import {
   IconButton,
   Typography,
 } from '@mui/material';
-import UploadIcon from '@mui/icons-material/Upload';
-import CloseIcon from '@mui/icons-material/Close';
 
 export function AvatarDialog({ handleClose }: { handleClose: () => void }) {
   const handleSave = () => {

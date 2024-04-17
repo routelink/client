@@ -1,6 +1,7 @@
-import { Box, IconButton } from '@mui/material';
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
+import { Box, IconButton } from '@mui/material';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
+
 import { List, Search } from '@app/components/Maps/Menu';
 import { ITransport } from '@app/models';
 

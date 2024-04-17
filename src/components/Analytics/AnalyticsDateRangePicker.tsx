@@ -13,12 +13,12 @@ const DateRangePicker: React.FC = () => {
 
   const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const startDate = e.target.value ? new Date(e.target.value) : null;
-    setDateRange(prevState => ({ ...prevState, startDate }));
+    setDateRange((prevState) => ({ ...prevState, startDate }));
   };
 
   const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const endDate = e.target.value ? new Date(e.target.value) : null;
-    setDateRange(prevState => ({ ...prevState, endDate }));
+    setDateRange((prevState) => ({ ...prevState, endDate }));
   };
 
   return (

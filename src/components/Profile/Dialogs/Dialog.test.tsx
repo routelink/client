@@ -1,7 +1,8 @@
 import '@testing-library/jest-dom';
-import { beforeEach, expect, describe, it, vi } from 'vitest';
-import { render, screen } from '@app/tests';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { Dialog } from '@app/components/Profile/Dialogs';
+import { render, screen } from '@app/tests';
 
 describe('Renders the dialog component', () => {
   beforeEach(() => {

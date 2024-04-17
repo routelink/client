@@ -1,5 +1,6 @@
-import { ITransport } from '@app/models';
 import { Box, Typography } from '@mui/material';
+
+import { ITransport } from '@app/models';
 
 export interface IListProps {
   items: ITransport[];
