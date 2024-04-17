@@ -85,12 +85,12 @@ const headCells: readonly HeadCell[] = [
 ];
 
 interface TableOrgProps {
-  userData: IOrgData[];
+  orgData: IOrgData[];
   onSelectChange: (selectedIndexArray: readonly number[]) => void;
 }
 
 function TableOrg(props: TableOrgProps) {
-  const rows = props.userData;
+  const rows = props.orgData;
   const onSelectChange = props.onSelectChange
     ? props.onSelectChange
     : (_: readonly number[]) => {};
@@ -494,17 +494,17 @@ export function Organizations() {
   };
 
   const handleSearchChange = (search: string) => {
-    const newUserData: IOrgData[] = rawOrgData.filter(
+    const newOrgData: IOrgData[] = rawOrgData.filter(
       (orgData) =>
         orgData.org.toLowerCase().includes(search.toLowerCase()) ||
         orgData.date.toLowerCase().includes(search.toLowerCase()),
     );
     if (search.length) {
-      setFindedCount(newUserData.length);
+      setFindedCount(newOrgData.length);
     } else {
       setFindedCount(-1);
     }
-    setShowUserData(newUserData);
+    setShowUserData(newOrgData);
   };
 
   return (
@@ -608,7 +608,7 @@ export function Organizations() {
           </Toolbar>
 
           {/* таблица организаций */}
-          <TableOrg userData={showOrgData} onSelectChange={handleSelectChange} />
+          <TableOrg orgData={showOrgData} onSelectChange={handleSelectChange} />
         </Paper>
       </Box>
     </>
