@@ -46,7 +46,7 @@ function App() {
           <Route path="login" index element={<Login />} />
           <Route path="register" element={<Register />} />
           <Route path="forgot-password" element={<ForgotPassword />} />
-          <Route path=":id/change-password" element={<ChangePassword />} />
+          <Route path="change-password" element={<ChangePassword />} />
         </Route>
       </Routes>
     </>
