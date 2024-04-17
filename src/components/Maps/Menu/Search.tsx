@@ -1,5 +1,5 @@
-import { Box, IconButton, TextField } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import { Box, IconButton, TextField } from '@mui/material';
 
 export function Search() {
   return (

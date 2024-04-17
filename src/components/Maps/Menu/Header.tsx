@@ -1,5 +1,5 @@
-import { Box, IconButton, Typography } from '@mui/material';
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
+import { Box, IconButton, Typography } from '@mui/material';
 
 export function Header({ handleMenuToggle }: any) {
   return (

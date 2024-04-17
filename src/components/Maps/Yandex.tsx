@@ -1,10 +1,11 @@
 import {
-  YMaps,
   Map,
   Placemark,
   RulerControl,
   TypeSelector,
+  YMaps,
 } from '@pbe/react-yandex-maps';
+
 import { Box } from '@mui/material';
 
 export function Yandex() {

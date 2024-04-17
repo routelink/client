@@ -1,6 +1,8 @@
 import '@testing-library/jest-dom';
-import { beforeEach, expect, describe, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { render, screen } from '@app/tests';
+
 import { Personal } from './Personal';
 
 describe('Renders the personal component', () => {

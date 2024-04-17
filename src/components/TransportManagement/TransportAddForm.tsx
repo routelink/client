@@ -1,8 +1,17 @@
 import React, { useState } from 'react';
-import { Container, TextField, MenuItem, Typography, Button, TextFieldProps } from '@mui/material';
+import { IMaskMixin } from 'react-imask';
+
+import {
+  Button,
+  Container,
+  MenuItem,
+  TextField,
+  TextFieldProps,
+  Typography,
+} from '@mui/material';
+
 import { ITransport } from '@app/models';
 import { TRANSPORT_TYPES } from '@app/utils';
-import { IMaskMixin } from 'react-imask';
 
 export type TransportAddState = Pick<
   ITransport,

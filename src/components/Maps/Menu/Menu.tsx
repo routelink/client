@@ -1,3 +1,6 @@
+import { useState } from 'react';
+
+import MenuIcon from '@mui/icons-material/Menu';
 import {
   Box,
   FormControl,
@@ -8,13 +11,12 @@ import {
   Typography,
   useMediaQuery,
 } from '@mui/material';
-import { styled, useTheme } from '@mui/material/styles';
+import { IconButton } from '@mui/material';
 import MuiBox, { BoxProps as MuiBoxProps } from '@mui/material/Box';
-import { useState } from 'react';
+import { styled, useTheme } from '@mui/material/styles';
+
 import { List, Search } from '@app/components/Maps/Menu';
 import { MobileMenu } from '@app/components/Maps/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
-import { IconButton } from '@mui/material';
 import { ITransport } from '@app/models';
 
 const listWidth = 380;
