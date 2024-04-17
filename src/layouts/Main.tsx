@@ -50,11 +50,6 @@ const items: ILink[] = [
     icon: <PersonIcon />,
   },
   {
-    href: '/organization',
-    text: 'Организация',
-    icon: <CorporateFareIcon />,
-  },
-  {
     href: '/favorite',
     text: 'Избранное',
     icon: <StarIcon />,
@@ -83,6 +78,11 @@ const items: ILink[] = [
     href: '/users',
     text: 'Пользователи',
     icon: <PeopleAltIcon />,
+  },
+  {
+    href: '/organizations',
+    text: 'Организации',
+    icon: <CorporateFareIcon />,
   },
 ];
 
