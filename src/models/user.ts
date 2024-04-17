@@ -1,7 +1,8 @@
-import { IMetaContext, IOrganization } from '@app/models';
+import { IMetaContext } from '@app/models';
 
 export interface IUser extends IMetaContext {
-  username: string;
-  email: string;
-  organisation?: IOrganization;
+  name: string;
+  org: string;
+  role: string;
+  date: string;
 }

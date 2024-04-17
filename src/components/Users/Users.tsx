@@ -1,4 +1,5 @@
-import * as React from 'react';
+import { Observer } from 'mobx-react-lite';
+import { useEffect, useState } from 'react';
 
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -29,57 +30,15 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { visuallyHidden } from '@mui/utils';
 
-import { Modal } from '../Modal';
+import { IUser } from '@app/models';
+import { useStore } from '@app/store';
 
-{
-  /* таблица пользователей */
-}
-function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
+import { Modal } from '../Modal';
 
 type Order = 'asc' | 'desc';
 
-function getComparator<Key extends keyof any>(
-  order: Order,
-  orderBy: Key,
-): (
-  a: { [key in Key]: number | string },
-  b: { [key in Key]: number | string },
-) => number {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) {
-  const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) {
-      return order;
-    }
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map((el) => el[0]);
-}
-
-interface IUserData {
-  id: number;
-  name: string;
-  org: string;
-  role: string;
-  date: string;
-}
-
 interface HeadCell {
-  id: keyof IUserData;
+  id: keyof IUser;
   label: string;
 }
 const headCells: readonly HeadCell[] = [
@@ -90,7 +49,7 @@ const headCells: readonly HeadCell[] = [
 ];
 
 interface TableUsersProps {
-  userData: IUserData[];
+  userData: IUser[];
   onSelectChange: (selectedIndexArray: readonly number[]) => void;
 }
 
@@ -100,13 +59,13 @@ function TableUsers(props: TableUsersProps) {
     ? props.onSelectChange
     : (_: readonly number[]) => {};
 
-  const [order, setOrder] = React.useState<Order>('asc');
-  const [orderBy, setOrderBy] = React.useState<keyof IUserData>('name');
-  const [selected, setSelected] = React.useState<readonly number[]>([]);
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [order, setOrder] = useState<Order>('asc');
+  const [orderBy, setOrderBy] = useState<keyof IUser>('name');
+  const [selected, setSelected] = useState<readonly number[]>([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const handleRequestSort = (_: React.MouseEvent<unknown>, property: keyof IUserData) => {
+  const handleRequestSort = (_: React.MouseEvent<unknown>, property: keyof IUser) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
@@ -154,13 +113,10 @@ function TableUsers(props: TableUsersProps) {
 
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
-  const visibleRows = stableSort(rows, getComparator(order, orderBy)).slice(
-    page * rowsPerPage,
-    page * rowsPerPage + rowsPerPage,
-  );
+  const visibleRows = rows;
 
   const createSortHandler =
-    (property: keyof IUserData) => (event: React.MouseEvent<unknown>) => {
+    (property: keyof IUser) => (event: React.MouseEvent<unknown>) => {
       handleRequestSort(event, property);
     };
 
@@ -289,9 +245,9 @@ interface PanelUserAddProps {
 }
 
 function PanelUserAdd(props: PanelUserAddProps) {
-  const [fio, setFio] = React.useState('');
-  const [login, setLogin] = React.useState('');
-  const [email, setEmail] = React.useState('');
+  const [fio, setFio] = useState('');
+  const [login, setLogin] = useState('');
+  const [email, setEmail] = useState('');
 
   const isFormValid = fio.trim() !== '' && login.trim() !== '' && email.trim() !== '';
 
@@ -419,11 +375,11 @@ interface PanelUserEditProps {
 }
 
 function PanelUserEdit(props: PanelUserEditProps) {
-  const [fio, setFio] = React.useState('Иванов И.И.');
-  const [login, setLogin] = React.useState('ii_ivanoff');
-  const [email, setEmail] = React.useState('ii_ivanoff@yandex.ru');
-  const [org, setOrg] = React.useState('ООО Ивановы');
-  const [role, setRole] = React.useState('Аналитик');
+  const [fio, setFio] = useState('Иванов И.И.');
+  const [login, setLogin] = useState('ii_ivanoff');
+  const [email, setEmail] = useState('ii_ivanoff@yandex.ru');
+  const [org, setOrg] = useState('ООО Ивановы');
+  const [role, setRole] = useState('Аналитик');
 
   const isFormValid =
     fio.trim() !== '' &&
@@ -581,7 +537,7 @@ function DialogRemoveUsers(props: DialogRemoveUsersProps) {
 }
 /* диалог "удаления пользователя" (конец) */
 
-function getUserDataFromBackend(): IUserData[] {
+function getUserDataFromBackend(): IUser[] {
   /* заглушка для получения данных с сервера */
   function createUserData(
     id: number,
@@ -612,17 +568,16 @@ function getUserDataFromBackend(): IUserData[] {
 }
 
 export function Users() {
-  const rawUserData: IUserData[] = getUserDataFromBackend();
-  const [showUserData, setShowUserData] = React.useState<IUserData[]>(rawUserData);
-  const [selectedCount, setSelectedCount] = React.useState(0);
-  const [findedCount, setFindedCount] = React.useState(-1);
+  const rawUserData: IUser[] = getUserDataFromBackend();
+  const [selectedCount, setSelectedCount] = useState(0);
+  const [findedCount, setFindedCount] = useState(-1);
 
-  const [addUserOpen, setAddUserOpen] = React.useState(false);
-  const [editUserOpen, setEditUserOpen] = React.useState(false);
-  const [removeUsersOpen, setRemoveUsersOpen] = React.useState(false);
+  const [addUserOpen, setAddUserOpen] = useState(false);
+  const [editUserOpen, setEditUserOpen] = useState(false);
+  const [removeUsersOpen, setRemoveUsersOpen] = useState(false);
 
   const handleSearchChange = (search: string) => {
-    const newUserData: IUserData[] = rawUserData.filter(
+    const newUserData: IUser[] = rawUserData.filter(
       (userData) =>
         userData.name.toLowerCase().includes(search.toLowerCase()) ||
         userData.org.toLowerCase().includes(search.toLowerCase()) ||
@@ -634,116 +589,136 @@ export function Users() {
     } else {
       setFindedCount(-1);
     }
-    setShowUserData(newUserData);
   };
 
   const handleSelectChange = (selectedIndexArray: readonly number[]) => {
     setSelectedCount(selectedIndexArray.length);
   };
 
+  const { usersStore } = useStore();
+
+  useEffect(() => {
+    usersStore.getItems();
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
-    <>
-      {/* панель "добавление пользователя" */}
-      <PanelUserAdd isOpen={addUserOpen} setOpen={setAddUserOpen} />
+    <Observer>
+      {() => {
+        return (
+          <>
+            {/* панель "добавление пользователя" */}
+            <PanelUserAdd isOpen={addUserOpen} setOpen={setAddUserOpen} />
 
-      {/* панель "изменение пользователя" */}
-      <PanelUserEdit isOpen={editUserOpen} setOpen={setEditUserOpen} />
+            {/* панель "изменение пользователя" */}
+            <PanelUserEdit isOpen={editUserOpen} setOpen={setEditUserOpen} />
 
-      {/* диалог "удаление пользователя" */}
-      <DialogRemoveUsers isOpen={removeUsersOpen} setOpen={setRemoveUsersOpen} />
+            {/* диалог "удаление пользователя" */}
+            <DialogRemoveUsers isOpen={removeUsersOpen} setOpen={setRemoveUsersOpen} />
 
-      <Box margin={'0px 20px 0px 20px'}>
-        {/* вызов панели "добавление пользователя" */}
-        <Box display={'flex'} flexDirection={'row'} alignItems={'center'} gap={'18px'}>
-          <Fab
-            color="primary"
-            aria-label="add"
-            sx={{ margin: '20px 0px 20px 0px' }}
-            onClick={() => {
-              setAddUserOpen(true);
-            }}>
-            <AddIcon />
-          </Fab>
-          <Typography sx={{ fontSize: '20px' }}>Пользователь</Typography>
-        </Box>
+            <Box margin={'0px 20px 0px 20px'}>
+              {/* вызов панели "добавление пользователя" */}
+              <Box
+                display={'flex'}
+                flexDirection={'row'}
+                alignItems={'center'}
+                gap={'18px'}>
+                <Fab
+                  color="primary"
+                  aria-label="add"
+                  sx={{ margin: '20px 0px 20px 0px' }}
+                  onClick={() => {
+                    setAddUserOpen(true);
+                  }}>
+                  <AddIcon />
+                </Fab>
+                <Typography sx={{ fontSize: '20px' }}>Пользователь</Typography>
+              </Box>
 
-        <Paper sx={{ width: '100%' }}>
-          {/* панель инструментов */}
-          <Toolbar
-            sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              bgcolor: 'white',
-              '&.MuiToolbar-root': { padding: '5px' },
-            }}>
-            {/* панель поиска */}
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                gap: '12px',
-                alignItems: 'center',
-              }}>
-              <SearchIcon sx={{ ml: '5px' }} />
-              <TextField
-                variant="standard"
-                label="Поиск"
-                onChange={(event) => {
-                  handleSearchChange(event.target.value.trim());
-                }}
-              />
-              {findedCount >= 0 ? (
-                <Typography variant="body2" sx={{ mr: '20px' }}>
-                  Найдено {findedCount} записей
-                </Typography>
-              ) : null}
-            </Box>
-
-            {/* панель редактирования */}
-            <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-              {selectedCount ? (
-                <Typography variant="body2" sx={{ mr: '20px' }}>
-                  Выбрано {selectedCount} записей
-                </Typography>
-              ) : null}
-
-              <Tooltip title="Изменить выбранное" placement="top">
-                <span>
-                  <IconButton
-                    disabled={selectedCount !== 1}
-                    onClick={() => {
-                      setEditUserOpen(true);
+              <Paper sx={{ width: '100%' }}>
+                {/* панель инструментов */}
+                <Toolbar
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    bgcolor: 'white',
+                    '&.MuiToolbar-root': { padding: '5px' },
+                  }}>
+                  {/* панель поиска */}
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      gap: '12px',
+                      alignItems: 'center',
                     }}>
-                    <EditIcon />
-                  </IconButton>
-                </span>
-              </Tooltip>
-              <Tooltip title="Удалить выбранное" placement="top">
-                <span>
-                  <IconButton
-                    disabled={selectedCount === 0}
-                    onClick={() => {
-                      setRemoveUsersOpen(true);
-                    }}>
-                    <DeleteIcon />
-                  </IconButton>
-                </span>
-              </Tooltip>
-              <Tooltip title="Обновить данные" placement="top">
-                <span>
-                  <IconButton>
-                    <SyncIcon />
-                  </IconButton>
-                </span>
-              </Tooltip>
-            </Box>
-          </Toolbar>
+                    <SearchIcon sx={{ ml: '5px' }} />
+                    <TextField
+                      variant="standard"
+                      label="Поиск"
+                      onChange={(event) => {
+                        handleSearchChange(event.target.value.trim());
+                      }}
+                    />
+                    {findedCount >= 0 ? (
+                      <Typography variant="body2" sx={{ mr: '20px' }}>
+                        Найдено {findedCount} записей
+                      </Typography>
+                    ) : null}
+                  </Box>
 
-          {/* таблица пользователей */}
-          <TableUsers userData={showUserData} onSelectChange={handleSelectChange} />
-        </Paper>
-      </Box>
-    </>
+                  {/* панель редактирования */}
+                  <Box
+                    sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                    {selectedCount ? (
+                      <Typography variant="body2" sx={{ mr: '20px' }}>
+                        Выбрано {selectedCount} записей
+                      </Typography>
+                    ) : null}
+
+                    <Tooltip title="Изменить выбранное" placement="top">
+                      <span>
+                        <IconButton
+                          disabled={selectedCount !== 1}
+                          onClick={() => {
+                            setEditUserOpen(true);
+                          }}>
+                          <EditIcon />
+                        </IconButton>
+                      </span>
+                    </Tooltip>
+                    <Tooltip title="Удалить выбранное" placement="top">
+                      <span>
+                        <IconButton
+                          disabled={selectedCount === 0}
+                          onClick={() => {
+                            setRemoveUsersOpen(true);
+                          }}>
+                          <DeleteIcon />
+                        </IconButton>
+                      </span>
+                    </Tooltip>
+                    <Tooltip title="Обновить данные" placement="top">
+                      <span>
+                        <IconButton>
+                          <SyncIcon />
+                        </IconButton>
+                      </span>
+                    </Tooltip>
+                  </Box>
+                </Toolbar>
+
+                {/* таблица пользователей */}
+                <TableUsers
+                  userData={usersStore.users}
+                  onSelectChange={handleSelectChange}
+                />
+              </Paper>
+            </Box>
+          </>
+        );
+      }}
+    </Observer>
   );
 }
