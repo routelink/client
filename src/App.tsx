@@ -1,7 +1,22 @@
 import { useEffect } from 'react';
-import { Users, Maps, Profile, Analytics, Employees, TransportManagement } from '@app/components';
 import { Route, Routes, useLocation } from 'react-router-dom';
-import { Main, Auth } from '@app/layouts';
+
+import {
+  Analytics,
+  Auth,
+  ChangePassword,
+  Employees,
+  ForgotPassword,
+  Login,
+  Maps,
+  Profile,
+  Register,
+  TransportManagement,
+  Users,
+} from '@app/components';
+import { Main } from '@app/layouts';
+
+import './components/Auth/ChangePassword';
 import OtherContent from './layouts/OtherContent';
 
 function App() {
@@ -15,7 +30,6 @@ function App() {
       <Routes>
         <Route path="/" element={<Main />}>
           <Route index path="/profile" element={<Profile />} />
-          <Route index path="/auth" element={<Auth state="login" />} />
           <Route
             index
             path="/organization"
@@ -27,6 +41,12 @@ function App() {
           <Route index path="/employees" element={<Employees />} />
           <Route index path="/analytics" element={<Analytics />} />
           <Route index path="/users" element={<Users />} />
+        </Route>
+        <Route path="/auth" element={<Auth />}>
+          <Route path="login" index element={<Login />} />
+          <Route path="register" element={<Register />} />
+          <Route path="forgot-password" element={<ForgotPassword />} />
+          <Route path="change-password" element={<ChangePassword />} />
         </Route>
       </Routes>
     </>
