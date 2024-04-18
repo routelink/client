@@ -7,10 +7,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import { Stack } from '@mui/material';
 import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
-import Switch from '@mui/material/Switch';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -251,7 +249,7 @@ export function EMTable() {
   const [orderBy, setOrderBy] = React.useState<keyof Data>('name');
   const [selected, setSelected] = React.useState<readonly number[]>([]);
   const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(false);
+  // const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const handleRequestSort = (_event: React.MouseEvent<unknown>, property: keyof Data) => {
@@ -297,9 +295,9 @@ export function EMTable() {
     setPage(0);
   };
 
-  const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDense(event.target.checked);
-  };
+  // const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setDense(event.target.checked);
+  // };
 
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
@@ -314,17 +312,18 @@ export function EMTable() {
       ),
     [order, orderBy, page, rowsPerPage],
   );
+  // setDense(false);
 
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box>
       <Paper sx={{ width: '100%', mb: 2, overflow: 'hidden' }}>
         <EnhancedTableToolbar numSelected={selected.length} />
-        <TableContainer sx={{ height: '100vh' }}>
+        <TableContainer sx={{ maxHeight: 'calc( 100vh/2 )' }}>
           <Table
             sx={{ minWidth: 750 }}
             stickyHeader
             aria-labelledby="tableTitle"
-            size={dense ? 'small' : 'medium'}>
+            size={'medium'}>
             <EnhancedTableHead
               numSelected={selected.length}
               order={order}
@@ -369,7 +368,7 @@ export function EMTable() {
               {emptyRows > 0 && (
                 <TableRow
                   style={{
-                    height: (dense ? 33 : 53) * emptyRows,
+                    height: 53 * emptyRows,
                   }}>
                   <TableCell colSpan={6} />
                 </TableRow>
@@ -387,10 +386,10 @@ export function EMTable() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
-      <FormControlLabel
+      {/* <FormControlLabel
         control={<Switch checked={dense} onChange={handleChangeDense} />}
         label="Уменьшить высоту строки"
-      />
+      /> */}
     </Box>
   );
 }
