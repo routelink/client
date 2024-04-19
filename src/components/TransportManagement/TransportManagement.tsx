@@ -45,7 +45,7 @@ export const TransportManagement: React.FC = () => {
     },
     {
       field: 'organisation',
-      headerName: 'Водятел',
+      headerName: 'Водитель',
       cellRenderer: (props: ICellRendererParams) => {
         return <span>{props.value?.name}</span>;
       },
