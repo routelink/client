@@ -8,6 +8,7 @@ import {
   SelectChangeEvent,
 } from '@mui/material';
 
+
 import AutoEfficiencyDifferentLength from './AutoEfficiencyDifferentLength';
 import AutoEfficiencyTable from './AutoEfficiencyTable';
 import DateChooser from './DateChooser';
@@ -20,6 +21,7 @@ import TrafficAccidentTable from './TrafficAccidentTable';
 interface AnalyticsSwitchProps {
   analyticsType: string;
 }
+
 
 function AnalyticsSwitch({ analyticsType }: AnalyticsSwitchProps) {
   switch (analyticsType) {
@@ -65,7 +67,7 @@ export function Analytics() {
   };
 
   return (
-    <div>
+    <div style={{ padding: '12px', backgroundColor: '#fff' }}>
       <FormControl fullWidth>
         <InputLabel id="analytics-type-label">Выберите тип аналитики</InputLabel>
         <Select

@@ -36,6 +36,7 @@ export default function TrafficAccidentTable() {
             paginationModel: { page: 0, pageSize: 5 },
           },
         }}
+        autoHeight
         pageSizeOptions={[5, 10, 25, 50]}
       />
     </div>
