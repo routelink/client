@@ -9,18 +9,25 @@ export function Profile() {
         <Box
           sx={{
             display: 'flex',
-
             flexDirection: 'column',
-            gap: 3,
+            gap: '1.5rem',
+            p: '1rem 0 0 0',
           }}>
           <Typography variant="h5">Профиль</Typography>
-          <Personal />
-
           <Box
             sx={{
-              height: '100%',
-              width: '100%',
               background: '#FFFFFF',
+              border: '1px solid #CFCFCF',
+              borderRadius: '0.2rem',
+            }}>
+            <Personal />
+          </Box>
+          <Box
+            sx={{
+              height: 'calc(100vh - 26rem)',
+              background: '#FFFFFF',
+              border: '1px solid #CFCFCF',
+              borderRadius: '0.2rem',
             }}>
             <General />
           </Box>
