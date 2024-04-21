@@ -38,7 +38,7 @@ export function PasswordDialog({ handleClose }: { handleClose: () => void }) {
         sx={{
           display: 'flex',
           flexDirection: 'column',
-          gap: 4,
+          gap: '1rem',
         }}>
         <FormControl sx={{ m: 1 }} variant="outlined">
           <InputLabel htmlFor="outlined-adornment-password">Текущий пароль</InputLabel>
@@ -49,7 +49,7 @@ export function PasswordDialog({ handleClose }: { handleClose: () => void }) {
             endAdornment={
               <InputAdornment position="end">
                 <IconButton onClick={handleClickShowCurrentPassword} edge="end">
-                  {showCurrentPassword ? <VisibilityOff /> : <Visibility />}
+                  {showCurrentPassword ? <Visibility /> : <VisibilityOff />}
                 </IconButton>
               </InputAdornment>
             }
@@ -64,8 +64,8 @@ export function PasswordDialog({ handleClose }: { handleClose: () => void }) {
             type={showNewPassword ? 'text' : 'password'}
             endAdornment={
               <InputAdornment position="end">
-                <IconButton onClick={handleClickShowNewPassword}>
-                  {showNewPassword ? <VisibilityOff /> : <Visibility />}
+                <IconButton onClick={handleClickShowNewPassword} edge="end">
+                  {showNewPassword ? <Visibility /> : <VisibilityOff />}
                 </IconButton>
               </InputAdornment>
             }
@@ -82,8 +82,8 @@ export function PasswordDialog({ handleClose }: { handleClose: () => void }) {
             type={showConfirmPassword ? 'text' : 'password'}
             endAdornment={
               <InputAdornment position="end">
-                <IconButton onClick={handleClickShowConfirmPassword}>
-                  {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                <IconButton onClick={handleClickShowConfirmPassword} edge="end">
+                  {showConfirmPassword ? <Visibility /> : <VisibilityOff />}
                 </IconButton>
               </InputAdornment>
             }
