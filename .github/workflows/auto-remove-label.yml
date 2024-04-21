@@ -11,4 +11,4 @@ jobs:
         uses: actions-ecosystem/action-remove-labels@v1.3.0
         with:
           labels: "state: need triage"
-          github-token: ${{ secrets.ROUTELINKBOT_TOKEN }}
+          github_token: ${{ secrets.ROUTELINKBOT_TOKEN }}
