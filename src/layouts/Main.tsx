@@ -10,7 +10,7 @@ import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import PersonIcon from '@mui/icons-material/Person';
 import StarIcon from '@mui/icons-material/Star';
 import MuiBox, { BoxProps as MuiBoxProps } from '@mui/material/Box';
-import { ThemeProvider, styled, useTheme } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 import { Link as ILink } from '@app/models';
@@ -111,51 +111,49 @@ export function Main() {
     <Observer>
       {() => {
         return (
-          <ThemeProvider theme={theme}>
-            <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#F1F3F4' }}>
-              {isMobile ? (
-                <Sidebar
-                  sidebarOpen={appStore.openMobile}
-                  PaperProps={{
-                    style: { width: drawerWidth },
-                  }}
-                  links={items}
-                  handleSidebarToggle={handleMobile}
-                  variant="temporary"
-                  open={appStore.openMobile}
-                  onClose={handleMobile}
-                />
-              ) : null}
-
+          <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#F1F3F4' }}>
+            {isMobile ? (
               <Sidebar
-                sidebarOpen={appStore.openSidebar}
+                sidebarOpen={appStore.openMobile}
                 PaperProps={{
                   style: { width: drawerWidth },
                 }}
-                sx={{
-                  display: {
-                    md: 'block',
-                    xs: 'none',
-                  },
-                }}
                 links={items}
-                handleSidebarToggle={handleSidebar}
+                handleSidebarToggle={handleMobile}
+                variant="temporary"
+                open={appStore.openMobile}
+                onClose={handleMobile}
               />
-              <Box
-                open={appStore.openSidebar}
-                mobile={isMobile ? 'true' : undefined}
-                component="main"
-                sx={{ flexGrow: 1 }}>
-                <Header
-                  sidebarOpen={isMobile ? appStore.openMobile : appStore.openSidebar}
-                  handleSidebarToggle={isMobile ? handleMobile : handleSidebar}
-                />
-                <Box style={{ ...style.main }} sx={{ flex: 1 }}>
-                  <Outlet />
-                </Box>
+            ) : null}
+
+            <Sidebar
+              sidebarOpen={appStore.openSidebar}
+              PaperProps={{
+                style: { width: drawerWidth },
+              }}
+              sx={{
+                display: {
+                  md: 'block',
+                  xs: 'none',
+                },
+              }}
+              links={items}
+              handleSidebarToggle={handleSidebar}
+            />
+            <Box
+              open={appStore.openSidebar}
+              mobile={isMobile ? 'true' : undefined}
+              component="main"
+              sx={{ flexGrow: 1 }}>
+              <Header
+                sidebarOpen={isMobile ? appStore.openMobile : appStore.openSidebar}
+                handleSidebarToggle={isMobile ? handleMobile : handleSidebar}
+              />
+              <Box style={{ ...style.main }} sx={{ flex: 1 }}>
+                <Outlet />
               </Box>
             </Box>
-          </ThemeProvider>
+          </Box>
         );
       }}
     </Observer>
