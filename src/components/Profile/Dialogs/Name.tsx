@@ -11,7 +11,7 @@ export function NameDialog({
 }) {
   const [value, setValue] = useState(name);
   const handleSave = () => {
-    console.log('save: :', value);
+    console.log('save: ', value);
   };
   return (
     <>
@@ -22,12 +22,8 @@ export function NameDialog({
         variant="standard"
       />
       <DialogActions>
-        <Button sx={{ color: '#0E0E0E' }} onClick={handleClose}>
-          Отмена
-        </Button>
-        <Button sx={{ color: '#0E0E0E' }} onClick={handleSave}>
-          Сохранить
-        </Button>
+        <Button onClick={handleClose}>Отмена</Button>
+        <Button onClick={handleSave}>Сохранить</Button>
       </DialogActions>
     </>
   );

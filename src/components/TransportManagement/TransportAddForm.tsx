@@ -1,14 +1,7 @@
 import React, { useState } from 'react';
-import { IMaskMixin } from 'react-imask';
+import { IMaskInput } from 'react-imask';
 
-import {
-  Button,
-  Container,
-  MenuItem,
-  TextField,
-  TextFieldProps,
-  Typography,
-} from '@mui/material';
+import { Button, Container, MenuItem, TextField, Typography } from '@mui/material';
 
 import { ITransport } from '@app/models';
 import { TRANSPORT_TYPES } from '@app/utils';
@@ -21,12 +14,36 @@ export type TransportAddState = Pick<
 type TransportAddFormProps = {
   onApply: (state: TransportAddState) => void;
 };
+interface MaskedInputProps {
+  mask: string;
+  name?: string;
+  onChange: (value: string) => void;
+}
+// @TODO возможно вынести позже
+const MaskedInput = React.forwardRef<HTMLElement, MaskedInputProps>((props, ref) => {
+  const { mask, onChange, ...other } = props;
 
+  const setRef = (imaskInput: { el: HTMLElement } | null) => {
+    if (imaskInput && ref) {
+      // Ensure the ref is associated directly with the native input element
+      (ref as React.RefCallback<HTMLElement>)(imaskInput.el);
+    }
+  };
+
+  return (
+    <IMaskInput
+      mask={mask}
+      onAccept={(_, mask) => onChange(mask.unmaskedValue)}
+      overwrite
+      {...other}
+      ref={setRef} // Pass ref to IMaskInput
+    />
+  );
+});
 const VehicleForm: React.FC<TransportAddFormProps> = ({ onApply }) => {
   const [type, setType] = useState<TransportAddState['type']>(TRANSPORT_TYPES[0]);
   const [regNumber, setRegNumber] = useState<TransportAddState['regNumber']>('');
   const [mileage, setMileage] = useState<TransportAddState['mileage']>('');
-
   const vehicleTypes = TRANSPORT_TYPES.map((i) => {
     return { id: i.id, value: i.name };
   });
@@ -40,10 +57,6 @@ const VehicleForm: React.FC<TransportAddFormProps> = ({ onApply }) => {
     event.preventDefault();
     onApply({ type, regNumber, mileage, createdAt: new Date() });
   };
-
-  const IMaskPhoneInput = IMaskMixin(({ color, size, ...props }) => {
-    return <TextField size={size as TextFieldProps['size']} {...props} />;
-  });
 
   return (
     <Container maxWidth="sm">
@@ -68,16 +81,25 @@ const VehicleForm: React.FC<TransportAddFormProps> = ({ onApply }) => {
           ))}
         </TextField>
 
-        <IMaskPhoneInput
-          label="Гос. номер *"
-          name="regNumber" // This must match the state object's property name
+        <TextField
+          label="Гос. номер"
           value={regNumber}
-          onAccept={(value: string) => setRegNumber(value)} // (value, mask) =>
           required
           fullWidth
-          margin="normal"
-          variant="outlined"
-          mask={'+{7} (000) 000-00-00'}></IMaskPhoneInput>
+          onChange={(value: unknown) => setRegNumber(value as string)}
+          InputProps={{
+            /* @ts-expect-error: input component error */
+            inputComponent: MaskedInput,
+            inputProps: {
+              mask: '{A}-000-{AA}-00[0]', // '000' для цифр, 'AA' для букв, '[0]' для необязательной цифры
+              definitions: {
+                // Указываем валидные значения для 'A' - это может быть любая из перечисленных букв
+                A: /[АВЕКМНОРСТУХ]/i,
+              },
+              prepare: (str: string) => str.toUpperCase(), // Все буквы в верхнем регистреsk for date
+            },
+          }}
+        />
 
         <TextField
           label="Пробег *"
