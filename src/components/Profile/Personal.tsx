@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { Avatar, Box, Button, Grid, Typography } from '@mui/material';
 
+import iivanovAvatar from '@app/assets/iivanov.jpg';
 import {
   AvatarDialog,
   Dialog,
@@ -56,7 +57,7 @@ export function Personal() {
               alignItems: 'center',
               gap: '0.5rem',
             }}>
-            <Avatar alt="Иванов И.И." src="https://mui.com/static/images/avatar/1.jpg" />
+            <Avatar alt="Иванов И.И." src={iivanovAvatar} />
             <Typography variant="subtitle1">Иванов И.И.</Typography>
           </Box>
         </Grid>

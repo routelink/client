@@ -11,7 +11,7 @@ export function Profile() {
             display: 'flex',
             flexDirection: 'column',
             gap: '1.5rem',
-            p: '1rem 0 0 0',
+            pt: '1rem',
           }}>
           <Typography variant="h5">Профиль</Typography>
           <Box
@@ -24,7 +24,7 @@ export function Profile() {
           </Box>
           <Box
             sx={{
-              height: 'calc(100vh - 26rem)',
+              height: '100%',
               background: '#FFFFFF',
               border: '1px solid #CFCFCF',
               borderRadius: '0.2rem',
