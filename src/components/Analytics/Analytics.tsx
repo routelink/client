@@ -67,7 +67,7 @@ export function Analytics() {
   };
 
   return (
-    <div style={{ padding: '12px', backgroundColor: '#fff' }}>
+    <div style={{ padding: '0.75rem', backgroundColor: '#fff' }}>
       <FormControl fullWidth>
         <InputLabel id="analytics-type-label">Выберите тип аналитики</InputLabel>
         <Select
