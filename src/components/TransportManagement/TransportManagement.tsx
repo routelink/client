@@ -1,5 +1,6 @@
-import { ICellRendererParams } from '@ag-grid-community/core';
+import { CellClickedEvent, ICellRendererParams } from '@ag-grid-community/core';
 import { AgGridReact } from 'ag-grid-react';
+import { observer } from 'mobx-react-lite';
 import React, { useEffect, useState } from 'react';
 
 import { Add } from '@mui/icons-material';
@@ -7,14 +8,14 @@ import { Box, Paper } from '@mui/material';
 
 import { Modal } from '@app/components';
 import { useStore } from '@app/store.tsx';
-import { DateRenderer } from '@app/ui';
+import { DateRenderer, RemoveIconRenderer } from '@app/ui';
 import RoundIconButton from '@app/ui/button/RoundIconButton.tsx';
 
 import TransportAddForm, { TransportAddState } from './TransportAddForm';
 // import { TRANSPORT_TYPES } from '@app/utils';
 import './styles.scss';
 
-export const TransportManagement: React.FC = () => {
+export const TransportManagement: React.FC = observer(() => {
   // const getTransportType = (id: number) =>
   //   TRANSPORT_TYPES.find((i) => i.id === id)?.name || '';
 
@@ -36,7 +37,6 @@ export const TransportManagement: React.FC = () => {
       field: 'type',
       headerName: 'Тип автомобиля',
       cellRenderer: (props: ICellRendererParams) => {
-        console.log(props.value);
         // return <span>{getTransportType(props.value.name)}</span>;
         return <span>{props.value.name}</span>;
       },
@@ -58,6 +58,13 @@ export const TransportManagement: React.FC = () => {
       cellDataType: 'number',
     },
     { field: 'createdAt', headerName: 'Дата создания', cellRenderer: DateRenderer },
+    {
+      headerName: '',
+      width: '10px',
+      onCellClicked: (event: CellClickedEvent) =>
+        store.transportStore.onRowDelete(event.data.id),
+      cellRenderer: RemoveIconRenderer,
+    },
   ]);
 
   useEffect(() => {
@@ -112,4 +119,4 @@ export const TransportManagement: React.FC = () => {
       </Modal>
     </section>
   );
-};
+});

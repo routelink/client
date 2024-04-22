@@ -1,2 +1,2 @@
-export * from './table/renderers.tsx';
+export * from './table/';
 export * from './button';
