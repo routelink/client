@@ -24,7 +24,7 @@
     "@mui/icons-material": "^5.15.15",
     "@mui/material": "^5.15.15",
     "ag-grid-react": "^31.2.1",
-    "@mui/x-charts": "^7.1.1",
+    "@mui/x-charts": "^7.3.0",
     "@mui/x-data-grid": "^7.1.1",
     "@mui/x-date-pickers": "^7.2.0",
     "@pbe/react-yandex-maps": "^1.2.5",
