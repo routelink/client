@@ -4,11 +4,11 @@ import { IMaskInput } from 'react-imask';
 import { Button, Container, MenuItem, TextField, Typography } from '@mui/material';
 
 import { ITransport } from '@app/models';
-import { TRANSPORT_TYPES } from '@app/utils';
+import { TRANSPORT_TYPES, v4Int } from '@app/utils';
 
 export type TransportAddState = Pick<
   ITransport,
-  'type' | 'regNumber' | 'mileage' | 'createdAt'
+  'type' | 'regNumber' | 'mileage' | 'createdAt' | 'id'
 >;
 
 type TransportAddFormProps = {
@@ -55,7 +55,7 @@ const VehicleForm: React.FC<TransportAddFormProps> = ({ onApply }) => {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    onApply({ type, regNumber, mileage, createdAt: new Date() });
+    onApply({ type, regNumber, mileage, createdAt: new Date(), id: v4Int() });
   };
 
   return (

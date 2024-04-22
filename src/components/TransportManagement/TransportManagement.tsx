@@ -6,10 +6,9 @@ import { Add } from '@mui/icons-material';
 import { Box, Paper } from '@mui/material';
 
 import { Modal } from '@app/components';
-import { ITransport } from '@app/models';
+import { useStore } from '@app/store.tsx';
 import { DateRenderer } from '@app/ui';
 import RoundIconButton from '@app/ui/button/RoundIconButton.tsx';
-import { generateRows, v4Int } from '@app/utils';
 
 import TransportAddForm, { TransportAddState } from './TransportAddForm';
 // import { TRANSPORT_TYPES } from '@app/utils';
@@ -19,8 +18,11 @@ export const TransportManagement: React.FC = () => {
   // const getTransportType = (id: number) =>
   //   TRANSPORT_TYPES.find((i) => i.id === id)?.name || '';
 
+  const store = useStore();
+
+  const rowData = store.transportStore.tableData;
+
   const [open, setOpen] = useState(false);
-  const [rowData, setRowData] = useState<ITransport[]>([]);
   const [colDefs, setColDefs] = useState<any>([
     {
       field: 'regNumber',
@@ -58,21 +60,9 @@ export const TransportManagement: React.FC = () => {
     { field: 'createdAt', headerName: 'Дата создания', cellRenderer: DateRenderer },
   ]);
 
-  const fieldDescription = {
-    id: 'int' as const, // auto-increment,
-    name: 'str' as const,
-    type: {
-      name: 'str',
-    } as const,
-    organisation: 'str' as const,
-    regNumber: 'int' as const,
-    avgConsumption: 'float' as const,
-    createdAt: 'date' as const, //@Todo add type
-  };
   useEffect(() => {
     //@TODO
     setColDefs(colDefs);
-    setRowData(generateRows(100, fieldDescription) as ITransport[]);
   }, []);
 
   const onRowAdd = () => {
@@ -82,7 +72,7 @@ export const TransportManagement: React.FC = () => {
     setOpen(value);
   };
   const onApply = (val: TransportAddState) => {
-    setRowData((prev) => [...prev, { ...val, name: 'REPLACE', id: v4Int() }]);
+    store.transportStore.onRowAdd(val);
     toggleDrawer(false);
   };
 
