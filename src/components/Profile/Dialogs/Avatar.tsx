@@ -9,22 +9,29 @@ import {
   Typography,
 } from '@mui/material';
 
+import iivanovAvatar from '@app/assets/iivanov.jpg';
+
 export function AvatarDialog({ handleClose }: { handleClose: () => void }) {
   const handleSave = () => {
     console.log('save');
   };
   return (
     <>
-      <Box sx={{ display: 'flex', flexDirection: 'row', gap: 7 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          gap: '2rem',
+        }}>
         <Box
           className="info"
           sx={{
             display: 'flex',
             alignItems: 'center',
             flexDirection: 'row',
-            gap: '12px',
+            gap: '0.5rem',
           }}>
-          <Avatar alt="Remy Sharp" src="https://mui.com/static/images/avatar/1.jpg" />
+          <Avatar alt="Иванов И.И." src={iivanovAvatar} />
           <Typography variant="subtitle1">Иванов И.И.</Typography>
         </Box>
         <Box
@@ -32,21 +39,19 @@ export function AvatarDialog({ handleClose }: { handleClose: () => void }) {
             display: 'flex',
             alignItems: 'center',
             flexDirection: 'row',
-            gap: '12px',
+            gap: '0.5rem',
           }}>
           <IconButton aria-label="delete">
             <CloseIcon />
           </IconButton>
-          <IconButton aria-label="delete">
+          <IconButton aria-label="upload">
             <UploadIcon />
           </IconButton>
         </Box>
       </Box>
       <DialogActions>
-        <Button sx={{ color: '#0E0E0E' }} onClick={handleClose}>
-          Отмена
-        </Button>
-        <Button disabled={true} sx={{ color: '#0E0E0E' }} onClick={handleSave}>
+        <Button onClick={handleClose}>Отмена</Button>
+        <Button disabled={true} onClick={handleSave}>
           Сохранить
         </Button>
       </DialogActions>
