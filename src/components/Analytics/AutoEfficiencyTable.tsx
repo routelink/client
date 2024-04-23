@@ -1,8 +1,20 @@
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 
 const columns: GridColDef[] = [
-  { field: 'id', headerName: 'ID', width: 50, minWidth: 50, description: 'Транспорт ID.' },
-  { field: 'machineDowntime', headerName: 'Простой', width: 100, minWidth: 100, type: 'number' },
+  {
+    field: 'id',
+    headerName: 'ID',
+    width: 50,
+    minWidth: 50,
+    description: 'Транспорт ID.',
+  },
+  {
+    field: 'machineDowntime',
+    headerName: 'Простой',
+    width: 100,
+    minWidth: 100,
+    type: 'number',
+  },
   {
     field: 'date',
     headerName: 'Дата',
@@ -28,13 +40,12 @@ const rows = [
 
 export default function AutoEfficiencyTable() {
   return (
-    <div style={{ height: '100%', width: '100%',  backgroundColor: '#fff' }}>
+    <div style={{ height: '100%', width: '100%', backgroundColor: '#fff' }}>
       <DataGrid
         rows={rows}
         columns={columns}
         autoHeight
         pagination
-        pageSize={5}
         pageSizeOptions={[5, 10, 25, 50]}
       />
     </div>

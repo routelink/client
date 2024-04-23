@@ -9,6 +9,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: toshimaru/auto-author-assign@v2.1.0
-        if: env.IS_OWNER_MODE == 'true'
         with:
           repo-token: ${{ secrets.ROUTELINKBOT_TOKEN }}
