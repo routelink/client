@@ -34,5 +34,7 @@ jobs:
             ${{ runner.os }}-npm-
       - name: Install project
         run: npm ci
+      - name: Check types
+        run: npm run typecheck
       - name: Testing project
         run: npm run test
