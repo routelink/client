@@ -1,9 +1,7 @@
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 
 const columns: GridColDef[] = [
-  { field: 'id', 
-    headerName: 'ID', 
-    description: 'Транспорт ID.' },
+  { field: 'id', headerName: 'ID', description: 'Транспорт ID.' },
   {
     field: 'avgConsumption',
     headerName: 'Ср расход топлива',
@@ -19,8 +17,7 @@ const columns: GridColDef[] = [
     headerName: 'Топлива понадобилось',
     type: 'number',
   },
-  { field: 'date', headerName: 'Дата', 
-    type: 'date' },
+  { field: 'date', headerName: 'Дата', type: 'date' },
 ];
 
 const rows = [
@@ -112,13 +109,12 @@ const rows = [
 
 export default function FuelConsumptionTable() {
   return (
-    <div style={{ height: '100%', width: '100%',  backgroundColor: '#fff' }}>
+    <div style={{ height: '100%', width: '100%', backgroundColor: '#fff' }}>
       <DataGrid
         rows={rows}
         columns={columns}
         autoHeight
         pagination
-        pageSize={5}
         pageSizeOptions={[5, 10, 25, 50]}
       />
     </div>
