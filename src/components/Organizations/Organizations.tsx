@@ -11,6 +11,8 @@ import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Fab from '@mui/material/Fab';
 import IconButton from '@mui/material/IconButton';
@@ -443,14 +445,19 @@ function DialogOrgEdit(props: DialogOrgEditProps) {
 /* диалог "удаления организации" */
 interface DialogRemoveOrgProps {
   isOpen: boolean;
+  orgIds: number[];
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 function DialogRemoveOrgs(props: DialogRemoveOrgProps) {
+  const { orgsStore } = useStore();
+
   const handleCancel = () => {
     props.setOpen(false);
   };
+
   const handleRemove = () => {
+    orgsStore.removeOrgs(props.orgIds);
     props.setOpen(false);
   };
 
@@ -460,7 +467,12 @@ function DialogRemoveOrgs(props: DialogRemoveOrgProps) {
         open={props.isOpen}
         onClose={handleCancel}
         aria-labelledby="responsive-dialog-title">
-        <DialogTitle>Удалить выбранные организации?</DialogTitle>
+        <DialogTitle>Удаление организаций</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Запрошено удаление {props.orgIds.length} организаций. Продолжить удаление?
+          </DialogContentText>
+        </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={handleCancel}>
             Отмена
@@ -480,16 +492,20 @@ export function Organizations() {
   const [dialogOrgEditOpen, setDialogOrgEditOpen] = React.useState(false);
   const [dialogOrgRemoveOpen, setDialogOrgRemoveOpen] = React.useState(false);
 
-  const [selectedCount, setSelectedCount] = React.useState(0);
+  const [selectedIds, setSelectedIds] = React.useState<number[]>([]);
   const [findedCount, setFindedCount] = React.useState(-1);
 
   const { orgsStore } = useStore();
-  const [showOrgData, setShowUserData] = React.useState<IOrganizationStrict[]>(
+  const [showOrgData, setShowOrgsData] = React.useState<IOrganizationStrict[]>(
     orgsStore.orgs,
   );
 
+  React.useEffect(() => {
+    setShowOrgsData(orgsStore.orgs);
+  }, [orgsStore.orgs]);
+
   const handleSelectChange = (selectedIndexArray: readonly number[]) => {
-    setSelectedCount(selectedIndexArray.length);
+    setSelectedIds(selectedIndexArray.slice());
   };
 
   const handleSearchChange = (search: string) => {
@@ -503,7 +519,7 @@ export function Organizations() {
     } else {
       setFindedCount(-1);
     }
-    setShowUserData(newOrgData);
+    setShowOrgsData(newOrgData);
   };
 
   return (
@@ -515,6 +531,7 @@ export function Organizations() {
             <DialogOrgEdit isOpen={dialogOrgEditOpen} setOpen={setDialogOrgEditOpen} />
             <DialogRemoveOrgs
               isOpen={dialogOrgRemoveOpen}
+              orgIds={selectedIds}
               setOpen={setDialogOrgRemoveOpen}
             />
 
@@ -578,17 +595,17 @@ export function Organizations() {
                       flexDirection: 'row',
                       alignItems: 'flex-end',
                     }}>
-                    {selectedCount ? (
+                    {selectedIds.length ? (
                       <Typography variant="body2" sx={{ mr: '20px' }}>
                         {' '}
-                        Выбрано {selectedCount} записей{' '}
+                        Выбрано {selectedIds.length} записей{' '}
                       </Typography>
                     ) : null}
 
                     <Tooltip title="Изменить выбранное" placement="top">
                       <span>
                         <IconButton
-                          disabled={selectedCount !== 1}
+                          disabled={selectedIds.length !== 1}
                           onClick={() => {
                             setDialogOrgEditOpen(true);
                           }}>
@@ -599,7 +616,7 @@ export function Organizations() {
                     <Tooltip title="Удалить выбранное" placement="top">
                       <span>
                         <IconButton
-                          disabled={selectedCount === 0}
+                          disabled={selectedIds.length === 0}
                           onClick={() => {
                             setDialogOrgRemoveOpen(true);
                           }}>

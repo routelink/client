@@ -8,13 +8,14 @@ export class OrganizatonsStore {
     this.loadOrgs();
     makeObservable(this, {
       orgs: observable,
-      addOrgs: action,
       loadOrgs: action,
+      addOrgs: action,
+      removeOrgs: action,
     });
   }
 
   loadOrgs(): void {
-    /* Заглушка. Заменить на поучении данных с сервера */
+    /* Заглушка. Заменить на получении данных с сервера */
     this.orgs = [
       { id: 1, name: 'ООО Ивановы', createdAt: new Date(2020, 1, 1) },
       { id: 2, name: 'ЗАО Петровы', createdAt: new Date(2020, 2, 2) },
@@ -27,4 +28,19 @@ export class OrganizatonsStore {
     const date = new Date();
     this.orgs.push({ id: id, name: orgName, createdAt: date });
   }
+
+  removeOrgs(ids: number[]): void {
+    /* Заглушка. Заменить на удаление данных с сервера и загрузку обновленных данных с сервера */
+    this.orgs = this.orgs.filter((org) => !ids.includes(org.id));
+    console.log(this.orgs.map((obj) => obj.id));
+  }
+  /*
+  getOrg(id: IOrganizationStrict): void {
+
+  }
+
+  updateOrg(org: IOrganizationStrict): void {
+
+  }
+*/
 }
