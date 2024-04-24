@@ -367,21 +367,23 @@ function DialogOrgAdd(props: DialogOrgAddProps) {
 /* диалог "реактирование организации" */
 interface DialogOrgEditProps {
   isOpen: boolean;
+  orgId: number;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 function DialogOrgEdit(props: DialogOrgEditProps) {
-  const [orgName, setOrgName] = React.useState('');
-  const isFormValid = orgName.trim() !== '';
+  const { orgsStore } = useStore();
+  const currentOrgName = orgsStore.getOrgName(props.orgId);
+  const [newOrgName, setNewOrgName] = React.useState(currentOrgName);
+  const isFormValid = newOrgName.trim() !== '' && newOrgName.trim() !== currentOrgName;
 
   const handleCancel = () => {
     props.setOpen(false);
-    setOrgName('');
   };
 
   const handleEdit = () => {
+    orgsStore.updateOrgName(props.orgId, newOrgName);
     props.setOpen(false);
-    setOrgName('');
   };
 
   return (
@@ -401,10 +403,11 @@ function DialogOrgEdit(props: DialogOrgEditProps) {
             <TextField
               sx={{ mt: '30px', width: '255px' }}
               required
+              value={newOrgName}
               variant="standard"
               label="Название организации"
               onChange={(event) => {
-                setOrgName(event.target.value);
+                setNewOrgName(event.target.value);
               }}
             />
           </Box>
@@ -528,7 +531,14 @@ export function Organizations() {
         return (
           <>
             <DialogOrgAdd isOpen={dialogOrgAddOpen} setOpen={setDialogOrgAddOpen} />
-            <DialogOrgEdit isOpen={dialogOrgEditOpen} setOpen={setDialogOrgEditOpen} />
+            {selectedIds.length === 1 ? (
+              <DialogOrgEdit
+                isOpen={dialogOrgEditOpen}
+                orgId={selectedIds[0]}
+                setOpen={setDialogOrgEditOpen}
+              />
+            ) : null}
+
             <DialogRemoveOrgs
               isOpen={dialogOrgRemoveOpen}
               orgIds={selectedIds}
