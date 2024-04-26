@@ -5,18 +5,20 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import SearchIcon from '@mui/icons-material/Search';
 import SyncIcon from '@mui/icons-material/Sync';
-import { Box, Fab, TextField, Tooltip } from '@mui/material';
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
+import Fab from '@mui/material/Fab';
 import FormControl from '@mui/material/FormControl';
 import IconButton from '@mui/material/IconButton';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Paper from '@mui/material/Paper';
 import Select from '@mui/material/Select';
+import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -25,7 +27,8 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
-import Toolbar from '@mui/material/Toolbar';
+import TextField from '@mui/material/TextField';
+import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { visuallyHidden } from '@mui/utils';
 
@@ -311,102 +314,66 @@ function PanelUserAdd(props: PanelUserAddProps) {
 
   return (
     <Modal isOpen={props.isOpen}>
-      <Box
-        display={'flex'}
-        flexDirection={'row'}
-        justifyContent={'space-evenly'}
-        height={'100vh'}>
-        <Box
-          display={'flex'}
-          flexDirection={'column'}
-          alignItems={'stretch'}
-          maxWidth={'500px'}
-          margin={'50px'}>
-          <Typography sx={{ fontSize: '20px', textAlign: 'center' }}>
-            Добавить пользователя
-          </Typography>
+      <Stack
+        height={'100vh'}
+        direction={'column'}
+        justifyContent={'space-between'}
+        margin={5}>
+        <Stack spacing={3}>
+          <Typography variant="h5">Добавить пользователя</Typography>
 
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'stretch',
-            }}>
+          <Stack spacing={2}>
             <TextField
+              sx={{ width: '80%' }}
+              required
               variant="standard"
               label="ФИО"
               onChange={(event) => {
                 setFio(event.target.value);
               }}
             />
-            <Typography sx={{ fontSize: '12px', mt: '5px' }}>
-              Обязательное поле
-            </Typography>
-          </Box>
 
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'stretch',
-            }}>
             <TextField
+              sx={{ width: '80%' }}
+              required
               variant="standard"
               label="Логин"
               onChange={(event) => {
                 setLogin(event.target.value);
               }}
             />
-            <Typography sx={{ fontSize: '12px', mt: '5px' }}>
-              Обязательное поле
-            </Typography>
-          </Box>
 
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'stretch',
-            }}>
             <TextField
+              sx={{ width: '80%' }}
+              required
               variant="standard"
               label="E-mail"
               onChange={(event) => {
                 setEmail(event.target.value);
               }}
             />
-            <Typography sx={{ fontSize: '12px', mt: '5px' }}>
-              Обязательное поле
-            </Typography>
-          </Box>
+          </Stack>
+        </Stack>
 
-          <Box
-            display={'flex'}
-            flexDirection={'row'}
-            justifyContent={'space-between'}
-            mt={'30px'}
-            gap={'30px'}>
-            <Button
-              variant="outlined"
-              onClick={() => {
-                handleCancel();
-              }}
-              sx={{ width: '140px' }}>
-              Отмена
-            </Button>
+        <Stack direction={'row'} justifyContent={'flex-end'} spacing={2}>
+          <Button
+            variant="outlined"
+            onClick={() => {
+              handleCancel();
+            }}>
+            Отмена
+          </Button>
 
-            <Button
-              disabled={!isFormValid}
-              variant="contained"
-              onClick={() => {
-                handleAdd();
-              }}
-              sx={{ width: '140px' }}>
-              Добавить
-            </Button>
-          </Box>
-        </Box>
-      </Box>
+          <Button
+            disabled={!isFormValid}
+            variant="contained"
+            onClick={() => {
+              handleAdd();
+            }}>
+            Добавить
+          </Button>
+        </Stack>
+      </Stack>
     </Modal>
   );
 }
@@ -442,105 +409,98 @@ function PanelUserEdit(props: PanelUserEditProps) {
 
   return (
     <Modal isOpen={props.isOpen}>
-      <Box
-        display={'flex'}
-        flexDirection={'row'}
-        justifyContent={'space-evenly'}
-        height={'100vh'}>
-        <Box
-          display={'flex'}
-          flexDirection={'column'}
-          gap={'20px'}
-          alignItems={'stretch'}
-          maxWidth={'500px'}
-          margin={'50px'}>
-          <Typography sx={{ fontSize: '20px', textAlign: 'center' }}>
-            Изменение пользователя
-          </Typography>
+      <Stack
+        height={'100vh'}
+        direction={'column'}
+        justifyContent={'space-between'}
+        margin={5}>
+        <Stack spacing={3}>
+          <Typography variant="h5">Изменение пользователя</Typography>
 
-          <TextField
-            variant="standard"
-            label="ФИО"
-            defaultValue={fio}
-            onChange={(event) => {
-              setFio(event.target.value);
-            }}
-          />
-
-          <TextField
-            variant="standard"
-            label="Логин"
-            defaultValue={login}
-            onChange={(event) => {
-              setLogin(event.target.value);
-            }}
-          />
-
-          <TextField
-            variant="standard"
-            label="E-mail"
-            defaultValue={email}
-            onChange={(event) => {
-              setEmail(event.target.value);
-            }}
-          />
-
-          <FormControl variant="standard">
-            <InputLabel id="org-label">Организация</InputLabel>
-            <Select
-              labelId="org-label"
-              value={org}
-              onChange={(event) => {
-                setOrg(event.target.value);
-              }}>
-              <MenuItem value={'ООО Ивановы'}>ООО Ивановы</MenuItem>
-              <MenuItem value={'ЗАО Петровы'}>ЗАО Петровы</MenuItem>
-              <MenuItem value={'НКО Сидоровы'}>НКО Сидоровы</MenuItem>
-            </Select>
-          </FormControl>
-
-          <FormControl variant="standard">
-            <InputLabel id="role-label">Роль</InputLabel>
-            <Select
+          <Stack spacing={2}>
+            <TextField
+              sx={{ width: '80%' }}
               variant="standard"
-              labelId="role-label"
-              value={role}
+              label="ФИО"
+              defaultValue={fio}
               onChange={(event) => {
-                setRole(event.target.value);
-              }}>
-              <MenuItem value={'Администратор'}>Администратор</MenuItem>
-              <MenuItem value={'Аналитик'}>Аналитик</MenuItem>
-              <MenuItem value={'Водитель'}>Водитель</MenuItem>
-            </Select>
-          </FormControl>
-
-          <Box
-            display={'flex'}
-            flexDirection={'row'}
-            justifyContent={'space-between'}
-            mt={'30px'}
-            gap={'30px'}>
-            <Button
-              variant="outlined"
-              onClick={() => {
-                handleCancel();
+                setFio(event.target.value);
               }}
-              sx={{ width: '140px' }}>
-              Отмена
-            </Button>
+            />
 
-            <Button
-              disabled={!isFormValid}
-              variant="contained"
-              onClick={() => {
-                handleAdd();
+            <TextField
+              sx={{ width: '80%' }}
+              variant="standard"
+              label="Логин"
+              defaultValue={login}
+              onChange={(event) => {
+                setLogin(event.target.value);
               }}
-              sx={{ width: '140px' }}>
-              Изменить
-            </Button>
-          </Box>
-        </Box>
-      </Box>
+            />
+
+            <TextField
+              sx={{ width: '80%' }}
+              variant="standard"
+              label="E-mail"
+              defaultValue={email}
+              onChange={(event) => {
+                setEmail(event.target.value);
+              }}
+            />
+
+            <FormControl variant="standard">
+              <InputLabel id="org-label">Организация</InputLabel>
+              <Select
+                sx={{ width: '80%' }}
+                labelId="org-label"
+                variant="standard"
+                value={org}
+                onChange={(event) => {
+                  setOrg(event.target.value);
+                }}>
+                <MenuItem value={'ООО Ивановы'}>ООО Ивановы</MenuItem>
+                <MenuItem value={'ЗАО Петровы'}>ЗАО Петровы</MenuItem>
+                <MenuItem value={'НКО Сидоровы'}>НКО Сидоровы</MenuItem>
+              </Select>
+            </FormControl>
+
+            <FormControl variant="standard">
+              <InputLabel id="role-label">Роль</InputLabel>
+              <Select
+                sx={{ width: '80%' }}
+                variant="standard"
+                labelId="role-label"
+                value={role}
+                onChange={(event) => {
+                  setRole(event.target.value);
+                }}>
+                <MenuItem value={'Администратор'}>Администратор</MenuItem>
+                <MenuItem value={'Аналитик'}>Аналитик</MenuItem>
+                <MenuItem value={'Водитель'}>Водитель</MenuItem>
+              </Select>
+            </FormControl>
+          </Stack>
+        </Stack>
+
+        <Stack direction={'row'} justifyContent={'flex-end'} spacing={2}>
+          <Button
+            variant="outlined"
+            onClick={() => {
+              handleCancel();
+            }}>
+            Отмена
+          </Button>
+
+          <Button
+            disabled={!isFormValid}
+            variant="contained"
+            onClick={() => {
+              handleAdd();
+            }}>
+            Добавить
+          </Button>
+        </Stack>
+      </Stack>
     </Modal>
   );
 }
@@ -614,7 +574,7 @@ function getUserDataFromBackend(): IUserData[] {
 export function Users() {
   const rawUserData: IUserData[] = getUserDataFromBackend();
   const [showUserData, setShowUserData] = React.useState<IUserData[]>(rawUserData);
-  const [selectedCount, setSelectedCount] = React.useState(0);
+  const [selectedIds, setSelectedIds] = React.useState<number[]>([]);
   const [findedCount, setFindedCount] = React.useState(-1);
 
   const [addUserOpen, setAddUserOpen] = React.useState(false);
@@ -638,7 +598,7 @@ export function Users() {
   };
 
   const handleSelectChange = (selectedIndexArray: readonly number[]) => {
-    setSelectedCount(selectedIndexArray.length);
+    setSelectedIds(selectedIndexArray.slice());
   };
 
   return (
@@ -652,40 +612,27 @@ export function Users() {
       {/* диалог "удаление пользователя" */}
       <DialogRemoveUsers isOpen={removeUsersOpen} setOpen={setRemoveUsersOpen} />
 
-      <Box margin={'0px 20px 0px 20px'}>
+      <Stack direction={'column'} spacing={2}>
         {/* вызов панели "добавление пользователя" */}
-        <Box display={'flex'} flexDirection={'row'} alignItems={'center'} gap={'18px'}>
+
+        <Stack direction={'row'} alignItems={'center'} spacing={2}>
           <Fab
             color="primary"
-            aria-label="add"
-            sx={{ margin: '20px 0px 20px 0px' }}
             onClick={() => {
               setAddUserOpen(true);
             }}>
             <AddIcon />
           </Fab>
-          <Typography sx={{ fontSize: '20px' }}>Пользователь</Typography>
-        </Box>
+          <Typography variant="h6">Пользователь</Typography>
+        </Stack>
 
         <Paper sx={{ width: '100%' }}>
           {/* панель инструментов */}
-          <Toolbar
-            sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              bgcolor: 'white',
-              '&.MuiToolbar-root': { padding: '5px' },
-            }}>
+
+          <Stack direction={'row'} justifyContent={'space-between'} sx={{ ml: 1 }}>
             {/* панель поиска */}
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                gap: '12px',
-                alignItems: 'center',
-              }}>
-              <SearchIcon sx={{ ml: '5px' }} />
+            <Stack direction={'row'} alignItems={'flex-end'} spacing={2}>
+              <SearchIcon />
               <TextField
                 variant="standard"
                 label="Поиск"
@@ -694,24 +641,23 @@ export function Users() {
                 }}
               />
               {findedCount >= 0 ? (
-                <Typography variant="body2" sx={{ mr: '20px' }}>
-                  Найдено {findedCount} записей
-                </Typography>
+                <Typography variant="body2">Найдено {findedCount} записей</Typography>
               ) : null}
-            </Box>
+            </Stack>
 
             {/* панель редактирования */}
-            <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-              {selectedCount ? (
-                <Typography variant="body2" sx={{ mr: '20px' }}>
-                  Выбрано {selectedCount} записей
+            <Stack direction={'row'} alignItems={'flex-end'}>
+              {selectedIds.length ? (
+                <Typography variant="body2" sx={{ mr: 1 }}>
+                  {' '}
+                  Выбрано {selectedIds.length} записей{' '}
                 </Typography>
               ) : null}
 
               <Tooltip title="Изменить выбранное" placement="top">
                 <span>
                   <IconButton
-                    disabled={selectedCount !== 1}
+                    disabled={selectedIds.length !== 1}
                     onClick={() => {
                       setEditUserOpen(true);
                     }}>
@@ -722,7 +668,7 @@ export function Users() {
               <Tooltip title="Удалить выбранное" placement="top">
                 <span>
                   <IconButton
-                    disabled={selectedCount === 0}
+                    disabled={selectedIds.length === 0}
                     onClick={() => {
                       setRemoveUsersOpen(true);
                     }}>
@@ -737,13 +683,12 @@ export function Users() {
                   </IconButton>
                 </span>
               </Tooltip>
-            </Box>
-          </Toolbar>
-
+            </Stack>
+          </Stack>
           {/* таблица пользователей */}
           <TableUsers userData={showUserData} onSelectChange={handleSelectChange} />
         </Paper>
-      </Box>
+      </Stack>
     </>
   );
 }
