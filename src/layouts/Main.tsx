@@ -88,6 +88,7 @@ const items: ILink[] = [
 
 const style = {
   main: {
+    padding: '1.375rem',
     background: '#F1F3F4',
     '--header-height': '64px',
     '--header-height-mobile': '56px',

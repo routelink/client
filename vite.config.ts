@@ -5,7 +5,13 @@ import { defineConfig } from 'vitest/config';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), tsconfigPaths(), cesium()],
+  plugins: [
+    react(),
+    tsconfigPaths(),
+    cesium({
+      rebuildCesium: true,
+    }),
+  ],
   server: {
     host: 'localhost',
     port: 3000,
