@@ -4,11 +4,11 @@ import { IMaskInput } from 'react-imask';
 import { Button, Container, MenuItem, TextField, Typography } from '@mui/material';
 
 import { ITransport } from '@app/models';
-import { TRANSPORT_TYPES } from '@app/utils';
+import { TRANSPORT_TYPES, v4Int } from '@app/utils';
 
 export type TransportAddState = Pick<
   ITransport,
-  'type' | 'regNumber' | 'mileage' | 'createdAt'
+  'type' | 'regNumber' | 'mileage' | 'createdAt' | 'id'
 >;
 
 type TransportAddFormProps = {
@@ -41,12 +41,20 @@ const MaskedInput = React.forwardRef<HTMLElement, MaskedInputProps>((props, ref)
   );
 });
 const VehicleForm: React.FC<TransportAddFormProps> = ({ onApply }) => {
+  const [hasRegError, setHasRegError] = useState(false);
   const [type, setType] = useState<TransportAddState['type']>(TRANSPORT_TYPES[0]);
   const [regNumber, setRegNumber] = useState<TransportAddState['regNumber']>('');
   const [mileage, setMileage] = useState<TransportAddState['mileage']>('');
   const vehicleTypes = TRANSPORT_TYPES.map((i) => {
     return { id: i.id, value: i.name };
   });
+  const validateRegNumber = () => {
+    if (regNumber?.length && regNumber.length >= 7) {
+      setHasRegError(false);
+    } else {
+      setHasRegError(true);
+    }
+  };
 
   const onSetTransportType = (value: TransportAddState['type']['id']) => {
     const vehicleType = TRANSPORT_TYPES.find((i) => i.id === value);
@@ -55,7 +63,8 @@ const VehicleForm: React.FC<TransportAddFormProps> = ({ onApply }) => {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    onApply({ type, regNumber, mileage, createdAt: new Date() });
+    if (hasRegError) return;
+    onApply({ type, regNumber, mileage, createdAt: new Date(), id: v4Int() });
   };
 
   return (
@@ -86,12 +95,15 @@ const VehicleForm: React.FC<TransportAddFormProps> = ({ onApply }) => {
           value={regNumber}
           required
           fullWidth
+          error={hasRegError}
+          helperText={hasRegError && 'Минимум 7 знаков'}
           onChange={(value: unknown) => setRegNumber(value as string)}
+          onBlur={validateRegNumber}
           InputProps={{
             /* @ts-expect-error: input component error */
             inputComponent: MaskedInput,
             inputProps: {
-              mask: '{A}-000-{AA}-00[0]', // '000' для цифр, 'AA' для букв, '[0]' для необязательной цифры
+              mask: '{A} 000 {AA} 00[0]', // '000' для цифр, 'AA' для букв, '[0]' для необязательной цифры'
               definitions: {
                 // Указываем валидные значения для 'A' - это может быть любая из перечисленных букв
                 A: /[АВЕКМНОРСТУХ]/i,
