@@ -32,7 +32,20 @@ import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { visuallyHidden } from '@mui/utils';
 
+import { IUser } from '@app/models';
+import { useStore } from '@app/store';
+
 import { Modal } from '../Modal';
+
+function DateToString(date: Date): String {
+  return (
+    date.getFullYear() +
+    '.' +
+    String(date.getMonth() + 1).padStart(2, '0') +
+    '.' +
+    String(date.getDate()).padStart(2, '0')
+  );
+}
 
 {
   /* таблица пользователей */
@@ -53,8 +66,8 @@ function getComparator<Key extends keyof any>(
   order: Order,
   orderBy: Key,
 ): (
-  a: { [key in Key]: number | string },
-  b: { [key in Key]: number | string },
+  a: { [key in Key]: number | string | Date },
+  b: { [key in Key]: number | string | Date },
 ) => number {
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
@@ -73,27 +86,29 @@ function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) 
   return stabilizedThis.map((el) => el[0]);
 }
 
-interface IUserData {
+interface IUserTableView {
   id: number;
   name: string;
-  org: string;
-  role: string;
-  date: string;
+  orgId: number;
+  orgName: string;
+  roleId: number;
+  roleName: string;
+  createdAt: Date;
 }
 
 interface HeadCell {
-  id: keyof IUserData;
+  id: keyof IUserTableView;
   label: string;
 }
 const headCells: readonly HeadCell[] = [
   { id: 'name', label: 'ФИО' },
-  { id: 'org', label: 'Организация' },
-  { id: 'role', label: 'Роль' },
-  { id: 'date', label: 'Дата создания' },
+  { id: 'orgName', label: 'Организация' },
+  { id: 'roleName', label: 'Роль' },
+  { id: 'createdAt', label: 'Дата создания' },
 ];
 
 interface TableUsersProps {
-  userData: IUserData[];
+  userData: IUserTableView[];
   onSelectChange: (selectedIndexArray: readonly number[]) => void;
 }
 
@@ -104,12 +119,15 @@ function TableUsers(props: TableUsersProps) {
     : (_: readonly number[]) => {};
 
   const [order, setOrder] = React.useState<Order>('asc');
-  const [orderBy, setOrderBy] = React.useState<keyof IUserData>('name');
+  const [orderBy, setOrderBy] = React.useState<keyof IUserTableView>('name');
   const [selected, setSelected] = React.useState<readonly number[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
-  const handleRequestSort = (_: React.MouseEvent<unknown>, property: keyof IUserData) => {
+  const handleRequestSort = (
+    _: React.MouseEvent<unknown>,
+    property: keyof IUserTableView,
+  ) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
@@ -163,7 +181,7 @@ function TableUsers(props: TableUsersProps) {
   );
 
   const createSortHandler =
-    (property: keyof IUserData) => (event: React.MouseEvent<unknown>) => {
+    (property: keyof IUserTableView) => (event: React.MouseEvent<unknown>) => {
       handleRequestSort(event, property);
     };
 
@@ -250,15 +268,15 @@ function TableUsers(props: TableUsersProps) {
                   </TableCell>
                   <TableCell sx={{ borderWidth: '0px', padding: '12px' }}>
                     {' '}
-                    {row.org}{' '}
+                    {row.orgName}{' '}
                   </TableCell>
                   <TableCell sx={{ borderWidth: '0px', padding: '12px' }}>
                     {' '}
-                    {row.role}{' '}
+                    {row.roleName}{' '}
                   </TableCell>
                   <TableCell sx={{ borderWidth: '0px', padding: '12px', width: '180px' }}>
                     {' '}
-                    {row.date}{' '}
+                    {DateToString(row.createdAt)}{' '}
                   </TableCell>
                 </TableRow>
               );
@@ -509,14 +527,17 @@ function PanelUserEdit(props: PanelUserEditProps) {
 /* диалог "удаления пользователя" */
 interface DialogRemoveUsersProps {
   isOpen: boolean;
+  usersIds: number[];
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 function DialogRemoveUsers(props: DialogRemoveUsersProps) {
+  const { usersStore } = useStore();
   const handleCancel = () => {
     props.setOpen(false);
   };
   const handleRemove = () => {
+    usersStore.removeUsers(props.usersIds);
     props.setOpen(false);
   };
 
@@ -541,39 +562,28 @@ function DialogRemoveUsers(props: DialogRemoveUsersProps) {
 }
 /* диалог "удаления пользователя" (конец) */
 
-function getUserDataFromBackend(): IUserData[] {
-  /* заглушка для получения данных с сервера */
-  function createUserData(
-    id: number,
-    name: string,
-    org: string,
-    role: string,
-    date: string,
-  ) {
-    return { id, name, org, role, date };
-  }
+function IUsers2IUserTableView(users: IUser[]): IUserTableView[] {
+  return users.map((user: IUser): IUserTableView => {
+    const userAsTabView: IUserTableView = {
+      id: user.id,
+      name: user.username,
+      orgId: user.organization ? user.organization.id : -1,
+      orgName: user.organization ? user.organization.name : '',
+      roleId: user.role ? user.role.id : -1,
+      roleName: user.role ? user.role.name : '',
+      createdAt: user.createdAt ? user.createdAt : new Date(0, 0, 0),
+    };
 
-  return [
-    createUserData(1, 'Иванов 1', 'ООО Ивановы', 'Администратор', '2020.01.01'),
-    createUserData(2, 'Иванов 2', 'ООО Ивановы', 'Аналитик', '2020.02.01'),
-    createUserData(3, 'Иванов 3', 'ООО Ивановы', 'Водитель', '2020.03.01'),
-    createUserData(4, 'Иванов 4', 'ООО Ивановы', 'Водитель', '2020.03.02'),
-
-    createUserData(5, 'Петров 1', 'ЗАО Петровы', 'Администратор', '2021.02.01'),
-    createUserData(6, 'Петров 2', 'ЗАО Петровы', 'Аналитик', '2021.02.02'),
-    createUserData(7, 'Петров 3', 'ЗАО Петровы', 'Водитель', '2021.02.03'),
-    createUserData(8, 'Петров 4', 'ЗАО Петровы', 'Водитель', '2021.02.04'),
-
-    createUserData(9, 'Сидоров 1', 'НКО Сидоровы', 'Администратор', '2022.03.01'),
-    createUserData(10, 'Сидоров 2', 'НКО Сидоровы', 'Аналитик', '2022.03.02'),
-    createUserData(11, 'Сидоров 3', 'НКО Сидоровы', 'Аналитик', '2022.03.03'),
-    createUserData(12, 'Сидоров 4', 'НКО Сидоровы', 'Водитель', '2022.03.04'),
-  ];
+    return userAsTabView;
+  });
 }
 
 export function Users() {
-  const rawUserData: IUserData[] = getUserDataFromBackend();
-  const [showUserData, setShowUserData] = React.useState<IUserData[]>(rawUserData);
+  const { usersStore } = useStore();
+  const [showUserData, setShowUserData] = React.useState<IUserTableView[]>(
+    IUsers2IUserTableView(usersStore.users),
+  );
+
   const [selectedIds, setSelectedIds] = React.useState<number[]>([]);
   const [findedCount, setFindedCount] = React.useState(-1);
 
@@ -581,13 +591,17 @@ export function Users() {
   const [editUserOpen, setEditUserOpen] = React.useState(false);
   const [removeUsersOpen, setRemoveUsersOpen] = React.useState(false);
 
+  React.useEffect(() => {
+    setShowUserData(IUsers2IUserTableView(usersStore.users));
+  }, [usersStore.users]);
+
   const handleSearchChange = (search: string) => {
-    const newUserData: IUserData[] = rawUserData.filter(
+    const newUserData: IUserTableView[] = IUsers2IUserTableView(usersStore.users).filter(
       (userData) =>
         userData.name.toLowerCase().includes(search.toLowerCase()) ||
-        userData.org.toLowerCase().includes(search.toLowerCase()) ||
-        userData.role.toLowerCase().includes(search.toLowerCase()) ||
-        userData.date.toLowerCase().includes(search.toLowerCase()),
+        userData.orgName.toLowerCase().includes(search.toLowerCase()) ||
+        userData.roleName.toLowerCase().includes(search.toLowerCase()) ||
+        DateToString(userData.createdAt).includes(search.toLowerCase()),
     );
     if (search.length) {
       setFindedCount(newUserData.length);
@@ -610,7 +624,11 @@ export function Users() {
       <PanelUserEdit isOpen={editUserOpen} setOpen={setEditUserOpen} />
 
       {/* диалог "удаление пользователя" */}
-      <DialogRemoveUsers isOpen={removeUsersOpen} setOpen={setRemoveUsersOpen} />
+      <DialogRemoveUsers
+        isOpen={removeUsersOpen}
+        usersIds={selectedIds}
+        setOpen={setRemoveUsersOpen}
+      />
 
       <Stack direction={'column'} spacing={2}>
         {/* вызов панели "добавление пользователя" */}
