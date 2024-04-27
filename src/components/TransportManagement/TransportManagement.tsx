@@ -8,7 +8,7 @@ import { Box, Paper } from '@mui/material';
 
 import { Modal } from '@app/components';
 import { useStore } from '@app/store.tsx';
-import { DateRenderer, RemoveIconRenderer } from '@app/ui';
+import { DateRenderer, RemoveIconRenderer, SearchField } from '@app/ui';
 import RoundIconButton from '@app/ui/button/RoundIconButton.tsx';
 
 import TransportAddForm, { TransportAddState } from './TransportAddForm';
@@ -40,10 +40,12 @@ export const TransportManagement: React.FC = observer(() => {
         // return <span>{getTransportType(props.value.name)}</span>;
         return <span>{props.value.name}</span>;
       },
+      flex: 1,
     },
     {
       field: 'name',
       headerName: 'Модель',
+      flex: 1,
     },
     {
       field: 'organisation',
@@ -51,19 +53,27 @@ export const TransportManagement: React.FC = observer(() => {
       cellRenderer: (props: ICellRendererParams) => {
         return <span>{props.value?.name}</span>;
       },
+      flex: 1,
     },
     {
       field: 'avgConsumption',
       headerName: 'Расход топлива',
       cellDataType: 'number',
+      flex: 1,
     },
-    { field: 'createdAt', headerName: 'Дата создания', cellRenderer: DateRenderer },
+    {
+      field: 'createdAt',
+      headerName: 'Дата создания',
+      cellRenderer: DateRenderer,
+      flex: 1,
+    },
     {
       headerName: '',
       width: '10px',
       onCellClicked: (event: CellClickedEvent) =>
         store.transportStore.onRowDelete(event.data.id),
       cellRenderer: RemoveIconRenderer,
+      flex: 1,
     },
   ]);
 
@@ -83,6 +93,11 @@ export const TransportManagement: React.FC = observer(() => {
     toggleDrawer(false);
   };
 
+  const onFilter = (value: string) => {
+    // store.transportStore.getData({ search: value });
+    return value;
+  };
+
   return (
     <section className="transport-management">
       <div className="header" style={{ marginBottom: '20px' }}>
@@ -98,7 +113,11 @@ export const TransportManagement: React.FC = observer(() => {
         <span>Транспортное средство</span>
       </div>
       <Box sx={{ width: '100%' }}>
-        <Paper sx={{ width: '100%', mb: 2 }}>
+        <Paper sx={{ width: '100%', padding: '20px 0' }}>
+          <SearchField
+            style={{ alignItems: 'center', marginLeft: '15px', marginBottom: '10px' }}
+            count={rowData.length}
+            onInput={onFilter}></SearchField>
           <div
             className="ag-theme-material" // applying the grid theme
             style={{ height: 'calc(100vh / 1.5)' }} // the grid will fill the size of the parent container
