@@ -1,10 +1,13 @@
-import { useEffect, useState } from 'react';
+import { Observer } from 'mobx-react-lite';
+import { useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 
-import { Box, Button } from '@mui/material';
+import { Box, Button, Stack } from '@mui/material';
 import { SelectChangeEvent } from '@mui/material/Select';
 
 import { Cesium, Menu, Yandex } from '@app/components/Maps';
+import { TMaps } from '@app/models';
+import { useStore } from '@app/store';
 
 import { items as fakeItems } from './transport.fake';
 
@@ -19,42 +22,49 @@ const style = {
     },
   },
 };
-export type TMaps = 'yandex' | 'cesium';
 
 export function Maps() {
-  const [maps, setMaps] = useState<TMaps>('yandex');
+  const { mapsStore } = useStore();
 
   useEffect(() => {
-    if (maps === 'cesium') {
+    if (mapsStore.maps === 'cesium') {
       const container = document.getElementById('cesium');
       const root = createRoot(container!);
       root.render(<Cesium />);
     }
-  }, [maps]);
+  }, [mapsStore.maps]);
 
   const items = fakeItems;
-  const handleChangeMaps = (event: SelectChangeEvent) => {
-    setMaps(event.target.value as TMaps);
-    console.log(maps, event);
-  };
-  return (
-    <>
-      <Box
-        sx={{
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-        }}>
-        <Box style={{ ...style.box }} sx={{ position: 'relative' }}>
-          <Menu items={items} maps={maps} handleChangeMaps={handleChangeMaps} />
-          {maps === 'yandex' ? <Yandex /> : <div id="cesium"> </div>}
-        </Box>
-        <></>
+  const handleChangeMaps = (event: SelectChangeEvent) =>
+    (mapsStore.maps = event.target.value as TMaps);
 
-        <Button fullWidth variant="contained">
-          Начать движение
-        </Button>
-      </Box>
-    </>
+  return (
+    <Observer>
+      {() => {
+        return (
+          <Stack
+            spacing={2}
+            sx={{
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+            }}>
+            <Box style={{ ...style.box }} sx={{ position: 'relative' }}>
+              <Menu
+                items={items}
+                maps={mapsStore.maps}
+                handleChangeMaps={handleChangeMaps}
+              />
+              {mapsStore.maps === 'yandex' ? <Yandex /> : <div id="cesium"> </div>}
+            </Box>
+            <></>
+
+            <Button fullWidth variant="contained">
+              Начать движение
+            </Button>
+          </Stack>
+        );
+      }}
+    </Observer>
   );
 }
