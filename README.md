@@ -1,6 +1,49 @@
-# Client
+<div align="center">
 
-<img alt="RouteLink" src="/src/assets/logo.webp" alt="drawing" width="300"/>
+# [<img src="src/assets/logo.webp" width="200px" alt="taiga ui logo" width="36px">](https://routelink.ru)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/routelink/client/blob/main/LICENSE)
+[![React](https://img.shields.io/badge/React-blue)](https://github.com/facebook/react)
+[![Material-UI](https://img.shields.io/badge/Material-UI-blue)](https://github.com/mui/material-ui)
+[![Code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier) 
+[![Relise](https://github.com/routelink/client/actions/workflows/release.yaml/badge.svg?branch=main)](https://github.com/routelink/client/releases)
+![GitHub commit activity (branch)](https://img.shields.io/github/commit-activity/y/routelink/client)
+
+[Website](https://routelink.ru) • [Core team](#core-team) •
+[Figma](https://www.figma.com/file/4m2hjbIAGZACNItC0fKgSY/Routelink_UI?type=design&node-id=0-1&mode=design&t=x6mPJV153xT0tosR-0)
+
+</div>
+<div align="center">
+    <img src="https://i.postimg.cc/0jzJrtyw/auth-online-video-cutter-com.gif">
+</div>
+
+## Community
+
+💡 Your ideas are very welcome in Github issues or discussions
+## How to start
+
+To install and connect the RouteLink/Client, follow these steps:
+
+1. Clone the repository:
+
+    ```bash
+    git clone https://github.com/routelink/client.git
+    ```
+
+2. Install dependencies:
+
+    ```bash
+    npm install
+    ```
+
+3. Launch the application:
+
+    ```bash
+    npm start
+    ```
+    
+## Contributing
+
+See our [CONTRIBUTING.md](https://github.com/routelink/.github/blob/main/CONTRIBUTING.md) guide.
 
 ## Core team
 
