@@ -7,7 +7,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Features
 
-* add mobx to Transport component ([#104](https://github.com/routelink/client/issues/104)) ([addae22](https://github.com/routelink/client/commit/addae2246ad9d9233284965ad5147661fd0ab3f7)), closes [#103](https://github.com/routelink/client/issues/103)
+* add mobx to Transport component ([#104](https://github.com/routelink/client/issues/104)) ([addae22](https://github.com/routelink/client/commit/addae2246ad9d9233284965ad5147661fd0ab3f7))
 
 ## [1.1.0](https://github.com/routelink/client/compare/v1.0.0...v1.1.0) (2024-04-23)
 
