@@ -118,7 +118,6 @@ export default function FuelConsumptionTable() {
         columns={columns}
         autoHeight
         pagination
-        pageSize={5}
         pageSizeOptions={[5, 10, 25, 50]}
       />
     </div>
