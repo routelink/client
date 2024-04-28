@@ -1,3 +1,4 @@
+import { Observer } from 'mobx-react-lite';
 import { ReactNode } from 'react';
 
 import { useMediaQuery, useTheme } from '@mui/material';
@@ -18,21 +19,25 @@ export function Modal(props: IModal) {
   const { appStore } = useStore();
 
   return (
-    <div>
-      <Drawer
-        anchor={isMobile ? 'bottom' : 'left'}
-        id="ddd"
-        sx={{ zIndex: 1100, variant: 'persistent' }}
-        PaperProps={{
-          sx: {
-            left: isMobile || !appStore.openSidebar ? 0 : 260,
-            width: isMobile ? '100%' : 500,
-          },
-        }}
-        open={props.isOpen}
-        onClose={props.toggle}>
-        {props.children}
-      </Drawer>
-    </div>
+    <Observer>
+      {() => {
+        return (
+          <Drawer
+            anchor={isMobile ? 'bottom' : 'left'}
+            id="ddd"
+            sx={{ zIndex: 1100, variant: 'persistent' }}
+            PaperProps={{
+              sx: {
+                left: isMobile || !appStore.openSidebar ? 0 : 260,
+                width: isMobile ? '100%' : 500,
+              },
+            }}
+            open={props.isOpen}
+            onClose={props.toggle}>
+            {props.children}
+          </Drawer>
+        );
+      }}
+    </Observer>
   );
 }
