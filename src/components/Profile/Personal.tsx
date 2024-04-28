@@ -1,7 +1,8 @@
 import { useState } from 'react';
 
-import { Avatar, Box, Button, Typography } from '@mui/material';
+import { Avatar, Box, Button, Grid, Typography } from '@mui/material';
 
+import iivanovAvatar from '@app/assets/iivanov.jpg';
 import {
   AvatarDialog,
   Dialog,
@@ -38,74 +39,75 @@ export function Personal() {
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        gap: '30px',
-        background: '#FFFFFF',
-        border: '1px solid #CFCFCF',
-        borderRadius: '5px',
-        p: 4,
+        flexGrow: 1,
+        gap: '2rem',
+        p: '2rem',
       }}>
-      <Typography
-        variant="subtitle1"
-        sx={{ color: '#0E0E0E', fontWeight: 500, lineHeight: '23.44px' }}>
-        Личная информация
-      </Typography>
-      <Box
-        className="info"
+      <Typography variant="h6">Личная информация</Typography>
+      <Grid
+        container
         sx={{
-          display: 'flex',
-          alignItems: 'center',
-          flexDirection: 'row',
-          gap: '38px',
+          gap: '2rem',
         }}>
-        <Box
-          className="info"
+        <Grid item>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: '0.5rem',
+            }}>
+            <Avatar alt="Иванов И.И." src={iivanovAvatar} />
+            <Typography variant="subtitle1">Иванов И.И.</Typography>
+          </Box>
+        </Grid>
+        <Grid
+          item
           sx={{
-            display: 'flex',
-            alignItems: 'center',
-            flexDirection: 'row',
-            gap: '12px',
+            alignContent: 'center',
           }}>
-          <Avatar alt="Remy Sharp" src="https://mui.com/static/images/avatar/1.jpg" />
-          <Typography variant="subtitle1">Иванов И.И.</Typography>
-        </Box>
-        <Typography variant="subtitle1">iivanov@gmail.com</Typography>
-      </Box>
-      <Box
-        className="button-list"
+          <Typography variant="subtitle1">iivanov@gmail.com</Typography>
+        </Grid>
+      </Grid>
+      <Grid
+        container
         sx={{
-          display: 'flex',
-          alignItems: 'center',
-          flexDirection: 'row',
-          gap: '50px',
+          gap: '2rem',
         }}>
-        <Button variant="text" onClick={handleOpenAvatar}>
-          Изменить аватар
-        </Button>
-        <Dialog
-          open={openAvatar}
-          handleClose={handleCloseAvatar}
-          title="Изменить аватар"
-          content={<AvatarDialog handleClose={handleCloseAvatar} />}
-        />
-        <Button variant="text" onClick={handleOpenName}>
-          Изменить ФИО
-        </Button>
-        <Dialog
-          open={openName}
-          handleClose={handleCloseName}
-          title="Изменить ФИО"
-          content={<NameDialog handleClose={handleCloseName} name="Иванов И.И." />}
-        />
-        <Button variant="text" onClick={handleOpenPassword}>
-          Изменить пароль
-        </Button>
-        <Dialog
-          open={openPassword}
-          handleClose={handleClosePassword}
-          title="Изменить пароль"
-          content={<PasswordDialog handleClose={handleClosePassword} />}
-        />
-      </Box>
+        <Grid item>
+          <Button variant="text" onClick={handleOpenAvatar}>
+            Изменить аватар
+          </Button>
+          <Dialog
+            open={openAvatar}
+            handleClose={handleCloseAvatar}
+            title="Изменить аватар"
+            content={<AvatarDialog handleClose={handleCloseAvatar} />}
+          />
+        </Grid>
+        <Grid item>
+          <Button variant="text" onClick={handleOpenName}>
+            Изменить ФИО
+          </Button>
+          <Dialog
+            open={openName}
+            handleClose={handleCloseName}
+            title="Изменить ФИО"
+            content={<NameDialog handleClose={handleCloseName} name="Иванов И.И." />}
+          />
+        </Grid>
+        <Grid item>
+          <Button variant="text" onClick={handleOpenPassword}>
+            Изменить пароль
+          </Button>
+          <Dialog
+            open={openPassword}
+            handleClose={handleClosePassword}
+            title="Изменить пароль"
+            content={<PasswordDialog handleClose={handleClosePassword} />}
+          />
+        </Grid>
+      </Grid>
     </Box>
   );
 }

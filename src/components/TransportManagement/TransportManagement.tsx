@@ -1,26 +1,29 @@
-import { ICellRendererParams } from '@ag-grid-community/core';
+import { CellClickedEvent, ICellRendererParams } from '@ag-grid-community/core';
 import { AgGridReact } from 'ag-grid-react';
+import { observer } from 'mobx-react-lite';
 import React, { useEffect, useState } from 'react';
 
 import { Add } from '@mui/icons-material';
 import { Box, Paper } from '@mui/material';
 
 import { Modal } from '@app/components';
-import { ITransport } from '@app/models';
-import { DateRenderer } from '@app/ui';
+import { useStore } from '@app/store.tsx';
+import { DateRenderer, RemoveIconRenderer } from '@app/ui';
 import RoundIconButton from '@app/ui/button/RoundIconButton.tsx';
-import { generateRows, v4Int } from '@app/utils';
 
 import TransportAddForm, { TransportAddState } from './TransportAddForm';
 // import { TRANSPORT_TYPES } from '@app/utils';
 import './styles.scss';
 
-export const TransportManagement: React.FC = () => {
+export const TransportManagement: React.FC = observer(() => {
   // const getTransportType = (id: number) =>
   //   TRANSPORT_TYPES.find((i) => i.id === id)?.name || '';
 
+  const store = useStore();
+
+  const rowData = store.transportStore.tableData;
+
   const [open, setOpen] = useState(false);
-  const [rowData, setRowData] = useState<ITransport[]>([]);
   const [colDefs, setColDefs] = useState<any>([
     {
       field: 'regNumber',
@@ -34,7 +37,6 @@ export const TransportManagement: React.FC = () => {
       field: 'type',
       headerName: 'Тип автомобиля',
       cellRenderer: (props: ICellRendererParams) => {
-        console.log(props.value);
         // return <span>{getTransportType(props.value.name)}</span>;
         return <span>{props.value.name}</span>;
       },
@@ -45,7 +47,7 @@ export const TransportManagement: React.FC = () => {
     },
     {
       field: 'organisation',
-      headerName: 'Водятел',
+      headerName: 'Водитель',
       cellRenderer: (props: ICellRendererParams) => {
         return <span>{props.value?.name}</span>;
       },
@@ -56,23 +58,18 @@ export const TransportManagement: React.FC = () => {
       cellDataType: 'number',
     },
     { field: 'createdAt', headerName: 'Дата создания', cellRenderer: DateRenderer },
+    {
+      headerName: '',
+      width: '10px',
+      onCellClicked: (event: CellClickedEvent) =>
+        store.transportStore.onRowDelete(event.data.id),
+      cellRenderer: RemoveIconRenderer,
+    },
   ]);
 
-  const fieldDescription = {
-    id: 'int' as const, // auto-increment,
-    name: 'str' as const,
-    type: {
-      name: 'str',
-    } as const,
-    organisation: 'str' as const,
-    regNumber: 'int' as const,
-    avgConsumption: 'float' as const,
-    createdAt: 'date' as const, //@Todo add type
-  };
   useEffect(() => {
     //@TODO
     setColDefs(colDefs);
-    setRowData(generateRows(100, fieldDescription) as ITransport[]);
   }, []);
 
   const onRowAdd = () => {
@@ -82,7 +79,7 @@ export const TransportManagement: React.FC = () => {
     setOpen(value);
   };
   const onApply = (val: TransportAddState) => {
-    setRowData((prev) => [...prev, { ...val, name: 'REPLACE', id: v4Int() }]);
+    store.transportStore.onRowAdd(val);
     toggleDrawer(false);
   };
 
@@ -122,4 +119,4 @@ export const TransportManagement: React.FC = () => {
       </Modal>
     </section>
   );
-};
+});
