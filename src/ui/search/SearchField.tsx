@@ -34,7 +34,7 @@ export const SearchField: React.FC<SearchFieldProps> = ({ count, onInput, style 
         alignItems: 'center',
         ...style,
       }}>
-      <SearchIcon sx={{ ml: '5px' }} />
+      <SearchIcon sx={{ ml: '0.3rem' }} />
       <TextField
         variant="standard"
         label="Поиск"
@@ -43,7 +43,7 @@ export const SearchField: React.FC<SearchFieldProps> = ({ count, onInput, style 
         }}
       />
       {showResult ? (
-        <Typography variant="body2" sx={{ mr: '20px' }}>
+        <Typography variant="body2" sx={{ mr: '1.25rem' }}>
           Найдено {count} записей
         </Typography>
       ) : null}

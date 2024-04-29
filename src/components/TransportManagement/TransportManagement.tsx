@@ -4,7 +4,7 @@ import { observer } from 'mobx-react-lite';
 import React, { useEffect, useState } from 'react';
 
 import { Add } from '@mui/icons-material';
-import { Box, Paper } from '@mui/material';
+import { Box, Paper, Stack } from '@mui/material';
 
 import { Modal } from '@app/components';
 import { useStore } from '@app/store.tsx';
@@ -113,24 +113,26 @@ export const TransportManagement: React.FC = observer(() => {
         <span>Транспортное средство</span>
       </div>
       <Box sx={{ width: '100%' }}>
-        <Paper sx={{ width: '100%', padding: '20px 0' }}>
-          <SearchField
-            style={{ alignItems: 'center', marginLeft: '15px', marginBottom: '10px' }}
-            count={rowData.length}
-            onInput={onFilter}></SearchField>
-          <div
-            className="ag-theme-material" // applying the grid theme
-            style={{ height: 'calc(100vh / 1.5)' }} // the grid will fill the size of the parent container
-          >
-            <AgGridReact
-              rowData={rowData}
-              columnDefs={colDefs}
-              rowSelection={'multiple'}
-              suppressRowClickSelection={true}
-              suppressColumnVirtualisation={true}
-              suppressRowVirtualisation={true}
-            />
-          </div>
+        <Paper sx={{ width: '100%' }}>
+          <Stack spacing={2} sx={{ padding: '1.25rem 0 ' }}>
+            <SearchField
+              style={{ alignItems: 'center', paddingLeft: '0.9rem' }}
+              count={rowData.length}
+              onInput={onFilter}></SearchField>
+            <div
+              className="ag-theme-material" // applying the grid theme
+              style={{ height: 'calc(100vh / 1.5)' }} // the grid will fill the size of the parent container
+            >
+              <AgGridReact
+                rowData={rowData}
+                columnDefs={colDefs}
+                rowSelection={'multiple'}
+                suppressRowClickSelection={true}
+                suppressColumnVirtualisation={true}
+                suppressRowVirtualisation={true}
+              />
+            </div>
+          </Stack>
         </Paper>
       </Box>
       <Modal isOpen={open} toggle={() => toggleDrawer(false)}>
