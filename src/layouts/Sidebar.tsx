@@ -44,7 +44,6 @@ export function Sidebar(props: SidebarProps) {
             ...theme.mixins.toolbar,
           }}>
           <Stack
-            className="Staaaaaaack"
             direction="row"
             justifyContent="flex-start"
             alignItems="center"

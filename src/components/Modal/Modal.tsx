@@ -24,7 +24,6 @@ export function Modal(props: IModal) {
         return (
           <Drawer
             anchor={isMobile ? 'bottom' : 'left'}
-            id="ddd"
             sx={{ zIndex: 1100, variant: 'persistent' }}
             PaperProps={{
               sx: {
