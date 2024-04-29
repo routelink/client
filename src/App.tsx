@@ -53,9 +53,7 @@ function App() {
             </Routes>
 
             <Helmet>
-              <meta charSet="utf-8" />
               <title> {titleStore.title} - RouteLink</title>
-              <link rel="canonical" href="http://mysite.com/example" />
             </Helmet>
           </>
         );
