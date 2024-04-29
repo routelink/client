@@ -1,4 +1,6 @@
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import React from 'react';
+import { observer } from 'mobx-react'; 
 
 const columns: GridColDef[] = [
   { field: 'id', 
@@ -23,7 +25,16 @@ const columns: GridColDef[] = [
     type: 'date' },
 ];
 
-const rows = [
+interface RowData {
+  id: number;
+  avgConsumption: number;
+  pathTraveled: number;
+  requiredFuel: number;
+  date: Date
+}
+
+
+const initialRows: RowData[] = [
   {
     id: 1,
     avgConsumption: 9,
@@ -110,9 +121,9 @@ const rows = [
   },
 ];
 
-export default function FuelConsumptionTable() {
+const FuelConsumptionTable: React.FC = observer(() => {
   return (
-    <div style={{ height: '100%', width: '100%',  backgroundColor: '#fff' }}>
+    <div style={{ height: '100%', width: '100%' }}>
       <DataGrid
         rows={rows}
         columns={columns}
@@ -122,4 +133,8 @@ export default function FuelConsumptionTable() {
       />
     </div>
   );
-}
+});
+
+const [rows, setRows] = React.useState<RowData[]>(initialRows);
+
+export default FuelConsumptionTable;

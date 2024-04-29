@@ -52,7 +52,7 @@ export default function AutoEfficiencyTable() {
   }, []);
 
   return (
-    <div style={{ height: '100%', width: '100%', backgroundColor: '#fff' }}>
+    <div style={{ height: '100%', width: '100%' }}>
       <DataGrid
         rows={dataStore.rows}
         columns={columns}
