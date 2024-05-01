@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/routelink/client/compare/v1.2.0...v1.3.0) (2024-05-01)
+
+
+### Features
+
+* add and improve components, add new stores ([#115](https://github.com/routelink/client/issues/115)) ([1cd6078](https://github.com/routelink/client/commit/1cd60789a9a7ac5985e64eca09e13cb81ca9898d)), closes [#75](https://github.com/routelink/client/issues/75) [#74](https://github.com/routelink/client/issues/74)
+* add search to transport table ([#113](https://github.com/routelink/client/issues/113)) ([d270ae2](https://github.com/routelink/client/commit/d270ae2c77db9436a8781ced7426e6cbabeef326)), closes [#82](https://github.com/routelink/client/issues/82)
+
+
+### Bug Fixes
+
+* incorrect position Modal component ([#116](https://github.com/routelink/client/issues/116)) ([a54e5be](https://github.com/routelink/client/commit/a54e5beac43c44639a1824be2e9ddaf7e0779a12)), closes [#73](https://github.com/routelink/client/issues/73)
+
 ## [1.2.0](https://github.com/routelink/client/compare/v1.1.0...v1.2.0) (2024-04-28)
 
 ### Features
