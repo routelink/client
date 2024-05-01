@@ -20,8 +20,14 @@ export class TransportStore {
   tableData: ITransport[];
 
   constructor() {
-    this.tableData = generateRows(100, fieldDescription) as ITransport[];
+    this.tableData = this.getData();
     makeAutoObservable(this);
+  }
+
+  getData(payload?: { search: string; count: string; page: string }) {
+    if (payload?.search === 'b')
+      return generateRows(100, fieldDescription) as ITransport[];
+    return generateRows(100, fieldDescription) as ITransport[];
   }
 
   onRowAdd(payload: TransportAddState): void {

@@ -3,7 +3,6 @@ import * as React from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import SearchIcon from '@mui/icons-material/Search';
 import SyncIcon from '@mui/icons-material/Sync';
 import { Box, Fab, TextField, Tooltip } from '@mui/material';
 import Button from '@mui/material/Button';
@@ -28,6 +27,8 @@ import TableSortLabel from '@mui/material/TableSortLabel';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { visuallyHidden } from '@mui/utils';
+
+import { SearchField } from '@app/ui';
 
 import { Modal } from '../Modal';
 
@@ -678,27 +679,9 @@ export function Users() {
               '&.MuiToolbar-root': { padding: '5px' },
             }}>
             {/* панель поиска */}
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                gap: '12px',
-                alignItems: 'center',
-              }}>
-              <SearchIcon sx={{ ml: '5px' }} />
-              <TextField
-                variant="standard"
-                label="Поиск"
-                onChange={(event) => {
-                  handleSearchChange(event.target.value.trim());
-                }}
-              />
-              {findedCount >= 0 ? (
-                <Typography variant="body2" sx={{ mr: '20px' }}>
-                  Найдено {findedCount} записей
-                </Typography>
-              ) : null}
-            </Box>
+            <SearchField
+              onInput={(val: string) => handleSearchChange(val)}
+              count={findedCount}></SearchField>
 
             {/* панель редактирования */}
             <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>

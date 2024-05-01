@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/routelink/client/compare/v1.1.0...v1.2.0) (2024-04-28)
+
+### Features
+
+- add mobx to Transport component ([#104](https://github.com/routelink/client/issues/104)) ([addae22](https://github.com/routelink/client/commit/addae2246ad9d9233284965ad5147661fd0ab3f7))
+
 ## [1.1.0](https://github.com/routelink/client/compare/v1.0.0...v1.1.0) (2024-04-23)
 
 ### Features
