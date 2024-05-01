@@ -201,7 +201,7 @@ function TableUsers(props: TableUsersProps) {
           stickyHeader
           sx={{ minWidth: 600 }}
           aria-labelledby="tableTitle"
-          size={'medium'}>
+          size="medium">
           <TableHead>
             <TableRow>
               <TableCell sx={{ borderWidth: '0px', padding: '0px', width: '30px' }}>
@@ -332,17 +332,12 @@ function PanelUserAdd(props: PanelUserAddProps) {
 
   return (
     <Modal isOpen={props.isOpen}>
-      <Stack
-        height={'100vh'}
-        direction={'column'}
-        justifyContent={'space-between'}
-        margin={5}>
+      <Stack height="100vh" direction="column" justifyContent="space-between" margin={5}>
         <Stack spacing={3}>
           <Typography variant="h5">Добавить пользователя</Typography>
 
           <Stack spacing={2}>
             <TextField
-              sx={{ width: '80%' }}
               required
               variant="standard"
               label="ФИО"
@@ -352,17 +347,6 @@ function PanelUserAdd(props: PanelUserAddProps) {
             />
 
             <TextField
-              sx={{ width: '80%' }}
-              required
-              variant="standard"
-              label="Логин"
-              onChange={(event) => {
-                setLogin(event.target.value);
-              }}
-            />
-
-            <TextField
-              sx={{ width: '80%' }}
               required
               variant="standard"
               label="E-mail"
@@ -373,7 +357,7 @@ function PanelUserAdd(props: PanelUserAddProps) {
           </Stack>
         </Stack>
 
-        <Stack direction={'row'} justifyContent={'flex-end'} spacing={2}>
+        <Stack direction="row" justifyContent="flex-end" spacing={2}>
           <Button
             variant="outlined"
             onClick={() => {
@@ -405,17 +389,12 @@ interface PanelUserEditProps {
 
 function PanelUserEdit(props: PanelUserEditProps) {
   const [fio, setFio] = React.useState('Иванов И.И.');
-  const [login, setLogin] = React.useState('ii_ivanoff');
   const [email, setEmail] = React.useState('ii_ivanoff@yandex.ru');
   const [org, setOrg] = React.useState('ООО Ивановы');
   const [role, setRole] = React.useState('Аналитик');
 
   const isFormValid =
-    fio.trim() !== '' &&
-    login.trim() !== '' &&
-    email.trim() !== '' &&
-    org.trim() !== '' &&
-    role.trim() !== '';
+    fio.trim() !== '' && email.trim() !== '' && org.trim() !== '' && role.trim() !== '';
 
   const handleCancel = () => {
     props.setOpen(false);
@@ -427,17 +406,12 @@ function PanelUserEdit(props: PanelUserEditProps) {
 
   return (
     <Modal isOpen={props.isOpen}>
-      <Stack
-        height={'100vh'}
-        direction={'column'}
-        justifyContent={'space-between'}
-        margin={5}>
+      <Stack height="100vh" direction="column" justifyContent="space-between" margin={5}>
         <Stack spacing={3}>
           <Typography variant="h5">Изменение пользователя</Typography>
 
           <Stack spacing={2}>
             <TextField
-              sx={{ width: '80%' }}
               variant="standard"
               label="ФИО"
               defaultValue={fio}
@@ -447,17 +421,6 @@ function PanelUserEdit(props: PanelUserEditProps) {
             />
 
             <TextField
-              sx={{ width: '80%' }}
-              variant="standard"
-              label="Логин"
-              defaultValue={login}
-              onChange={(event) => {
-                setLogin(event.target.value);
-              }}
-            />
-
-            <TextField
-              sx={{ width: '80%' }}
               variant="standard"
               label="E-mail"
               defaultValue={email}
@@ -469,38 +432,36 @@ function PanelUserEdit(props: PanelUserEditProps) {
             <FormControl variant="standard">
               <InputLabel id="org-label">Организация</InputLabel>
               <Select
-                sx={{ width: '80%' }}
                 labelId="org-label"
                 variant="standard"
                 value={org}
                 onChange={(event) => {
                   setOrg(event.target.value);
                 }}>
-                <MenuItem value={'ООО Ивановы'}>ООО Ивановы</MenuItem>
-                <MenuItem value={'ЗАО Петровы'}>ЗАО Петровы</MenuItem>
-                <MenuItem value={'НКО Сидоровы'}>НКО Сидоровы</MenuItem>
+                <MenuItem value="ООО Ивановы"> ООО Ивановы </MenuItem>
+                <MenuItem value="ЗАО Петровы"> ЗАО Петровы </MenuItem>
+                <MenuItem value="НКО Сидоровы"> НКО Сидоровы </MenuItem>
               </Select>
             </FormControl>
 
             <FormControl variant="standard">
               <InputLabel id="role-label">Роль</InputLabel>
               <Select
-                sx={{ width: '80%' }}
                 variant="standard"
                 labelId="role-label"
                 value={role}
                 onChange={(event) => {
                   setRole(event.target.value);
                 }}>
-                <MenuItem value={'Администратор'}>Администратор</MenuItem>
-                <MenuItem value={'Аналитик'}>Аналитик</MenuItem>
-                <MenuItem value={'Водитель'}>Водитель</MenuItem>
+                <MenuItem value="Администратор"> Администратор </MenuItem>
+                <MenuItem value="Аналитик"> Аналитик </MenuItem>
+                <MenuItem value="Водитель"> Водитель </MenuItem>
               </Select>
             </FormControl>
           </Stack>
         </Stack>
 
-        <Stack direction={'row'} justifyContent={'flex-end'} spacing={2}>
+        <Stack direction="row" justifyContent="flex-end" spacing={2}>
           <Button
             variant="outlined"
             onClick={() => {
@@ -515,7 +476,7 @@ function PanelUserEdit(props: PanelUserEditProps) {
             onClick={() => {
               handleAdd();
             }}>
-            Добавить
+            Изменить
           </Button>
         </Stack>
       </Stack>
@@ -630,10 +591,10 @@ export function Users() {
         setOpen={setRemoveUsersOpen}
       />
 
-      <Stack direction={'column'} spacing={2}>
+      <Stack direction="column" spacing={2}>
         {/* вызов панели "добавление пользователя" */}
 
-        <Stack direction={'row'} alignItems={'center'} spacing={2}>
+        <Stack direction="row" alignItems="center" spacing={2}>
           <Fab
             color="primary"
             onClick={() => {
@@ -647,9 +608,9 @@ export function Users() {
         <Paper sx={{ width: '100%' }}>
           {/* панель инструментов */}
 
-          <Stack direction={'row'} justifyContent={'space-between'} sx={{ ml: 1 }}>
+          <Stack direction="row" justifyContent="space-between" sx={{ ml: 1 }}>
             {/* панель поиска */}
-            <Stack direction={'row'} alignItems={'flex-end'} spacing={2}>
+            <Stack direction="row" alignItems="flex-end" spacing={2}>
               <SearchIcon />
               <TextField
                 variant="standard"
@@ -664,7 +625,7 @@ export function Users() {
             </Stack>
 
             {/* панель редактирования */}
-            <Stack direction={'row'} alignItems={'flex-end'}>
+            <Stack direction="row" alignItems="flex-end">
               {selectedIds.length ? (
                 <Typography variant="body2" sx={{ mr: 1 }}>
                   {' '}
