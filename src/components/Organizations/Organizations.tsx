@@ -6,7 +6,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import SearchIcon from '@mui/icons-material/Search';
 import SyncIcon from '@mui/icons-material/Sync';
-import { Stack } from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
@@ -18,6 +17,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Fab from '@mui/material/Fab';
 import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
+import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -188,10 +188,10 @@ function TableOrg(props: TableOrgProps) {
           stickyHeader
           sx={{ minWidth: 600 }}
           aria-labelledby="tableTitle"
-          size={'medium'}>
+          size="medium">
           <TableHead>
             <TableRow>
-              <TableCell sx={{ borderWidth: '0px', padding: 0, width: '10px' }}>
+              <TableCell sx={{ borderWidth: 0, padding: 0, width: '10px' }}>
                 <Checkbox
                   indeterminate={selected.length > 0 && selected.length < rows.length}
                   checked={rows.length > 0 && selected.length === rows.length}
@@ -306,16 +306,11 @@ function DialogOrgAdd(props: DialogOrgAddProps) {
 
   return (
     <Modal isOpen={props.isOpen}>
-      <Stack
-        height={'100vh'}
-        direction={'column'}
-        justifyContent={'space-between'}
-        margin={5}>
+      <Stack height="100vh" direction="column" justifyContent="space-between" margin={5}>
         <Stack spacing={3}>
           <Typography variant="h5">Новая организация</Typography>
 
           <TextField
-            sx={{ width: '80%' }}
             required
             variant="standard"
             label="Название организации"
@@ -325,7 +320,7 @@ function DialogOrgAdd(props: DialogOrgAddProps) {
           />
         </Stack>
 
-        <Stack direction={'row'} justifyContent={'flex-end'} spacing={2}>
+        <Stack direction="row" justifyContent="flex-end" spacing={2}>
           <Button
             variant="outlined"
             onClick={() => {
@@ -373,16 +368,11 @@ function DialogOrgEdit(props: DialogOrgEditProps) {
 
   return (
     <Modal isOpen={props.isOpen}>
-      <Stack
-        height={'100vh'}
-        direction={'column'}
-        justifyContent={'space-between'}
-        margin={5}>
+      <Stack height="100vh" direction="column" justifyContent="space-between" margin={5}>
         <Stack spacing={3}>
           <Typography variant="h5">Изменение организации</Typography>
 
           <TextField
-            sx={{ width: '80%' }}
             required
             value={newOrgName}
             variant="standard"
@@ -393,7 +383,7 @@ function DialogOrgEdit(props: DialogOrgEditProps) {
           />
         </Stack>
 
-        <Stack direction={'row'} justifyContent={'flex-end'} spacing={2}>
+        <Stack direction="row" justifyContent="flex-end" spacing={2}>
           <Button
             variant="outlined"
             onClick={() => {
@@ -517,9 +507,9 @@ export function Organizations() {
               setOpen={setDialogOrgRemoveOpen}
             />
 
-            <Stack direction={'column'} spacing={2}>
+            <Stack direction="column" spacing={2}>
               {/* вызов панели "добавление организации" */}
-              <Stack direction={'row'} alignItems={'center'} spacing={2}>
+              <Stack direction="row" alignItems="center" spacing={2}>
                 <Fab
                   color="primary"
                   onClick={() => {
@@ -532,9 +522,9 @@ export function Organizations() {
 
               <Paper>
                 {/* панель инструментов */}
-                <Stack direction={'row'} justifyContent={'space-between'} sx={{ ml: 1 }}>
+                <Stack direction="row" justifyContent="space-between" sx={{ ml: 1 }}>
                   {/* панель поиска */}
-                  <Stack direction={'row'} alignItems={'flex-end'} spacing={2}>
+                  <Stack direction="row" alignItems="flex-end" spacing={2}>
                     <SearchIcon />
                     <TextField
                       variant="standard"
@@ -551,7 +541,7 @@ export function Organizations() {
                   </Stack>
 
                   {/* панель редактирования */}
-                  <Stack direction={'row'} alignItems={'flex-end'}>
+                  <Stack direction="row" alignItems="flex-end">
                     {selectedIds.length ? (
                       <Typography variant="body2" sx={{ mr: 1 }}>
                         {' '}
