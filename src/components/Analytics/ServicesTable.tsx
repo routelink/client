@@ -45,6 +45,7 @@ const initialRows: RowData[] = [
 ];
 
 const ServicesTable: React.FC = observer(() => {
+  const [rows, /*setRows*/] = React.useState<RowData[]>(initialRows);
   return (
     <div style={{ height: 700, width: '100%' }}>
       <DataGrid
@@ -62,6 +63,6 @@ const ServicesTable: React.FC = observer(() => {
   );
 })
 
-const [rows, setRows] = React.useState<RowData[]>(initialRows);
+
 
 export default ServicesTable;

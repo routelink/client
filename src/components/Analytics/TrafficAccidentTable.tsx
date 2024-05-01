@@ -33,6 +33,7 @@ const initialRows: RowData[] = [
 ];
 
 const TrafficAccidentTable: React.FC = observer(() => { 
+  const [rows, /*setRows*/] = React.useState<RowData[]>(initialRows);
   return (
     <div style={{ height: 800, width: '100%' }}>
       <DataGrid
@@ -49,7 +50,7 @@ const TrafficAccidentTable: React.FC = observer(() => {
     </div>
   );
 })
-  const [rows, setRows] = React.useState<RowData[]>(initialRows);
+
 
 
 export default TrafficAccidentTable;

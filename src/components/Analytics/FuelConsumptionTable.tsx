@@ -122,6 +122,7 @@ const initialRows: RowData[] = [
 ];
 
 const FuelConsumptionTable: React.FC = observer(() => {
+  const [rows, /*setRows*/] = React.useState<RowData[]>(initialRows);
   return (
     <div style={{ height: '100%', width: '100%' }}>
       <DataGrid
@@ -135,6 +136,6 @@ const FuelConsumptionTable: React.FC = observer(() => {
   );
 });
 
-const [rows, setRows] = React.useState<RowData[]>(initialRows);
+
 
 export default FuelConsumptionTable;
