@@ -1,6 +1,6 @@
 <div align="center">
 
-# [<img src="src/assets/logo.webp" width="200px" alt="taiga ui logo" width="36px">](https://routelink.ru)
+# [<img src="src/assets/logo.webp" width="200px" alt="routelink logo" width="36px">](https://routelink.ru)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/routelink/client/blob/main/LICENSE)
 [![React](https://img.shields.io/badge/React-blue)](https://github.com/facebook/react)
 [![Material-UI](https://img.shields.io/badge/Material-UI-blue)](https://github.com/mui/material-ui)
