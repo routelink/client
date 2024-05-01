@@ -36,7 +36,7 @@ import { useStore } from '@app/store';
 
 import { Modal } from '../Modal';
 
-function DateToString(date: Date): String {
+function DateToString(date: Date): string {
   return (
     date.getFullYear() +
     '.' +

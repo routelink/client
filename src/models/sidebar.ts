@@ -1,6 +1,8 @@
+import { SvgIconComponent } from '@mui/icons-material';
+
 export interface Link {
   text: string;
   href: string;
-  icon: any;
+  icon: SvgIconComponent;
   exact?: boolean;
 }
