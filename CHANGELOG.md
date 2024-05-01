@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/routelink/client/compare/v1.1.0...v1.2.0) (2024-04-28)
+
+
+### Features
+
+* add mobx to Transport component ([#104](https://github.com/routelink/client/issues/104)) ([addae22](https://github.com/routelink/client/commit/addae2246ad9d9233284965ad5147661fd0ab3f7))
+
+## [1.1.0](https://github.com/routelink/client/compare/v1.0.0...v1.1.0) (2024-04-23)
+
+### Features
+
+- add `mobx` to `Organization` component ([#101](https://github.com/routelink/client/issues/101)) ([413b12c](https://github.com/routelink/client/commit/413b12cdf0623a1c2841b8eb9ca57e04532ff06b))
+- add adaptability in `Profile` component ([#89](https://github.com/routelink/client/issues/89)) ([8e2bb26](https://github.com/routelink/client/commit/8e2bb26cf77682cf5aa54a173a78833665c6fee5))
+- add CODEOWNERS ([d4041ef](https://github.com/routelink/client/commit/d4041efcfc5a10cb20741c72c0868105f037be66))
+- add new ci files ([#90](https://github.com/routelink/client/issues/90)) ([955ac1a](https://github.com/routelink/client/commit/955ac1a640a7fe50166d93b2db8f1da318201f91))
+- add theme of app ([42e2a04](https://github.com/routelink/client/commit/42e2a0435837c6e77bd480f6c06e624a46a51ddf))
+- change animation of dialog boxes in `Profile` component ([#91](https://github.com/routelink/client/issues/91)) ([e2224ac](https://github.com/routelink/client/commit/e2224ac64e20964b7aa27f4009d8ab29003c252e))
+- improve styles of dialog boxes in `Profile` component ([#92](https://github.com/routelink/client/issues/92)) ([8eb1879](https://github.com/routelink/client/commit/8eb18791e4a6ac1dfdc722417fc718db68c14307))
+
+### Bug Fixes
+
+- add container padding to `Main` ([#81](https://github.com/routelink/client/issues/81)) ([032ef0e](https://github.com/routelink/client/commit/032ef0e4a89be801055c5582e374594f9a7a55e2))
+- change name column ([#79](https://github.com/routelink/client/issues/79)) ([b149b78](https://github.com/routelink/client/commit/b149b787a3fa868930bd3c535784adedd7f12e17))
+- loading animation ([#102](https://github.com/routelink/client/issues/102)) ([940437d](https://github.com/routelink/client/commit/940437d04adb12b5165fcd2e85bc5fc2eeb57afd))
+- vehicle reg number adding ([#84](https://github.com/routelink/client/issues/84)) ([14755d1](https://github.com/routelink/client/commit/14755d1045e87e40b9fd387191324fe01adc6637))
+
 ## [1.0.0](https://github.com/routelink/client/compare/v0.0.1...v1.0.0) (2024-04-17)
 
 ### Features
