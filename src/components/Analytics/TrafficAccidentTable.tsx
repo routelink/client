@@ -1,4 +1,11 @@
+import React from 'react';
+import { observer } from 'mobx-react'; 
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
+
+interface RowData {
+  id: number;
+  trafficAccidentSum: number;
+}
 
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'ID', width: 120, description: 'Транспорт ID.' },
@@ -10,7 +17,7 @@ const columns: GridColDef[] = [
   },
 ];
 
-const rows = [
+const initialRows: RowData[] = [
   { id: 1, trafficAccidentSum: 9 },
   { id: 2, trafficAccidentSum: 9 },
   { id: 3, trafficAccidentSum: 9 },
@@ -25,7 +32,8 @@ const rows = [
   { id: 12, trafficAccidentSum: 9 },
 ];
 
-export default function TrafficAccidentTable() {
+const TrafficAccidentTable: React.FC = observer(() => { 
+  const [rows, /*setRows*/] = React.useState<RowData[]>(initialRows);
   return (
     <div style={{ height: 800, width: '100%' }}>
       <DataGrid
@@ -41,4 +49,8 @@ export default function TrafficAccidentTable() {
       />
     </div>
   );
-}
+})
+
+
+
+export default TrafficAccidentTable;

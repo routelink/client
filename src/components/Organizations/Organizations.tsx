@@ -17,6 +17,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Fab from '@mui/material/Fab';
 import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
+import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -26,7 +27,6 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import TextField from '@mui/material/TextField';
-import Toolbar from '@mui/material/Toolbar';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { visuallyHidden } from '@mui/utils';
@@ -188,12 +188,11 @@ function TableOrg(props: TableOrgProps) {
           stickyHeader
           sx={{ minWidth: 600 }}
           aria-labelledby="tableTitle"
-          size={'medium'}>
+          size="medium">
           <TableHead>
             <TableRow>
-              <TableCell sx={{ borderWidth: '0px', padding: '0px', width: '30px' }}>
+              <TableCell sx={{ borderWidth: 0, padding: 0, width: '10px' }}>
                 <Checkbox
-                  sx={{ '&.MuiCheckbox-root': { color: '#4C4C4C' } }}
                   indeterminate={selected.length > 0 && selected.length < rows.length}
                   checked={rows.length > 0 && selected.length === rows.length}
                   onChange={handleSelectAllClick}
@@ -237,9 +236,8 @@ function TableOrg(props: TableOrgProps) {
                   key={row.id}
                   selected={isItemSelected}
                   sx={{ cursor: 'pointer' }}>
-                  <TableCell sx={{ borderWidth: '0px', padding: '0px', width: '30px' }}>
+                  <TableCell sx={{ borderWidth: '0px', padding: 0 }}>
                     <Checkbox
-                      sx={{ '&.MuiCheckbox-root': { color: '#4C4C4C' } }}
                       checked={isItemSelected}
                       inputProps={{ 'aria-labelledby': labelId }}
                     />
@@ -308,57 +306,39 @@ function DialogOrgAdd(props: DialogOrgAddProps) {
 
   return (
     <Modal isOpen={props.isOpen}>
-      <Box height={'100%'}>
-        <Box
-          display={'flex'}
-          flexDirection={'column'}
-          height={'calc( 100% - 96px )'}
-          justifyContent={'space-between'}
-          margin={'48px 60px'}>
-          <Box>
-            <Typography sx={{ fontSize: '24px', textAlign: 'left' }}>
-              Новая организация
-            </Typography>
+      <Stack height="100vh" direction="column" justifyContent="space-between" margin={5}>
+        <Stack spacing={3}>
+          <Typography variant="h5">Новая организация</Typography>
 
-            <TextField
-              sx={{ mt: '30px', width: '255px' }}
-              required
-              variant="standard"
-              label="Название организации"
-              onChange={(event) => {
-                setOrgName(event.target.value);
-              }}
-            />
-          </Box>
+          <TextField
+            required
+            variant="standard"
+            label="Название организации"
+            onChange={(event) => {
+              setOrgName(event.target.value);
+            }}
+          />
+        </Stack>
 
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'flex-end',
-              gap: '20px',
+        <Stack direction="row" justifyContent="flex-end" spacing={2}>
+          <Button
+            variant="outlined"
+            onClick={() => {
+              handleCancel();
             }}>
-            <Button
-              variant="outlined"
-              sx={{ fontSize: '14px', minWidth: '115px' }}
-              onClick={() => {
-                handleCancel();
-              }}>
-              Отмена
-            </Button>
+            Отмена
+          </Button>
 
-            <Button
-              disabled={!isFormValid}
-              variant="contained"
-              sx={{ fontSize: '14px', minWidth: '115px' }}
-              onClick={() => {
-                handleAdd();
-              }}>
-              Добавить
-            </Button>
-          </Box>
-        </Box>
-      </Box>
+          <Button
+            disabled={!isFormValid}
+            variant="contained"
+            onClick={() => {
+              handleAdd();
+            }}>
+            Добавить
+          </Button>
+        </Stack>
+      </Stack>
     </Modal>
   );
 }
@@ -367,76 +347,61 @@ function DialogOrgAdd(props: DialogOrgAddProps) {
 /* диалог "реактирование организации" */
 interface DialogOrgEditProps {
   isOpen: boolean;
+  orgId: number;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 function DialogOrgEdit(props: DialogOrgEditProps) {
-  const [orgName, setOrgName] = React.useState('');
-  const isFormValid = orgName.trim() !== '';
+  const { orgsStore } = useStore();
+  const currentOrgName = orgsStore.getOrgName(props.orgId);
+  const [newOrgName, setNewOrgName] = React.useState(currentOrgName);
+  const isFormValid = newOrgName.trim() !== '' && newOrgName.trim() !== currentOrgName;
 
   const handleCancel = () => {
     props.setOpen(false);
-    setOrgName('');
   };
 
   const handleEdit = () => {
+    orgsStore.updateOrgName(props.orgId, newOrgName);
     props.setOpen(false);
-    setOrgName('');
   };
 
   return (
     <Modal isOpen={props.isOpen}>
-      <Box height={'100%'}>
-        <Box
-          display={'flex'}
-          flexDirection={'column'}
-          height={'calc( 100% - 96px )'}
-          justifyContent={'space-between'}
-          margin={'48px 60px'}>
-          <Box>
-            <Typography sx={{ fontSize: '24px', textAlign: 'left' }}>
-              Изменение организации
-            </Typography>
+      <Stack height="100vh" direction="column" justifyContent="space-between" margin={5}>
+        <Stack spacing={3}>
+          <Typography variant="h5">Изменение организации</Typography>
 
-            <TextField
-              sx={{ mt: '30px', width: '255px' }}
-              required
-              variant="standard"
-              label="Название организации"
-              onChange={(event) => {
-                setOrgName(event.target.value);
-              }}
-            />
-          </Box>
+          <TextField
+            required
+            value={newOrgName}
+            variant="standard"
+            label="Название организации"
+            onChange={(event) => {
+              setNewOrgName(event.target.value);
+            }}
+          />
+        </Stack>
 
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'flex-end',
-              gap: '20px',
+        <Stack direction="row" justifyContent="flex-end" spacing={2}>
+          <Button
+            variant="outlined"
+            onClick={() => {
+              handleCancel();
             }}>
-            <Button
-              variant="outlined"
-              sx={{ fontSize: '14px', minWidth: '115px' }}
-              onClick={() => {
-                handleCancel();
-              }}>
-              Отмена
-            </Button>
+            Отмена
+          </Button>
 
-            <Button
-              disabled={!isFormValid}
-              variant="contained"
-              sx={{ fontSize: '14px', minWidth: '115px' }}
-              onClick={() => {
-                handleEdit();
-              }}>
-              Изменить
-            </Button>
-          </Box>
-        </Box>
-      </Box>
+          <Button
+            disabled={!isFormValid}
+            variant="contained"
+            onClick={() => {
+              handleEdit();
+            }}>
+            Изменить
+          </Button>
+        </Stack>
+      </Stack>
     </Modal>
   );
 }
@@ -528,52 +493,39 @@ export function Organizations() {
         return (
           <>
             <DialogOrgAdd isOpen={dialogOrgAddOpen} setOpen={setDialogOrgAddOpen} />
-            <DialogOrgEdit isOpen={dialogOrgEditOpen} setOpen={setDialogOrgEditOpen} />
+            {selectedIds.length === 1 ? (
+              <DialogOrgEdit
+                isOpen={dialogOrgEditOpen}
+                orgId={selectedIds[0]}
+                setOpen={setDialogOrgEditOpen}
+              />
+            ) : null}
+
             <DialogRemoveOrgs
               isOpen={dialogOrgRemoveOpen}
               orgIds={selectedIds}
               setOpen={setDialogOrgRemoveOpen}
             />
 
-            <Box margin={'0px 20px 0px 20px'}>
+            <Stack direction="column" spacing={2}>
               {/* вызов панели "добавление организации" */}
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  gap: '18px',
-                }}>
+              <Stack direction="row" alignItems="center" spacing={2}>
                 <Fab
                   color="primary"
-                  sx={{ margin: '20px 0px 20px 0px' }}
                   onClick={() => {
                     setDialogOrgAddOpen(true);
                   }}>
                   <AddIcon />
                 </Fab>
-                <Typography sx={{ fontSize: '20px' }}>Организация</Typography>
-              </Box>
+                <Typography variant="h6">Организация</Typography>
+              </Stack>
 
-              <Paper sx={{ width: '100%' }}>
+              <Paper>
                 {/* панель инструментов */}
-                <Toolbar
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'flex-end',
-                    '&.MuiToolbar-root': { padding: '5px' },
-                  }}>
+                <Stack direction="row" justifyContent="space-between" sx={{ ml: 1 }}>
                   {/* панель поиска */}
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      flexDirection: 'row',
-                      gap: '12px',
-                      alignItems: 'flex-end',
-                    }}>
-                    <SearchIcon sx={{ ml: '5px' }} />
+                  <Stack direction="row" alignItems="flex-end" spacing={2}>
+                    <SearchIcon />
                     <TextField
                       variant="standard"
                       label="Поиск"
@@ -582,21 +534,16 @@ export function Organizations() {
                       }}
                     />
                     {findedCount >= 0 ? (
-                      <Typography variant="body2" sx={{ mr: '20px' }}>
+                      <Typography variant="body2">
                         Найдено {findedCount} записей
                       </Typography>
                     ) : null}
-                  </Box>
+                  </Stack>
 
                   {/* панель редактирования */}
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      flexDirection: 'row',
-                      alignItems: 'flex-end',
-                    }}>
+                  <Stack direction="row" alignItems="flex-end">
                     {selectedIds.length ? (
-                      <Typography variant="body2" sx={{ mr: '20px' }}>
+                      <Typography variant="body2" sx={{ mr: 1 }}>
                         {' '}
                         Выбрано {selectedIds.length} записей{' '}
                       </Typography>
@@ -631,13 +578,13 @@ export function Organizations() {
                         </IconButton>
                       </span>
                     </Tooltip>
-                  </Box>
-                </Toolbar>
+                  </Stack>
+                </Stack>
 
                 {/* таблица организаций */}
                 <TableOrg orgData={showOrgData} onSelectChange={handleSelectChange} />
               </Paper>
-            </Box>
+            </Stack>
           </>
         );
       }}
