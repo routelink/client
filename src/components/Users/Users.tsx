@@ -308,8 +308,11 @@ interface PanelUserAddProps {
 }
 
 function PanelUserAdd(props: PanelUserAddProps) {
+  const { orgsStore } = useStore();
   const [fio, setFio] = React.useState('');
   const [email, setEmail] = React.useState('');
+  const [orgId, setOrgId] = React.useState(-1);
+  const [roleId, setRoleId] = React.useState(-1);
 
   const isFormValid = fio.trim() !== '' && email.trim() !== '';
 
@@ -317,12 +320,16 @@ function PanelUserAdd(props: PanelUserAddProps) {
     props.setOpen(false);
     setFio('');
     setEmail('');
+    setRoleId(-1);
+    setOrgId(-1);
   };
 
   const handleAdd = () => {
     props.setOpen(false);
     setFio('');
     setEmail('');
+    setRoleId(-1);
+    setOrgId(-1);
   };
 
   return (
@@ -349,6 +356,62 @@ function PanelUserAdd(props: PanelUserAddProps) {
                 setEmail(event.target.value);
               }}
             />
+
+            <FormControl variant="standard">
+              <InputLabel id="org-label">Организация</InputLabel>
+              <Select
+                labelId="org-label"
+                variant="standard"
+                value={orgId}
+                onChange={(event) => {
+                  if (typeof event.target.value === 'number') {
+                    setOrgId(event.target.value);
+                  }
+                }}>
+                <MenuItem key={-1} value={-1}>
+                  {' '}
+                  <em>Не назначена</em>{' '}
+                </MenuItem>
+                {orgsStore.orgs.map((org) => (
+                  <MenuItem key={org.id} value={org.id}>
+                    {' '}
+                    {org.name}{' '}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            {orgId !== -1 ? (
+              <FormControl variant="standard">
+                <InputLabel id="role-label">Роль</InputLabel>
+                <Select
+                  labelId="role-label"
+                  variant="standard"
+                  value={roleId}
+                  onChange={(event) => {
+                    if (typeof event.target.value === 'number') {
+                      setRoleId(event.target.value);
+                    }
+                  }}>
+                  <MenuItem key={-1} value={-1}>
+                    {' '}
+                    <em>Не назначена</em>{' '}
+                  </MenuItem>
+                  <MenuItem key={1} value={1}>
+                    {' '}
+                    Администратор{' '}
+                  </MenuItem>
+                  <MenuItem key={2} value={2}>
+                    {' '}
+                    Аналитик{' '}
+                  </MenuItem>
+                  <MenuItem key={3} value={3}>
+                    {' '}
+                    Водитель{' '}
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            ) : null}
           </Stack>
         </Stack>
 
