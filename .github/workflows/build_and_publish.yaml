@@ -71,7 +71,7 @@ jobs:
           sed -i "s/^appVersion:.*$/appVersion: ${{ env.DOCKER_METADATA_OUTPUT_VERSION }}/" helm/Chart.yaml
           echo "version_release=${{ steps.get_version.outputs.version }}" >> $GITHUB_OUTPUT
           echo "version_stage=${{ steps.get_version.outputs.version }}-${{ github.run_number }}" >> $GITHUB_OUTPUT
-          echo "version_next=${{ steps.get_version.outputs.version_next }}-next" >> $GITHUB_OUTPUT
+          echo "version_next=${{ steps.get_version.outputs.version_next }}-${{ github.run_number }}" >> $GITHUB_OUTPUT
       - name: Package and push Helm chart
         uses: appany/helm-oci-chart-releaser@v0.3.0
         with:
