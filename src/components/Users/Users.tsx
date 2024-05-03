@@ -30,6 +30,7 @@ import TextField from '@mui/material/TextField';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { visuallyHidden } from '@mui/utils';
+
 import { IUser } from '@app/models';
 import { useStore } from '@app/store';
 import { SearchField } from '@app/ui';
@@ -609,19 +610,6 @@ export function Users() {
 
           <Stack direction="row" justifyContent="space-between" sx={{ ml: 1 }}>
             {/* панель поиска */}
-            <Stack direction="row" alignItems="flex-end" spacing={2}>
-              <SearchIcon />
-              <TextField
-                variant="standard"
-                label="Поиск"
-                onChange={(event) => {
-                  handleSearchChange(event.target.value.trim());
-                }}
-              />
-              {findedCount >= 0 ? (
-                <Typography variant="body2">Найдено {findedCount} записей</Typography>
-              ) : null}
-            </Stack>
             <SearchField
               onInput={(val: string) => handleSearchChange(val)}
               count={findedCount}></SearchField>
