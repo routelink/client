@@ -206,7 +206,6 @@ function TableUsers(props: TableUsersProps) {
             <TableRow>
               <TableCell sx={{ borderWidth: '0px', padding: '0px', width: '30px' }}>
                 <Checkbox
-                  sx={{ '&.MuiCheckbox-root': { color: '#4C4C4C' } }}
                   indeterminate={selected.length > 0 && selected.length < rows.length}
                   checked={rows.length > 0 && selected.length === rows.length}
                   onChange={handleSelectAllClick}
@@ -252,7 +251,6 @@ function TableUsers(props: TableUsersProps) {
                   sx={{ cursor: 'pointer' }}>
                   <TableCell sx={{ borderWidth: '0px', padding: '0px', width: '30px' }}>
                     <Checkbox
-                      sx={{ '&.MuiCheckbox-root': { color: '#4C4C4C' } }}
                       checked={isItemSelected}
                       inputProps={{ 'aria-labelledby': labelId }}
                     />
