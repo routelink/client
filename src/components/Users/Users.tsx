@@ -311,22 +311,19 @@ interface PanelUserAddProps {
 
 function PanelUserAdd(props: PanelUserAddProps) {
   const [fio, setFio] = React.useState('');
-  const [login, setLogin] = React.useState('');
   const [email, setEmail] = React.useState('');
 
-  const isFormValid = fio.trim() !== '' && login.trim() !== '' && email.trim() !== '';
+  const isFormValid = fio.trim() !== '' && email.trim() !== '';
 
   const handleCancel = () => {
     props.setOpen(false);
     setFio('');
-    setLogin('');
     setEmail('');
   };
 
   const handleAdd = () => {
     props.setOpen(false);
     setFio('');
-    setLogin('');
     setEmail('');
   };
 
