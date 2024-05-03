@@ -46,7 +46,7 @@ jobs:
         id: get_version
         run: |
           echo "version=$(git describe --abbrev=0 --tags | sed 's/^.//')" >> $GITHUB_OUTPUT
-          echo "version_next=$(npm version major --no-commit-hooks --no-git-tag-version)" >> $GITHUB_OUTPUT
+          echo "version_next=$(npm version major --no-commit-hooks --no-git-tag-version | sed 's/^.//')" >> $GITHUB_OUTPUT
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v5.5.1
