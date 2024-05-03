@@ -28,7 +28,7 @@ const rows = [
 
 export default function OvertimeTable() {
   return (
-    <div style={{ height: 800, width: '100%' }}>
+    <div style={{ height: 700, width: '100%' }}>
       <DataGrid
         rows={rows}
         columns={columns}
@@ -37,6 +37,7 @@ export default function OvertimeTable() {
             paginationModel: { page: 0, pageSize: 5 },
           },
         }}
+        autoHeight
         pageSizeOptions={[5, 10, 25, 50]}
       />
     </div>

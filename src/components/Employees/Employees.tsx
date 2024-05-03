@@ -5,7 +5,7 @@ import { EMTable } from './emTable';
 
 export function Employees() {
   return (
-    <Box paddingX={'20px'}>
+    <Box>
       <AddEmployeeButton />
       <EMTable />
     </Box>

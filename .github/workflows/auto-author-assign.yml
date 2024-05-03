@@ -3,12 +3,19 @@ on:
   pull_request:
     types: [opened, reopened]
 
+permissions:
+  pull-requests: write
+
 jobs:
   assign-author:
     name: PR author as an assignee
     runs-on: ubuntu-latest
     steps:
-      - uses: toshimaru/auto-author-assign@v2.1.0
-        if: env.IS_OWNER_MODE == 'true'
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
-          repo-token: ${{ secrets.ROUTELINKBOT_TOKEN }}
+          fetch-depth: 0
+          token: ${{ secrets.ROUTELINKBOT_TOKEN }}
+      - uses: toshimaru/auto-author-assign@v2.1.0
+        with:
+          repo-token: ${{ secrets.ROUTELINKBOT_TOKEN || github.token }}

@@ -1,3 +1,4 @@
+import { Observer } from 'mobx-react-lite';
 import * as React from 'react';
 
 import AddIcon from '@mui/icons-material/Add';
@@ -10,6 +11,8 @@ import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Fab from '@mui/material/Fab';
 import IconButton from '@mui/material/IconButton';
@@ -28,7 +31,20 @@ import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { visuallyHidden } from '@mui/utils';
 
+import { IOrganizationStrict } from '@app/models';
+import { useStore } from '@app/store';
+
 import { Modal } from '../Modal';
+
+function DateToString(date: Date): string {
+  return (
+    date.getFullYear() +
+    '.' +
+    String(date.getMonth() + 1).padStart(2, '0') +
+    '.' +
+    String(date.getDate()).padStart(2, '0')
+  );
+}
 
 {
   /* таблица пользователей */
@@ -49,15 +65,15 @@ function getComparator<Key extends keyof any>(
   order: Order,
   orderBy: Key,
 ): (
-  a: { [key in Key]: number | string },
-  b: { [key in Key]: number | string },
+  a: { [key in Key]: number | string | Date | undefined },
+  b: { [key in Key]: number | string | Date | undefined },
 ) => number {
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) {
+function stableSort<T>(array: T[], comparator: (a: T, b: T) => number) {
   const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
@@ -69,23 +85,17 @@ function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) 
   return stabilizedThis.map((el) => el[0]);
 }
 
-interface IOrgData {
-  id: number;
-  org: string;
-  date: string;
-}
-
 interface HeadCell {
-  id: keyof IOrgData;
+  id: keyof IOrganizationStrict;
   label: string;
 }
 const headCells: readonly HeadCell[] = [
-  { id: 'org', label: 'Организация' },
-  { id: 'date', label: 'Дата создания' },
+  { id: 'name', label: 'Организация' },
+  { id: 'createdAt', label: 'Дата создания' },
 ];
 
 interface TableOrgProps {
-  orgData: IOrgData[];
+  orgData: IOrganizationStrict[];
   onSelectChange: (selectedIndexArray: readonly number[]) => void;
 }
 
@@ -96,12 +106,15 @@ function TableOrg(props: TableOrgProps) {
     : (_: readonly number[]) => {};
 
   const [order, setOrder] = React.useState<Order>('asc');
-  const [orderBy, setOrderBy] = React.useState<keyof IOrgData>('org');
+  const [orderBy, setOrderBy] = React.useState<keyof IOrganizationStrict>('name');
   const [selected, setSelected] = React.useState<readonly number[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
-  const handleRequestSort = (_: React.MouseEvent<unknown>, property: keyof IOrgData) => {
+  const handleRequestSort = (
+    _: React.MouseEvent<unknown>,
+    property: keyof IOrganizationStrict,
+  ) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
@@ -155,7 +168,7 @@ function TableOrg(props: TableOrgProps) {
   );
 
   const createSortHandler =
-    (property: keyof IOrgData) => (event: React.MouseEvent<unknown>) => {
+    (property: keyof IOrganizationStrict) => (event: React.MouseEvent<unknown>) => {
       handleRequestSort(event, property);
     };
 
@@ -238,12 +251,12 @@ function TableOrg(props: TableOrgProps) {
                     scope="row"
                     padding="none">
                     {' '}
-                    {row.org}{' '}
+                    {row.name}{' '}
                   </TableCell>
 
                   <TableCell sx={{ borderWidth: '0px', padding: '12px', width: '180px' }}>
                     {' '}
-                    {row.date}{' '}
+                    {DateToString(row.createdAt)}{' '}
                   </TableCell>
                 </TableRow>
               );
@@ -279,6 +292,7 @@ interface DialogOrgAddProps {
 function DialogOrgAdd(props: DialogOrgAddProps) {
   const [orgName, setOrgName] = React.useState('');
   const isFormValid = orgName.trim() !== '';
+  const { orgsStore } = useStore();
 
   const handleCancel = () => {
     props.setOpen(false);
@@ -286,6 +300,8 @@ function DialogOrgAdd(props: DialogOrgAddProps) {
   };
 
   const handleAdd = () => {
+    /* добавить проверку "already exists" */
+    orgsStore.addOrgs(orgName);
     props.setOpen(false);
     setOrgName('');
   };
@@ -424,19 +440,24 @@ function DialogOrgEdit(props: DialogOrgEditProps) {
     </Modal>
   );
 }
-/* диалог "реактирование организации" (конец)*/
+/* диалог "редактирование организации" (конец)*/
 
 /* диалог "удаления организации" */
 interface DialogRemoveOrgProps {
   isOpen: boolean;
+  orgIds: number[];
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 function DialogRemoveOrgs(props: DialogRemoveOrgProps) {
+  const { orgsStore } = useStore();
+
   const handleCancel = () => {
     props.setOpen(false);
   };
+
   const handleRemove = () => {
+    orgsStore.removeOrgs(props.orgIds);
     props.setOpen(false);
   };
 
@@ -446,7 +467,12 @@ function DialogRemoveOrgs(props: DialogRemoveOrgProps) {
         open={props.isOpen}
         onClose={handleCancel}
         aria-labelledby="responsive-dialog-title">
-        <DialogTitle>Удалить выбранные организации?</DialogTitle>
+        <DialogTitle>Удаление организаций</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Запрошено удаление {props.orgIds.length} организаций. Продолжить удаление?
+          </DialogContentText>
+        </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={handleCancel}>
             Отмена
@@ -461,156 +487,160 @@ function DialogRemoveOrgs(props: DialogRemoveOrgProps) {
 }
 /* диалог "удаления организации" (конец) */
 
-function getOrgDataFromBackend(): IOrgData[] {
-  /* заглушка для получения данных с сервера */
-  function createOrgData(id: number, org: string, date: string) {
-    return { id, org, date };
-  }
-
-  return [
-    createOrgData(1, 'ООО Ивановы', '2020.01.01'),
-    createOrgData(2, 'ЗАО Петровы', '2020.02.02'),
-    createOrgData(3, 'НКО Сидоровы', '2021.03.03'),
-    createOrgData(4, 'ОАО Птицины', '2021.04.04'),
-    createOrgData(5, 'ПАО Ивановы', '2022.05.05'),
-    createOrgData(6, 'ВГУП "Свои"', '2022.06.06'),
-    createOrgData(7, 'GmbH "Alien"', '2023.07.07'),
-  ];
-}
-
 export function Organizations() {
   const [dialogOrgAddOpen, setDialogOrgAddOpen] = React.useState(false);
   const [dialogOrgEditOpen, setDialogOrgEditOpen] = React.useState(false);
   const [dialogOrgRemoveOpen, setDialogOrgRemoveOpen] = React.useState(false);
 
-  const [selectedCount, setSelectedCount] = React.useState(0);
+  const [selectedIds, setSelectedIds] = React.useState<number[]>([]);
   const [findedCount, setFindedCount] = React.useState(-1);
 
-  const rawOrgData: IOrgData[] = getOrgDataFromBackend();
-  const [showOrgData, setShowUserData] = React.useState<IOrgData[]>(rawOrgData);
+  const { orgsStore } = useStore();
+  const [showOrgData, setShowOrgsData] = React.useState<IOrganizationStrict[]>(
+    orgsStore.orgs,
+  );
+
+  React.useEffect(() => {
+    setShowOrgsData(orgsStore.orgs);
+  }, [orgsStore.orgs]);
 
   const handleSelectChange = (selectedIndexArray: readonly number[]) => {
-    setSelectedCount(selectedIndexArray.length);
+    setSelectedIds(selectedIndexArray.slice());
   };
 
   const handleSearchChange = (search: string) => {
-    const newOrgData: IOrgData[] = rawOrgData.filter(
+    const newOrgData: IOrganizationStrict[] = orgsStore.orgs.filter(
       (orgData) =>
-        orgData.org.toLowerCase().includes(search.toLowerCase()) ||
-        orgData.date.toLowerCase().includes(search.toLowerCase()),
+        orgData.name.toLowerCase().includes(search.toLowerCase()) ||
+        DateToString(orgData.createdAt).includes(search.toLowerCase()),
     );
     if (search.length) {
       setFindedCount(newOrgData.length);
     } else {
       setFindedCount(-1);
     }
-    setShowUserData(newOrgData);
+    setShowOrgsData(newOrgData);
   };
 
   return (
-    <>
-      <DialogOrgAdd isOpen={dialogOrgAddOpen} setOpen={setDialogOrgAddOpen} />
-      <DialogOrgEdit isOpen={dialogOrgEditOpen} setOpen={setDialogOrgEditOpen} />
-      <DialogRemoveOrgs isOpen={dialogOrgRemoveOpen} setOpen={setDialogOrgRemoveOpen} />
+    <Observer>
+      {() => {
+        return (
+          <>
+            <DialogOrgAdd isOpen={dialogOrgAddOpen} setOpen={setDialogOrgAddOpen} />
+            <DialogOrgEdit isOpen={dialogOrgEditOpen} setOpen={setDialogOrgEditOpen} />
+            <DialogRemoveOrgs
+              isOpen={dialogOrgRemoveOpen}
+              orgIds={selectedIds}
+              setOpen={setDialogOrgRemoveOpen}
+            />
 
-      <Box margin={'0px 20px 0px 20px'}>
-        {/* вызов панели "добавление организации" */}
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: '18px',
-          }}>
-          <Fab
-            color="primary"
-            sx={{ margin: '20px 0px 20px 0px' }}
-            onClick={() => {
-              setDialogOrgAddOpen(true);
-            }}>
-            <AddIcon />
-          </Fab>
-          <Typography sx={{ fontSize: '20px' }}>Организация</Typography>
-        </Box>
+            <Box margin={'0px 20px 0px 20px'}>
+              {/* вызов панели "добавление организации" */}
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: '18px',
+                }}>
+                <Fab
+                  color="primary"
+                  sx={{ margin: '20px 0px 20px 0px' }}
+                  onClick={() => {
+                    setDialogOrgAddOpen(true);
+                  }}>
+                  <AddIcon />
+                </Fab>
+                <Typography sx={{ fontSize: '20px' }}>Организация</Typography>
+              </Box>
 
-        <Paper sx={{ width: '100%' }}>
-          {/* панель инструментов */}
-          <Toolbar
-            sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'flex-end',
-              '&.MuiToolbar-root': { padding: '5px' },
-            }}>
-            {/* панель поиска */}
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                gap: '12px',
-                alignItems: 'flex-end',
-              }}>
-              <SearchIcon sx={{ ml: '5px' }} />
-              <TextField
-                variant="standard"
-                label="Поиск"
-                onChange={(event) => {
-                  handleSearchChange(event.target.value.trim());
-                }}
-              />
-              {findedCount >= 0 ? (
-                <Typography variant="body2" sx={{ mr: '20px' }}>
-                  Найдено {findedCount} записей
-                </Typography>
-              ) : null}
-            </Box>
-
-            {/* панель редактирования */}
-            <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end' }}>
-              {selectedCount ? (
-                <Typography variant="body2" sx={{ mr: '20px' }}>
-                  {' '}
-                  Выбрано {selectedCount} записей{' '}
-                </Typography>
-              ) : null}
-
-              <Tooltip title="Изменить выбранное" placement="top">
-                <span>
-                  <IconButton
-                    disabled={selectedCount !== 1}
-                    onClick={() => {
-                      setDialogOrgEditOpen(true);
+              <Paper sx={{ width: '100%' }}>
+                {/* панель инструментов */}
+                <Toolbar
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'flex-end',
+                    '&.MuiToolbar-root': { padding: '5px' },
+                  }}>
+                  {/* панель поиска */}
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      gap: '12px',
+                      alignItems: 'flex-end',
                     }}>
-                    <EditIcon />
-                  </IconButton>
-                </span>
-              </Tooltip>
-              <Tooltip title="Удалить выбранное" placement="top">
-                <span>
-                  <IconButton
-                    disabled={selectedCount === 0}
-                    onClick={() => {
-                      setDialogOrgRemoveOpen(true);
-                    }}>
-                    <DeleteIcon />
-                  </IconButton>
-                </span>
-              </Tooltip>
-              <Tooltip title="Обновить данные" placement="top">
-                <span>
-                  <IconButton>
-                    <SyncIcon />
-                  </IconButton>
-                </span>
-              </Tooltip>
-            </Box>
-          </Toolbar>
+                    <SearchIcon sx={{ ml: '5px' }} />
+                    <TextField
+                      variant="standard"
+                      label="Поиск"
+                      onChange={(event) => {
+                        handleSearchChange(event.target.value.trim());
+                      }}
+                    />
+                    {findedCount >= 0 ? (
+                      <Typography variant="body2" sx={{ mr: '20px' }}>
+                        Найдено {findedCount} записей
+                      </Typography>
+                    ) : null}
+                  </Box>
 
-          {/* таблица организаций */}
-          <TableOrg orgData={showOrgData} onSelectChange={handleSelectChange} />
-        </Paper>
-      </Box>
-    </>
+                  {/* панель редактирования */}
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      alignItems: 'flex-end',
+                    }}>
+                    {selectedIds.length ? (
+                      <Typography variant="body2" sx={{ mr: '20px' }}>
+                        {' '}
+                        Выбрано {selectedIds.length} записей{' '}
+                      </Typography>
+                    ) : null}
+
+                    <Tooltip title="Изменить выбранное" placement="top">
+                      <span>
+                        <IconButton
+                          disabled={selectedIds.length !== 1}
+                          onClick={() => {
+                            setDialogOrgEditOpen(true);
+                          }}>
+                          <EditIcon />
+                        </IconButton>
+                      </span>
+                    </Tooltip>
+                    <Tooltip title="Удалить выбранное" placement="top">
+                      <span>
+                        <IconButton
+                          disabled={selectedIds.length === 0}
+                          onClick={() => {
+                            setDialogOrgRemoveOpen(true);
+                          }}>
+                          <DeleteIcon />
+                        </IconButton>
+                      </span>
+                    </Tooltip>
+                    <Tooltip title="Обновить данные" placement="top">
+                      <span>
+                        <IconButton>
+                          <SyncIcon />
+                        </IconButton>
+                      </span>
+                    </Tooltip>
+                  </Box>
+                </Toolbar>
+
+                {/* таблица организаций */}
+                <TableOrg orgData={showOrgData} onSelectChange={handleSelectChange} />
+              </Paper>
+            </Box>
+          </>
+        );
+      }}
+    </Observer>
   );
 }
