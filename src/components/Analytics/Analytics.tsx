@@ -8,7 +8,6 @@ import {
   SelectChangeEvent,
 } from '@mui/material';
 
-
 import AutoEfficiencyDifferentLength from './AutoEfficiencyDifferentLength';
 import AutoEfficiencyTable from './AutoEfficiencyTable';
 import DateChooser from './DateChooser';
@@ -21,7 +20,6 @@ import TrafficAccidentTable from './TrafficAccidentTable';
 interface AnalyticsSwitchProps {
   analyticsType: string;
 }
-
 
 function AnalyticsSwitch({ analyticsType }: AnalyticsSwitchProps) {
   switch (analyticsType) {

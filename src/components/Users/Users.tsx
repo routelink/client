@@ -3,7 +3,6 @@ import * as React from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import SearchIcon from '@mui/icons-material/Search';
 import SyncIcon from '@mui/icons-material/Sync';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -31,9 +30,9 @@ import TextField from '@mui/material/TextField';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { visuallyHidden } from '@mui/utils';
-
 import { IUser } from '@app/models';
 import { useStore } from '@app/store';
+import { SearchField } from '@app/ui';
 
 import { Modal } from '../Modal';
 
@@ -623,6 +622,9 @@ export function Users() {
                 <Typography variant="body2">Найдено {findedCount} записей</Typography>
               ) : null}
             </Stack>
+            <SearchField
+              onInput={(val: string) => handleSearchChange(val)}
+              count={findedCount}></SearchField>
 
             {/* панель редактирования */}
             <Stack direction="row" alignItems="flex-end">

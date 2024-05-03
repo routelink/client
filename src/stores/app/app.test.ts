@@ -26,4 +26,18 @@ describe('app store', () => {
     store.toggleOpenMobile();
     expect(store.openMobile).toBeFalsy();
   });
+  it('loading', () => {
+    expect(store.loading).toBeFalsy();
+    store.loading = true;
+    expect(store.loading).toBeTruthy();
+    store.loading = false;
+    expect(store.loading).toBeFalsy();
+  });
+  it('error', () => {
+    expect(store.error).toBeNull();
+    store.error = 'error';
+    expect(store.error).toBe('error');
+    store.error = null;
+    expect(store.error).toBeNull();
+  });
 });

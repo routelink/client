@@ -1,3 +1,5 @@
+import { Observer } from 'mobx-react-lite';
+import { createElement } from 'react';
 import { NavLink } from 'react-router-dom';
 
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
@@ -11,120 +13,128 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 
 import logo from '@app/assets/logo-white.png';
-import { Link as ILink } from '@app/models';
+import { useStore } from '@app/store';
 
 interface SidebarProps extends DrawerProps {
-  links: ILink[];
   handleSidebarToggle: () => void;
   sidebarOpen: boolean;
 }
 
 export function Sidebar(props: SidebarProps) {
-  const { links, handleSidebarToggle, sidebarOpen, ...other } = props;
+  const { handleSidebarToggle, sidebarOpen, ...other } = props;
 
-  const items = props.links ?? [];
+  const { linksStore } = useStore();
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   return (
-    <Drawer
-      sx={{ zIndex: 1200 }}
-      variant="persistent"
-      open={sidebarOpen}
-      anchor="left"
-      {...other}>
-      <List sx={{ background: '#38373A', flexGrow: 1, py: 0 }}>
-        <ListItem
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            px: 2.5,
-            ...theme.mixins.toolbar,
-          }}>
-          <Stack
-            className="Staaaaaaack"
-            direction="row"
-            justifyContent="flex-start"
-            alignItems="center"
-            gap={1}
-            spacing={0}
-            sx={{ width: '100%' }}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleSidebarToggle}
-              color="inherit">
-              <MenuOpenIcon
+    <Observer>
+      {() => {
+        return (
+          <Drawer
+            sx={{ zIndex: 1200 }}
+            variant="persistent"
+            open={sidebarOpen}
+            anchor="left"
+            {...other}>
+            <List sx={{ bgcolor: theme.palette.common.black, flexGrow: 1, py: 0 }}>
+              <ListItem
                 sx={{
-                  color: theme.palette.common.white,
-                  minWidth: 0,
-                  justifyContent: 'center',
-                }}
-              />
-            </IconButton>
-            <Stack
-              component={NavLink}
-              to="/"
-              direction="row"
-              onClick={isMobile ? handleSidebarToggle : () => {}}
-              justifyContent="flex-start"
-              alignItems="center"
-              spacing={0}
-              sx={{
-                textDecoration: 'none',
-                color: theme.palette.common.black,
-                '&:hover': {
-                  textDecoration: 'none',
-                  color: theme.palette.common.black,
-                },
-              }}>
-              <img width={120} src={logo} className="logo" alt="RouteLink" />
-            </Stack>
-          </Stack>
-        </ListItem>
-        <Divider sx={{ opacity: 1 }} />
-        <Stack sx={{ flexGrow: 1, py: 0 }}>
-          {items.map((item, index) => (
-            <ListItem key={index} disablePadding sx={{ display: 'block' }}>
-              <ListItemButton
-                component={NavLink}
-                to={item.href}
-                onClick={isMobile ? handleSidebarToggle : () => {}}
-                selected={
-                  item.exact && true === item.exact
-                    ? location.pathname === item.href
-                    : location.pathname.indexOf(item.href) === 0
-                }
-                sx={{
-                  minHeight: 48,
-                  justifyContent: 'center',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
                   px: 2.5,
+                  ...theme.mixins.toolbar,
                 }}>
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    color: theme.palette.common.white,
-                    mr: 2,
-                    justifyContent: 'center',
-                  }}>
-                  {item.icon}
-                </ListItemIcon>
-                <ListItemText
-                  primary={item.text}
-                  sx={{
-                    opacity: 1,
-                    color: theme.palette.common.white,
-                  }}
-                />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </Stack>
-      </List>
-    </Drawer>
+                <Stack
+                  className="Staaaaaaack"
+                  direction="row"
+                  justifyContent="flex-start"
+                  alignItems="center"
+                  gap={1}
+                  spacing={0}
+                  sx={{ width: '100%' }}>
+                  <IconButton
+                    size="large"
+                    aria-label="account of current user"
+                    aria-controls="menu-appbar"
+                    aria-haspopup="true"
+                    onClick={handleSidebarToggle}
+                    color="inherit">
+                    <MenuOpenIcon
+                      sx={{
+                        color: theme.palette.common.white,
+                        minWidth: 0,
+                        justifyContent: 'center',
+                      }}
+                    />
+                  </IconButton>
+                  <Stack
+                    component={NavLink}
+                    to="/"
+                    direction="row"
+                    onClick={isMobile ? handleSidebarToggle : () => {}}
+                    justifyContent="flex-start"
+                    alignItems="center"
+                    spacing={0}
+                    sx={{
+                      textDecoration: 'none',
+                      color: theme.palette.common.black,
+                      '&:hover': {
+                        textDecoration: 'none',
+                        color: theme.palette.common.black,
+                      },
+                    }}>
+                    <img width={120} src={logo} className="logo" alt="RouteLink" />
+                  </Stack>
+                </Stack>
+              </ListItem>
+              <Divider sx={{ opacity: 1 }} />
+              <Stack sx={{ flexGrow: 1, py: 0 }}>
+                {linksStore.getLinks().map((item, index) => (
+                  <ListItem key={index} disablePadding sx={{ display: 'block' }}>
+                    <ListItemButton
+                      component={NavLink}
+                      to={item.href}
+                      onClick={isMobile ? handleSidebarToggle : () => {}}
+                      selected={
+                        item.exact && true === item.exact
+                          ? location.pathname === item.href
+                          : location.pathname.indexOf(item.href) === 0
+                      }
+                      sx={{
+                        minHeight: 48,
+                        justifyContent: 'center',
+                        px: 2.5,
+                        ':hover': {
+                          bgcolor: theme.palette.primary.dark,
+                        },
+                      }}>
+                      <ListItemIcon
+                        sx={{
+                          minWidth: 0,
+                          color: theme.palette.common.white,
+                          mr: 2,
+                          justifyContent: 'center',
+                        }}>
+                        {createElement(item.icon)}
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={item.text}
+                        sx={{
+                          opacity: 1,
+                          color: theme.palette.common.white,
+                        }}
+                      />
+                    </ListItemButton>
+                  </ListItem>
+                ))}
+              </Stack>
+            </List>
+          </Drawer>
+        );
+      }}
+    </Observer>
   );
 }

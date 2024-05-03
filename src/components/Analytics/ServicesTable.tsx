@@ -1,4 +1,6 @@
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import React from 'react';
+import { observer } from 'mobx-react'; 
 
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'ID', width: 120, description: 'Транспорт ID.' },
@@ -19,7 +21,15 @@ const columns: GridColDef[] = [
   },
 ];
 
-const rows = [
+interface RowData{
+  id: number;
+  type: string;
+  date: Date;
+  length: number; 
+}
+
+
+const initialRows: RowData[] = [
   { id: 1, type: 'Мотоцикл', date: new Date(2024, 3, 12), length: 999999 },
   { id: 2, type: 'Мотоцикл', date: new Date(2024, 5, 12), length: 123441 },
   { id: 3, type: 'Мотоцикл', date: new Date(2024, 5, 12), length: 12441 },
@@ -34,7 +44,8 @@ const rows = [
   { id: 12, type: 'Электрокар', date: new Date(2024, 5, 12), length: 12344 },
 ];
 
-export default function ServicesTable() {
+const ServicesTable: React.FC = observer(() => {
+  const [rows, /*setRows*/] = React.useState<RowData[]>(initialRows);
   return (
     <div style={{ height: 700, width: '100%' }}>
       <DataGrid
@@ -50,4 +61,8 @@ export default function ServicesTable() {
       />
     </div>
   );
-}
+})
+
+
+
+export default ServicesTable;
