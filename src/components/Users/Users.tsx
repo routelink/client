@@ -4,18 +4,20 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import SyncIcon from '@mui/icons-material/Sync';
-import { Box, Fab, TextField, Tooltip } from '@mui/material';
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
+import Fab from '@mui/material/Fab';
 import FormControl from '@mui/material/FormControl';
 import IconButton from '@mui/material/IconButton';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Paper from '@mui/material/Paper';
 import Select from '@mui/material/Select';
+import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -24,13 +26,25 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
-import Toolbar from '@mui/material/Toolbar';
+import TextField from '@mui/material/TextField';
+import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { visuallyHidden } from '@mui/utils';
-
+import { IUser } from '@app/models';
+import { useStore } from '@app/store';
 import { SearchField } from '@app/ui';
 
 import { Modal } from '../Modal';
+
+function DateToString(date: Date): String {
+  return (
+    date.getFullYear() +
+    '.' +
+    String(date.getMonth() + 1).padStart(2, '0') +
+    '.' +
+    String(date.getDate()).padStart(2, '0')
+  );
+}
 
 {
   /* таблица пользователей */
@@ -51,8 +65,8 @@ function getComparator<Key extends keyof any>(
   order: Order,
   orderBy: Key,
 ): (
-  a: { [key in Key]: number | string },
-  b: { [key in Key]: number | string },
+  a: { [key in Key]: number | string | Date },
+  b: { [key in Key]: number | string | Date },
 ) => number {
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
@@ -71,27 +85,29 @@ function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) 
   return stabilizedThis.map((el) => el[0]);
 }
 
-interface IUserData {
+interface IUserTableView {
   id: number;
   name: string;
-  org: string;
-  role: string;
-  date: string;
+  orgId: number;
+  orgName: string;
+  roleId: number;
+  roleName: string;
+  createdAt: Date;
 }
 
 interface HeadCell {
-  id: keyof IUserData;
+  id: keyof IUserTableView;
   label: string;
 }
 const headCells: readonly HeadCell[] = [
   { id: 'name', label: 'ФИО' },
-  { id: 'org', label: 'Организация' },
-  { id: 'role', label: 'Роль' },
-  { id: 'date', label: 'Дата создания' },
+  { id: 'orgName', label: 'Организация' },
+  { id: 'roleName', label: 'Роль' },
+  { id: 'createdAt', label: 'Дата создания' },
 ];
 
 interface TableUsersProps {
-  userData: IUserData[];
+  userData: IUserTableView[];
   onSelectChange: (selectedIndexArray: readonly number[]) => void;
 }
 
@@ -102,12 +118,15 @@ function TableUsers(props: TableUsersProps) {
     : (_: readonly number[]) => {};
 
   const [order, setOrder] = React.useState<Order>('asc');
-  const [orderBy, setOrderBy] = React.useState<keyof IUserData>('name');
+  const [orderBy, setOrderBy] = React.useState<keyof IUserTableView>('name');
   const [selected, setSelected] = React.useState<readonly number[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
-  const handleRequestSort = (_: React.MouseEvent<unknown>, property: keyof IUserData) => {
+  const handleRequestSort = (
+    _: React.MouseEvent<unknown>,
+    property: keyof IUserTableView,
+  ) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
@@ -161,7 +180,7 @@ function TableUsers(props: TableUsersProps) {
   );
 
   const createSortHandler =
-    (property: keyof IUserData) => (event: React.MouseEvent<unknown>) => {
+    (property: keyof IUserTableView) => (event: React.MouseEvent<unknown>) => {
       handleRequestSort(event, property);
     };
 
@@ -181,7 +200,7 @@ function TableUsers(props: TableUsersProps) {
           stickyHeader
           sx={{ minWidth: 600 }}
           aria-labelledby="tableTitle"
-          size={'medium'}>
+          size="medium">
           <TableHead>
             <TableRow>
               <TableCell sx={{ borderWidth: '0px', padding: '0px', width: '30px' }}>
@@ -248,15 +267,15 @@ function TableUsers(props: TableUsersProps) {
                   </TableCell>
                   <TableCell sx={{ borderWidth: '0px', padding: '12px' }}>
                     {' '}
-                    {row.org}{' '}
+                    {row.orgName}{' '}
                   </TableCell>
                   <TableCell sx={{ borderWidth: '0px', padding: '12px' }}>
                     {' '}
-                    {row.role}{' '}
+                    {row.roleName}{' '}
                   </TableCell>
                   <TableCell sx={{ borderWidth: '0px', padding: '12px', width: '180px' }}>
                     {' '}
-                    {row.date}{' '}
+                    {DateToString(row.createdAt)}{' '}
                   </TableCell>
                 </TableRow>
               );
@@ -312,102 +331,50 @@ function PanelUserAdd(props: PanelUserAddProps) {
 
   return (
     <Modal isOpen={props.isOpen}>
-      <Box
-        display={'flex'}
-        flexDirection={'row'}
-        justifyContent={'space-evenly'}
-        height={'100vh'}>
-        <Box
-          display={'flex'}
-          flexDirection={'column'}
-          alignItems={'stretch'}
-          maxWidth={'500px'}
-          margin={'50px'}>
-          <Typography sx={{ fontSize: '20px', textAlign: 'center' }}>
-            Добавить пользователя
-          </Typography>
+      <Stack height="100vh" direction="column" justifyContent="space-between" margin={5}>
+        <Stack spacing={3}>
+          <Typography variant="h5">Добавить пользователя</Typography>
 
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'stretch',
-            }}>
+          <Stack spacing={2}>
             <TextField
+              required
               variant="standard"
               label="ФИО"
               onChange={(event) => {
                 setFio(event.target.value);
               }}
             />
-            <Typography sx={{ fontSize: '12px', mt: '5px' }}>
-              Обязательное поле
-            </Typography>
-          </Box>
 
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'stretch',
-            }}>
             <TextField
-              variant="standard"
-              label="Логин"
-              onChange={(event) => {
-                setLogin(event.target.value);
-              }}
-            />
-            <Typography sx={{ fontSize: '12px', mt: '5px' }}>
-              Обязательное поле
-            </Typography>
-          </Box>
-
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'stretch',
-            }}>
-            <TextField
+              required
               variant="standard"
               label="E-mail"
               onChange={(event) => {
                 setEmail(event.target.value);
               }}
             />
-            <Typography sx={{ fontSize: '12px', mt: '5px' }}>
-              Обязательное поле
-            </Typography>
-          </Box>
+          </Stack>
+        </Stack>
 
-          <Box
-            display={'flex'}
-            flexDirection={'row'}
-            justifyContent={'space-between'}
-            mt={'30px'}
-            gap={'30px'}>
-            <Button
-              variant="outlined"
-              onClick={() => {
-                handleCancel();
-              }}
-              sx={{ width: '140px' }}>
-              Отмена
-            </Button>
+        <Stack direction="row" justifyContent="flex-end" spacing={2}>
+          <Button
+            variant="outlined"
+            onClick={() => {
+              handleCancel();
+            }}>
+            Отмена
+          </Button>
 
-            <Button
-              disabled={!isFormValid}
-              variant="contained"
-              onClick={() => {
-                handleAdd();
-              }}
-              sx={{ width: '140px' }}>
-              Добавить
-            </Button>
-          </Box>
-        </Box>
-      </Box>
+          <Button
+            disabled={!isFormValid}
+            variant="contained"
+            onClick={() => {
+              handleAdd();
+            }}>
+            Добавить
+          </Button>
+        </Stack>
+      </Stack>
     </Modal>
   );
 }
@@ -421,17 +388,12 @@ interface PanelUserEditProps {
 
 function PanelUserEdit(props: PanelUserEditProps) {
   const [fio, setFio] = React.useState('Иванов И.И.');
-  const [login, setLogin] = React.useState('ii_ivanoff');
   const [email, setEmail] = React.useState('ii_ivanoff@yandex.ru');
   const [org, setOrg] = React.useState('ООО Ивановы');
   const [role, setRole] = React.useState('Аналитик');
 
   const isFormValid =
-    fio.trim() !== '' &&
-    login.trim() !== '' &&
-    email.trim() !== '' &&
-    org.trim() !== '' &&
-    role.trim() !== '';
+    fio.trim() !== '' && email.trim() !== '' && org.trim() !== '' && role.trim() !== '';
 
   const handleCancel = () => {
     props.setOpen(false);
@@ -443,105 +405,80 @@ function PanelUserEdit(props: PanelUserEditProps) {
 
   return (
     <Modal isOpen={props.isOpen}>
-      <Box
-        display={'flex'}
-        flexDirection={'row'}
-        justifyContent={'space-evenly'}
-        height={'100vh'}>
-        <Box
-          display={'flex'}
-          flexDirection={'column'}
-          gap={'20px'}
-          alignItems={'stretch'}
-          maxWidth={'500px'}
-          margin={'50px'}>
-          <Typography sx={{ fontSize: '20px', textAlign: 'center' }}>
-            Изменение пользователя
-          </Typography>
+      <Stack height="100vh" direction="column" justifyContent="space-between" margin={5}>
+        <Stack spacing={3}>
+          <Typography variant="h5">Изменение пользователя</Typography>
 
-          <TextField
-            variant="standard"
-            label="ФИО"
-            defaultValue={fio}
-            onChange={(event) => {
-              setFio(event.target.value);
-            }}
-          />
-
-          <TextField
-            variant="standard"
-            label="Логин"
-            defaultValue={login}
-            onChange={(event) => {
-              setLogin(event.target.value);
-            }}
-          />
-
-          <TextField
-            variant="standard"
-            label="E-mail"
-            defaultValue={email}
-            onChange={(event) => {
-              setEmail(event.target.value);
-            }}
-          />
-
-          <FormControl variant="standard">
-            <InputLabel id="org-label">Организация</InputLabel>
-            <Select
-              labelId="org-label"
-              value={org}
-              onChange={(event) => {
-                setOrg(event.target.value);
-              }}>
-              <MenuItem value={'ООО Ивановы'}>ООО Ивановы</MenuItem>
-              <MenuItem value={'ЗАО Петровы'}>ЗАО Петровы</MenuItem>
-              <MenuItem value={'НКО Сидоровы'}>НКО Сидоровы</MenuItem>
-            </Select>
-          </FormControl>
-
-          <FormControl variant="standard">
-            <InputLabel id="role-label">Роль</InputLabel>
-            <Select
+          <Stack spacing={2}>
+            <TextField
               variant="standard"
-              labelId="role-label"
-              value={role}
+              label="ФИО"
+              defaultValue={fio}
               onChange={(event) => {
-                setRole(event.target.value);
-              }}>
-              <MenuItem value={'Администратор'}>Администратор</MenuItem>
-              <MenuItem value={'Аналитик'}>Аналитик</MenuItem>
-              <MenuItem value={'Водитель'}>Водитель</MenuItem>
-            </Select>
-          </FormControl>
-
-          <Box
-            display={'flex'}
-            flexDirection={'row'}
-            justifyContent={'space-between'}
-            mt={'30px'}
-            gap={'30px'}>
-            <Button
-              variant="outlined"
-              onClick={() => {
-                handleCancel();
+                setFio(event.target.value);
               }}
-              sx={{ width: '140px' }}>
-              Отмена
-            </Button>
+            />
 
-            <Button
-              disabled={!isFormValid}
-              variant="contained"
-              onClick={() => {
-                handleAdd();
+            <TextField
+              variant="standard"
+              label="E-mail"
+              defaultValue={email}
+              onChange={(event) => {
+                setEmail(event.target.value);
               }}
-              sx={{ width: '140px' }}>
-              Изменить
-            </Button>
-          </Box>
-        </Box>
-      </Box>
+            />
+
+            <FormControl variant="standard">
+              <InputLabel id="org-label">Организация</InputLabel>
+              <Select
+                labelId="org-label"
+                variant="standard"
+                value={org}
+                onChange={(event) => {
+                  setOrg(event.target.value);
+                }}>
+                <MenuItem value="ООО Ивановы"> ООО Ивановы </MenuItem>
+                <MenuItem value="ЗАО Петровы"> ЗАО Петровы </MenuItem>
+                <MenuItem value="НКО Сидоровы"> НКО Сидоровы </MenuItem>
+              </Select>
+            </FormControl>
+
+            <FormControl variant="standard">
+              <InputLabel id="role-label">Роль</InputLabel>
+              <Select
+                variant="standard"
+                labelId="role-label"
+                value={role}
+                onChange={(event) => {
+                  setRole(event.target.value);
+                }}>
+                <MenuItem value="Администратор"> Администратор </MenuItem>
+                <MenuItem value="Аналитик"> Аналитик </MenuItem>
+                <MenuItem value="Водитель"> Водитель </MenuItem>
+              </Select>
+            </FormControl>
+          </Stack>
+        </Stack>
+
+        <Stack direction="row" justifyContent="flex-end" spacing={2}>
+          <Button
+            variant="outlined"
+            onClick={() => {
+              handleCancel();
+            }}>
+            Отмена
+          </Button>
+
+          <Button
+            disabled={!isFormValid}
+            variant="contained"
+            onClick={() => {
+              handleAdd();
+            }}>
+            Изменить
+          </Button>
+        </Stack>
+      </Stack>
     </Modal>
   );
 }
@@ -550,14 +487,17 @@ function PanelUserEdit(props: PanelUserEditProps) {
 /* диалог "удаления пользователя" */
 interface DialogRemoveUsersProps {
   isOpen: boolean;
+  usersIds: number[];
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 function DialogRemoveUsers(props: DialogRemoveUsersProps) {
+  const { usersStore } = useStore();
   const handleCancel = () => {
     props.setOpen(false);
   };
   const handleRemove = () => {
+    usersStore.removeUsers(props.usersIds);
     props.setOpen(false);
   };
 
@@ -582,53 +522,46 @@ function DialogRemoveUsers(props: DialogRemoveUsersProps) {
 }
 /* диалог "удаления пользователя" (конец) */
 
-function getUserDataFromBackend(): IUserData[] {
-  /* заглушка для получения данных с сервера */
-  function createUserData(
-    id: number,
-    name: string,
-    org: string,
-    role: string,
-    date: string,
-  ) {
-    return { id, name, org, role, date };
-  }
+function IUsers2IUserTableView(users: IUser[]): IUserTableView[] {
+  return users.map((user: IUser): IUserTableView => {
+    const userAsTabView: IUserTableView = {
+      id: user.id,
+      name: user.username,
+      orgId: user.organization ? user.organization.id : -1,
+      orgName: user.organization ? user.organization.name : '',
+      roleId: user.role ? user.role.id : -1,
+      roleName: user.role ? user.role.name : '',
+      createdAt: user.createdAt ? user.createdAt : new Date(0, 0, 0),
+    };
 
-  return [
-    createUserData(1, 'Иванов 1', 'ООО Ивановы', 'Администратор', '2020.01.01'),
-    createUserData(2, 'Иванов 2', 'ООО Ивановы', 'Аналитик', '2020.02.01'),
-    createUserData(3, 'Иванов 3', 'ООО Ивановы', 'Водитель', '2020.03.01'),
-    createUserData(4, 'Иванов 4', 'ООО Ивановы', 'Водитель', '2020.03.02'),
-
-    createUserData(5, 'Петров 1', 'ЗАО Петровы', 'Администратор', '2021.02.01'),
-    createUserData(6, 'Петров 2', 'ЗАО Петровы', 'Аналитик', '2021.02.02'),
-    createUserData(7, 'Петров 3', 'ЗАО Петровы', 'Водитель', '2021.02.03'),
-    createUserData(8, 'Петров 4', 'ЗАО Петровы', 'Водитель', '2021.02.04'),
-
-    createUserData(9, 'Сидоров 1', 'НКО Сидоровы', 'Администратор', '2022.03.01'),
-    createUserData(10, 'Сидоров 2', 'НКО Сидоровы', 'Аналитик', '2022.03.02'),
-    createUserData(11, 'Сидоров 3', 'НКО Сидоровы', 'Аналитик', '2022.03.03'),
-    createUserData(12, 'Сидоров 4', 'НКО Сидоровы', 'Водитель', '2022.03.04'),
-  ];
+    return userAsTabView;
+  });
 }
 
 export function Users() {
-  const rawUserData: IUserData[] = getUserDataFromBackend();
-  const [showUserData, setShowUserData] = React.useState<IUserData[]>(rawUserData);
-  const [selectedCount, setSelectedCount] = React.useState(0);
+  const { usersStore } = useStore();
+  const [showUserData, setShowUserData] = React.useState<IUserTableView[]>(
+    IUsers2IUserTableView(usersStore.users),
+  );
+
+  const [selectedIds, setSelectedIds] = React.useState<number[]>([]);
   const [findedCount, setFindedCount] = React.useState(-1);
 
   const [addUserOpen, setAddUserOpen] = React.useState(false);
   const [editUserOpen, setEditUserOpen] = React.useState(false);
   const [removeUsersOpen, setRemoveUsersOpen] = React.useState(false);
 
+  React.useEffect(() => {
+    setShowUserData(IUsers2IUserTableView(usersStore.users));
+  }, [usersStore.users]);
+
   const handleSearchChange = (search: string) => {
-    const newUserData: IUserData[] = rawUserData.filter(
+    const newUserData: IUserTableView[] = IUsers2IUserTableView(usersStore.users).filter(
       (userData) =>
         userData.name.toLowerCase().includes(search.toLowerCase()) ||
-        userData.org.toLowerCase().includes(search.toLowerCase()) ||
-        userData.role.toLowerCase().includes(search.toLowerCase()) ||
-        userData.date.toLowerCase().includes(search.toLowerCase()),
+        userData.orgName.toLowerCase().includes(search.toLowerCase()) ||
+        userData.roleName.toLowerCase().includes(search.toLowerCase()) ||
+        DateToString(userData.createdAt).includes(search.toLowerCase()),
     );
     if (search.length) {
       setFindedCount(newUserData.length);
@@ -639,7 +572,7 @@ export function Users() {
   };
 
   const handleSelectChange = (selectedIndexArray: readonly number[]) => {
-    setSelectedCount(selectedIndexArray.length);
+    setSelectedIds(selectedIndexArray.slice());
   };
 
   return (
@@ -651,50 +584,61 @@ export function Users() {
       <PanelUserEdit isOpen={editUserOpen} setOpen={setEditUserOpen} />
 
       {/* диалог "удаление пользователя" */}
-      <DialogRemoveUsers isOpen={removeUsersOpen} setOpen={setRemoveUsersOpen} />
+      <DialogRemoveUsers
+        isOpen={removeUsersOpen}
+        usersIds={selectedIds}
+        setOpen={setRemoveUsersOpen}
+      />
 
-      <Box margin={'0px 20px 0px 20px'}>
+      <Stack direction="column" spacing={2}>
         {/* вызов панели "добавление пользователя" */}
-        <Box display={'flex'} flexDirection={'row'} alignItems={'center'} gap={'18px'}>
+
+        <Stack direction="row" alignItems="center" spacing={2}>
           <Fab
             color="primary"
-            aria-label="add"
-            sx={{ margin: '20px 0px 20px 0px' }}
             onClick={() => {
               setAddUserOpen(true);
             }}>
             <AddIcon />
           </Fab>
-          <Typography sx={{ fontSize: '20px' }}>Пользователь</Typography>
-        </Box>
+          <Typography variant="h6">Пользователь</Typography>
+        </Stack>
 
         <Paper sx={{ width: '100%' }}>
           {/* панель инструментов */}
-          <Toolbar
-            sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              bgcolor: 'white',
-              '&.MuiToolbar-root': { padding: '5px' },
-            }}>
+
+          <Stack direction="row" justifyContent="space-between" sx={{ ml: 1 }}>
             {/* панель поиска */}
+            <Stack direction="row" alignItems="flex-end" spacing={2}>
+              <SearchIcon />
+              <TextField
+                variant="standard"
+                label="Поиск"
+                onChange={(event) => {
+                  handleSearchChange(event.target.value.trim());
+                }}
+              />
+              {findedCount >= 0 ? (
+                <Typography variant="body2">Найдено {findedCount} записей</Typography>
+              ) : null}
+            </Stack>
             <SearchField
               onInput={(val: string) => handleSearchChange(val)}
               count={findedCount}></SearchField>
 
             {/* панель редактирования */}
-            <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-              {selectedCount ? (
-                <Typography variant="body2" sx={{ mr: '20px' }}>
-                  Выбрано {selectedCount} записей
+            <Stack direction="row" alignItems="flex-end">
+              {selectedIds.length ? (
+                <Typography variant="body2" sx={{ mr: 1 }}>
+                  {' '}
+                  Выбрано {selectedIds.length} записей{' '}
                 </Typography>
               ) : null}
 
               <Tooltip title="Изменить выбранное" placement="top">
                 <span>
                   <IconButton
-                    disabled={selectedCount !== 1}
+                    disabled={selectedIds.length !== 1}
                     onClick={() => {
                       setEditUserOpen(true);
                     }}>
@@ -705,7 +649,7 @@ export function Users() {
               <Tooltip title="Удалить выбранное" placement="top">
                 <span>
                   <IconButton
-                    disabled={selectedCount === 0}
+                    disabled={selectedIds.length === 0}
                     onClick={() => {
                       setRemoveUsersOpen(true);
                     }}>
@@ -720,13 +664,12 @@ export function Users() {
                   </IconButton>
                 </span>
               </Tooltip>
-            </Box>
-          </Toolbar>
-
+            </Stack>
+          </Stack>
           {/* таблица пользователей */}
           <TableUsers userData={showUserData} onSelectChange={handleSelectChange} />
         </Paper>
-      </Box>
+      </Stack>
     </>
   );
 }
