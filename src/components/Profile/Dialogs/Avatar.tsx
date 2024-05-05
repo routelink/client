@@ -9,11 +9,16 @@ import {
   Typography,
 } from '@mui/material';
 
-import iivanovAvatar from '@app/assets/iivanov.jpg';
+import { useStore } from '@app/store';
+
+//import avatar from '@app/assets/iivanov.jpg';
 
 export function AvatarDialog({ handleClose }: { handleClose: () => void }) {
+  const { profileStore } = useStore();
   const handleSave = () => {
     console.log('save');
+    profileStore.changeAvatar('test');
+    handleClose();
   };
   return (
     <>
@@ -31,8 +36,8 @@ export function AvatarDialog({ handleClose }: { handleClose: () => void }) {
             flexDirection: 'row',
             gap: '0.5rem',
           }}>
-          <Avatar alt="Иванов И.И." src={iivanovAvatar} />
-          <Typography variant="subtitle1">Иванов И.И.</Typography>
+          <Avatar alt={profileStore.data.username} src={profileStore.data.avatar} />
+          <Typography variant="subtitle1">{profileStore.data.username}</Typography>
         </Box>
         <Box
           sx={{

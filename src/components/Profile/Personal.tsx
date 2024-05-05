@@ -1,14 +1,16 @@
+import { Observer } from 'mobx-react-lite';
 import { useState } from 'react';
+import { useEffect } from 'react';
 
 import { Avatar, Box, Button, Grid, Typography } from '@mui/material';
 
-import iivanovAvatar from '@app/assets/iivanov.jpg';
 import {
   AvatarDialog,
   Dialog,
   NameDialog,
   PasswordDialog,
 } from '@app/components/Profile/Dialogs';
+import { useStore } from '@app/store';
 
 export function Personal() {
   const [openAvatar, setOpenAvatar] = useState(false);
@@ -34,80 +36,101 @@ export function Personal() {
   const handleClosePassword = () => {
     setOpenPassword(false);
   };
+
+  const { profileStore } = useStore();
+
+  useEffect(() => {
+    profileStore.getProfile();
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        flexGrow: 1,
-        gap: '2rem',
-        p: '2rem',
-      }}>
-      <Typography variant="h6">Личная информация</Typography>
-      <Grid
-        container
-        sx={{
-          gap: '2rem',
-        }}>
-        <Grid item>
+    <Observer>
+      {() => {
+        return (
           <Box
             sx={{
               display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: '0.5rem',
+              flexDirection: 'column',
+              flexGrow: 1,
+              gap: '2rem',
+              p: '2rem',
             }}>
-            <Avatar alt="Иванов И.И." src={iivanovAvatar} />
-            <Typography variant="subtitle1">Иванов И.И.</Typography>
+            <Typography variant="h6">Личная информация</Typography>
+            <Grid
+              container
+              sx={{
+                gap: '2rem',
+              }}>
+              <Grid item>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                  }}>
+                  <Avatar alt="Иванов И.И." src={profileStore.data.avatar} />
+                  <Typography variant="subtitle1">
+                    {profileStore.data.username}
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid
+                item
+                sx={{
+                  alignContent: 'center',
+                }}>
+                <Typography variant="subtitle1">{profileStore.data.email}</Typography>
+              </Grid>
+            </Grid>
+            <Grid
+              container
+              sx={{
+                gap: '2rem',
+              }}>
+              <Grid item>
+                <Button variant="text" onClick={handleOpenAvatar}>
+                  Изменить аватар
+                </Button>
+                <Dialog
+                  open={openAvatar}
+                  handleClose={handleCloseAvatar}
+                  title="Изменить аватар"
+                  content={<AvatarDialog handleClose={handleCloseAvatar} />}
+                />
+              </Grid>
+              <Grid item>
+                <Button variant="text" onClick={handleOpenName}>
+                  Изменить ФИО
+                </Button>
+                <Dialog
+                  open={openName}
+                  handleClose={handleCloseName}
+                  title="Изменить ФИО"
+                  content={
+                    <NameDialog
+                      handleClose={handleCloseName}
+                      name={profileStore.data.username}
+                    />
+                  }
+                />
+              </Grid>
+              <Grid item>
+                <Button variant="text" onClick={handleOpenPassword}>
+                  Изменить пароль
+                </Button>
+                <Dialog
+                  open={openPassword}
+                  handleClose={handleClosePassword}
+                  title="Изменить пароль"
+                  content={<PasswordDialog handleClose={handleClosePassword} />}
+                />
+              </Grid>
+            </Grid>
           </Box>
-        </Grid>
-        <Grid
-          item
-          sx={{
-            alignContent: 'center',
-          }}>
-          <Typography variant="subtitle1">iivanov@gmail.com</Typography>
-        </Grid>
-      </Grid>
-      <Grid
-        container
-        sx={{
-          gap: '2rem',
-        }}>
-        <Grid item>
-          <Button variant="text" onClick={handleOpenAvatar}>
-            Изменить аватар
-          </Button>
-          <Dialog
-            open={openAvatar}
-            handleClose={handleCloseAvatar}
-            title="Изменить аватар"
-            content={<AvatarDialog handleClose={handleCloseAvatar} />}
-          />
-        </Grid>
-        <Grid item>
-          <Button variant="text" onClick={handleOpenName}>
-            Изменить ФИО
-          </Button>
-          <Dialog
-            open={openName}
-            handleClose={handleCloseName}
-            title="Изменить ФИО"
-            content={<NameDialog handleClose={handleCloseName} name="Иванов И.И." />}
-          />
-        </Grid>
-        <Grid item>
-          <Button variant="text" onClick={handleOpenPassword}>
-            Изменить пароль
-          </Button>
-          <Dialog
-            open={openPassword}
-            handleClose={handleClosePassword}
-            title="Изменить пароль"
-            content={<PasswordDialog handleClose={handleClosePassword} />}
-          />
-        </Grid>
-      </Grid>
-    </Box>
+        );
+      }}
+    </Observer>
   );
 }
