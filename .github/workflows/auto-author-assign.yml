@@ -11,10 +11,6 @@ jobs:
     name: PR author as an assignee
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
       - uses: toshimaru/auto-author-assign@v2.1.0
         with:
-          repo-token: ${{ secrets.ROUTELINKBOT_TOKEN || github.token }}
+          repo-token: ${{ secrets.ROUTELINKBOT_TOKEN || secrets.GITHUB_TOKEN }}
