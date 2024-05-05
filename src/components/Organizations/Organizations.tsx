@@ -91,6 +91,17 @@ interface IOrgTableView {
   createdAt: Date;
 }
 
+function IOrganization2IOrgTableView(orgs: IOrganization[]): IOrgTableView[] {
+  return orgs.map((org: IOrganization): IOrgTableView => {
+    const orgAsTabView: IOrgTableView = {
+      id: org.id,
+      name: org.name,
+      createdAt: org.createdAt ? org.createdAt : new Date(0, 0, 0),
+    };
+    return orgAsTabView;
+  });
+}
+
 interface HeadCell {
   id: keyof IOrgTableView;
   label: string;
@@ -101,12 +112,12 @@ const headCells: readonly HeadCell[] = [
 ];
 
 interface TableOrgProps {
-  orgData: IOrgTableView[];
+  orgData: IOrganization[];
   onSelectChange: (selectedIndexArray: readonly number[]) => void;
 }
 
 function TableOrg(props: TableOrgProps) {
-  const rows = props.orgData;
+  const rows = IOrganization2IOrgTableView(props.orgData);
   const onSelectChange = props.onSelectChange
     ? props.onSelectChange
     : (_: readonly number[]) => {};
@@ -458,23 +469,9 @@ function DialogRemoveOrgs(props: DialogRemoveOrgProps) {
 }
 /* диалог "удаления организации" (конец) */
 
-function IOrganization2IOrgTableView(orgs: IOrganization[]): IOrgTableView[] {
-  return orgs.map((org: IOrganization): IOrgTableView => {
-    const orgAsTabView: IOrgTableView = {
-      id: org.id,
-      name: org.name,
-      createdAt: org.createdAt ? org.createdAt : new Date(0, 0, 0),
-    };
-
-    return orgAsTabView;
-  });
-}
-
 export function Organizations() {
   const { orgsStore } = useStore();
-  const [showOrgData, setShowOrgsData] = React.useState<IOrgTableView[]>(
-    IOrganization2IOrgTableView(orgsStore.orgs),
-  );
+  const [showOrgData, setShowOrgsData] = React.useState<IOrganization[]>(orgsStore.orgs);
 
   const [selectedIds, setSelectedIds] = React.useState<number[]>([]);
   const [findedCount, setFindedCount] = React.useState(-1);
@@ -484,7 +481,7 @@ export function Organizations() {
   const [dialogOrgRemoveOpen, setDialogOrgRemoveOpen] = React.useState(false);
 
   React.useEffect(() => {
-    setShowOrgsData(IOrganization2IOrgTableView(orgsStore.orgs));
+    setShowOrgsData(orgsStore.orgs);
   }, [orgsStore.orgs]);
 
   const handleSelectChange = (selectedIndexArray: readonly number[]) => {
@@ -492,12 +489,11 @@ export function Organizations() {
   };
 
   const handleSearchChange = (search: string) => {
-    const newOrgData: IOrgTableView[] = IOrganization2IOrgTableView(
-      orgsStore.orgs,
-    ).filter(
+    const newOrgData: IOrganization[] = orgsStore.orgs.filter(
       (orgData) =>
         orgData.name.toLowerCase().includes(search.toLowerCase()) ||
-        DateToString(orgData.createdAt).includes(search.toLowerCase()),
+        (orgData.createdAt &&
+          DateToString(orgData.createdAt).includes(search.toLowerCase())),
     );
     if (search.length) {
       setFindedCount(newOrgData.length);
