@@ -1,14 +1,15 @@
-import { observer } from 'mobx-react'; 
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { observer } from 'mobx-react';
 import React from 'react';
 
-interface RowData{
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
+
+interface RowData {
   id: number;
   machineDowntime: number;
   date: Date;
 }
 
-const initialRows: RowData[] = [ 
+const initialRows: RowData[] = [
   { id: 1, machineDowntime: 9, date: new Date(2024, 3, 12) },
   { id: 2, machineDowntime: 9, date: new Date(2024, 3, 12) },
   { id: 3, machineDowntime: 9, date: new Date(2024, 3, 12) },
@@ -23,19 +24,26 @@ const initialRows: RowData[] = [
   { id: 12, machineDowntime: 9, date: new Date(2024, 3, 12) },
 ];
 
-
-
-
-  const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', width: 50, minWidth: 50, description: 'Транспорт ID.' },
-    { field: 'machineDowntime', headerName: 'Простой', width: 100, minWidth: 100, type: 'number' },
-    { field: 'date', headerName: 'Дата', type: 'date', width: 100 },
-  ];
-
-
+const columns: GridColDef[] = [
+  {
+    field: 'id',
+    headerName: 'ID',
+    width: 50,
+    minWidth: 50,
+    description: 'Транспорт ID.',
+  },
+  {
+    field: 'machineDowntime',
+    headerName: 'Простой',
+    width: 100,
+    minWidth: 100,
+    type: 'number',
+  },
+  { field: 'date', headerName: 'Дата', type: 'date', width: 100 },
+];
 
 const AutoEfficiencyTable: React.FC = observer(() => {
-  const [rows, /*setRows*/] = React.useState<RowData[]>(initialRows);
+  const [rows /*setRows*/] = React.useState<RowData[]>(initialRows);
   return (
     <div style={{ height: 700, width: '100%' }}>
       <DataGrid
@@ -51,8 +59,6 @@ const AutoEfficiencyTable: React.FC = observer(() => {
       />
     </div>
   );
-})
-
-
+});
 
 export default AutoEfficiencyTable;
