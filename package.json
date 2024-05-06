@@ -25,7 +25,7 @@
     "@mui/material": "^5.15.15",
     "@mui/x-charts": "^7.3.0",
     "@mui/x-data-grid": "^7.3.0",
-    "@mui/x-date-pickers": "^7.3.0",
+    "@mui/x-date-pickers": "^7.3.2",
     "@pbe/react-yandex-maps": "^1.2.5",
     "ag-grid-react": "^31.2.1",
     "axios": "^1.6.8",
