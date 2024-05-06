@@ -5,4 +5,5 @@ export interface IUser extends IMetaContext {
   email: string;
   organization?: IOrganization;
   role?: IRole;
+  avatar?: string;
 }
