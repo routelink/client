@@ -91,17 +91,6 @@ interface IOrgTableView {
   createdAt: Date;
 }
 
-function IOrganization2IOrgTableView(orgs: IOrganization[]): IOrgTableView[] {
-  return orgs.map((org: IOrganization): IOrgTableView => {
-    const orgAsTabView: IOrgTableView = {
-      id: org.id,
-      name: org.name,
-      createdAt: org.createdAt ? org.createdAt : new Date(0, 0, 0),
-    };
-    return orgAsTabView;
-  });
-}
-
 interface HeadCell {
   id: keyof IOrgTableView;
   label: string;
@@ -117,7 +106,10 @@ interface TableOrgProps {
 }
 
 function TableOrg(props: TableOrgProps) {
-  const rows = IOrganization2IOrgTableView(props.orgData);
+  const rows = props.orgData.map((org: IOrganization): IOrgTableView => {
+    return { ...org, createdAt: org.createdAt || new Date(0, 0, 0) };
+  });
+
   const onSelectChange = props.onSelectChange
     ? props.onSelectChange
     : (_: readonly number[]) => {};
@@ -285,7 +277,7 @@ function TableOrg(props: TableOrgProps) {
         </Table>
       </TableContainer>
       <TablePagination
-        rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+        rowsPerPageOptions={[5, 10, 25, 100]}
         component="div"
         count={rows.length}
         rowsPerPage={rowsPerPage}
