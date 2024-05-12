@@ -1,9 +1,9 @@
 import { action, makeObservable, observable } from 'mobx';
 
-import { IOrganizationStrict } from '@app/models';
+import { IOrganization } from '@app/models';
 
 export class OrganizatonsStore {
-  orgs: IOrganizationStrict[] = [];
+  orgs: IOrganization[] = [];
   constructor() {
     this.loadOrgs();
     makeObservable(this, {
@@ -36,7 +36,6 @@ export class OrganizatonsStore {
     /*  Заглушка. Заменить на удаление данных с сервера
         и загрузку обновленных данных с сервера */
     this.orgs = this.orgs.filter((org) => !ids.includes(org.id));
-    console.log(this.orgs.map((obj) => obj.id));
   }
 
   getOrgName(orgId: number): string {

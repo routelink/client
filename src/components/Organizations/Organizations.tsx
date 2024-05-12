@@ -31,7 +31,7 @@ import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { visuallyHidden } from '@mui/utils';
 
-import { IOrganizationStrict } from '@app/models';
+import { IOrganization } from '@app/models';
 import { useStore } from '@app/store';
 
 import { Modal } from '../Modal';
@@ -85,8 +85,14 @@ function stableSort<T>(array: T[], comparator: (a: T, b: T) => number) {
   return stabilizedThis.map((el) => el[0]);
 }
 
+interface IOrgTableView {
+  id: number;
+  name: string;
+  createdAt: Date;
+}
+
 interface HeadCell {
-  id: keyof IOrganizationStrict;
+  id: keyof IOrgTableView;
   label: string;
 }
 const headCells: readonly HeadCell[] = [
@@ -95,25 +101,28 @@ const headCells: readonly HeadCell[] = [
 ];
 
 interface TableOrgProps {
-  orgData: IOrganizationStrict[];
+  orgData: IOrganization[];
   onSelectChange: (selectedIndexArray: readonly number[]) => void;
 }
 
 function TableOrg(props: TableOrgProps) {
-  const rows = props.orgData;
+  const rows = props.orgData.map((org: IOrganization): IOrgTableView => {
+    return { ...org, createdAt: org.createdAt || new Date(0, 0, 0) };
+  });
+
   const onSelectChange = props.onSelectChange
     ? props.onSelectChange
     : (_: readonly number[]) => {};
 
   const [order, setOrder] = React.useState<Order>('asc');
-  const [orderBy, setOrderBy] = React.useState<keyof IOrganizationStrict>('name');
+  const [orderBy, setOrderBy] = React.useState<keyof IOrgTableView>('name');
   const [selected, setSelected] = React.useState<readonly number[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const handleRequestSort = (
     _: React.MouseEvent<unknown>,
-    property: keyof IOrganizationStrict,
+    property: keyof IOrgTableView,
   ) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -168,7 +177,7 @@ function TableOrg(props: TableOrgProps) {
   );
 
   const createSortHandler =
-    (property: keyof IOrganizationStrict) => (event: React.MouseEvent<unknown>) => {
+    (property: keyof IOrgTableView) => (event: React.MouseEvent<unknown>) => {
       handleRequestSort(event, property);
     };
 
@@ -268,7 +277,7 @@ function TableOrg(props: TableOrgProps) {
         </Table>
       </TableContainer>
       <TablePagination
-        rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+        rowsPerPageOptions={[5, 10, 25, 100]}
         component="div"
         count={rows.length}
         rowsPerPage={rowsPerPage}
@@ -453,17 +462,15 @@ function DialogRemoveOrgs(props: DialogRemoveOrgProps) {
 /* диалог "удаления организации" (конец) */
 
 export function Organizations() {
-  const [dialogOrgAddOpen, setDialogOrgAddOpen] = React.useState(false);
-  const [dialogOrgEditOpen, setDialogOrgEditOpen] = React.useState(false);
-  const [dialogOrgRemoveOpen, setDialogOrgRemoveOpen] = React.useState(false);
+  const { orgsStore } = useStore();
+  const [showOrgData, setShowOrgsData] = React.useState<IOrganization[]>(orgsStore.orgs);
 
   const [selectedIds, setSelectedIds] = React.useState<number[]>([]);
   const [findedCount, setFindedCount] = React.useState(-1);
 
-  const { orgsStore } = useStore();
-  const [showOrgData, setShowOrgsData] = React.useState<IOrganizationStrict[]>(
-    orgsStore.orgs,
-  );
+  const [dialogOrgAddOpen, setDialogOrgAddOpen] = React.useState(false);
+  const [dialogOrgEditOpen, setDialogOrgEditOpen] = React.useState(false);
+  const [dialogOrgRemoveOpen, setDialogOrgRemoveOpen] = React.useState(false);
 
   React.useEffect(() => {
     setShowOrgsData(orgsStore.orgs);
@@ -474,10 +481,11 @@ export function Organizations() {
   };
 
   const handleSearchChange = (search: string) => {
-    const newOrgData: IOrganizationStrict[] = orgsStore.orgs.filter(
+    const newOrgData: IOrganization[] = orgsStore.orgs.filter(
       (orgData) =>
         orgData.name.toLowerCase().includes(search.toLowerCase()) ||
-        DateToString(orgData.createdAt).includes(search.toLowerCase()),
+        (orgData.createdAt &&
+          DateToString(orgData.createdAt).includes(search.toLowerCase())),
     );
     if (search.length) {
       setFindedCount(newOrgData.length);
