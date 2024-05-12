@@ -224,7 +224,6 @@ function TableUsers(props: TableUsersProps) {
                     {headCell.label}
                     {orderBy === headCell.id ? (
                       <Box component="span" sx={visuallyHidden}>
-                        {' '}
                         {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                       </Box>
                     ) : null}
@@ -261,20 +260,16 @@ function TableUsers(props: TableUsersProps) {
                     id={labelId}
                     scope="row"
                     padding="none">
-                    {' '}
-                    {row.name}{' '}
+                    {row.name}
                   </TableCell>
                   <TableCell sx={{ borderWidth: '0px', padding: '12px' }}>
-                    {' '}
-                    {row.orgName}{' '}
+                    {row.orgName}
                   </TableCell>
                   <TableCell sx={{ borderWidth: '0px', padding: '12px' }}>
-                    {' '}
-                    {row.roleName}{' '}
+                    {row.roleName}
                   </TableCell>
                   <TableCell sx={{ borderWidth: '0px', padding: '12px', width: '180px' }}>
-                    {' '}
-                    {DateToString(row.createdAt)}{' '}
+                    {DateToString(row.createdAt)}
                   </TableCell>
                 </TableRow>
               );
@@ -369,13 +364,11 @@ function PanelUserAdd(props: PanelUserAddProps) {
                   }
                 }}>
                 <MenuItem key={-1} value={-1}>
-                  {' '}
-                  <em>Не назначена</em>{' '}
+                  <em>Не назначена</em>
                 </MenuItem>
                 {orgsStore.orgs.map((org) => (
                   <MenuItem key={org.id} value={org.id}>
-                    {' '}
-                    {org.name}{' '}
+                    {org.name}
                   </MenuItem>
                 ))}
               </Select>
@@ -394,20 +387,16 @@ function PanelUserAdd(props: PanelUserAddProps) {
                     }
                   }}>
                   <MenuItem key={-1} value={-1}>
-                    {' '}
-                    <em>Не назначена</em>{' '}
+                    <em>Не назначена</em>
                   </MenuItem>
                   <MenuItem key={1} value={1}>
-                    {' '}
-                    Администратор{' '}
+                    Администратор
                   </MenuItem>
                   <MenuItem key={2} value={2}>
-                    {' '}
-                    Аналитик{' '}
+                    Аналитик
                   </MenuItem>
                   <MenuItem key={3} value={3}>
-                    {' '}
-                    Водитель{' '}
+                    Водитель
                   </MenuItem>
                 </Select>
               </FormControl>
@@ -676,8 +665,7 @@ export function Users() {
             <Stack direction="row" alignItems="flex-end">
               {selectedIds.length ? (
                 <Typography variant="body2" sx={{ mr: 1 }}>
-                  {' '}
-                  Выбрано {selectedIds.length} записей{' '}
+                  Выбрано {selectedIds.length} записей
                 </Typography>
               ) : null}
 
