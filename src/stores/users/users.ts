@@ -51,23 +51,6 @@ export class UsersStore {
       organization: user.organization,
       role: user.role,
     };
-
-    // this.users[index].username = user.username;
-    // this.users[index].email = user.email;
-
-    // if(user.organization) {
-    //   this.users[index].organization = user.organization;
-    // } else {
-    //   this.users[index].role = undefined;
-    //   this.users[index].organization = undefined;
-    //   return;
-    // }
-
-    // if(user.organization && user.role){
-    //   this.users[index].role = user.role;
-    // }else{
-    //   this.users[index].role = undefined;
-    // }
   }
 
   getUser(userId: number): IUser | undefined {
