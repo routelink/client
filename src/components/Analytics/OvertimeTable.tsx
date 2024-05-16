@@ -1,6 +1,7 @@
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { observer } from 'mobx-react'; 
+import { observer } from 'mobx-react';
 import React from 'react';
+
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
 
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'ID', width: 120, description: 'Транспорт ID.' },
@@ -13,7 +14,7 @@ const columns: GridColDef[] = [
   },
 ];
 
-interface RowData{
+interface RowData {
   id: number;
   machineOvertime: number;
   date: Date;
@@ -35,7 +36,7 @@ const initialRows: RowData[] = [
 ];
 
 const OvertimeTable: React.FC = observer(() => {
-  const [rows, /*setRows*/] = React.useState<RowData[]>(initialRows);
+  const [rows /*setRows*/] = React.useState<RowData[]>(initialRows);
   return (
     <div style={{ height: 700, width: '100%' }}>
       <DataGrid
@@ -51,8 +52,6 @@ const OvertimeTable: React.FC = observer(() => {
       />
     </div>
   );
-})
-
-
+});
 
 export default OvertimeTable;

@@ -1,5 +1,6 @@
+import { observer } from 'mobx-react';
 import React from 'react';
-import { observer } from 'mobx-react'; 
+
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 
 interface RowData {
@@ -32,8 +33,8 @@ const initialRows: RowData[] = [
   { id: 12, trafficAccidentSum: 9 },
 ];
 
-const TrafficAccidentTable: React.FC = observer(() => { 
-  const [rows, /*setRows*/] = React.useState<RowData[]>(initialRows);
+const TrafficAccidentTable: React.FC = observer(() => {
+  const [rows /*setRows*/] = React.useState<RowData[]>(initialRows);
   return (
     <div style={{ height: 800, width: '100%' }}>
       <DataGrid
@@ -49,8 +50,6 @@ const TrafficAccidentTable: React.FC = observer(() => {
       />
     </div>
   );
-})
-
-
+});
 
 export default TrafficAccidentTable;

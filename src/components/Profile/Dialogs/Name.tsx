@@ -2,6 +2,10 @@ import { useState } from 'react';
 
 import { Button, DialogActions, TextField } from '@mui/material';
 
+import { useStore } from '@app/store';
+
+//import { useEffect } from 'react';
+
 export function NameDialog({
   handleClose,
   name,
@@ -9,9 +13,18 @@ export function NameDialog({
   name: string;
   handleClose: () => void;
 }) {
+  const { profileStore } = useStore();
+  /*
+useEffect(() => {
+    profileStore.getProfile();
+    window.scrollTo(0, 0);
+  }, []);
+*/
   const [value, setValue] = useState(name);
   const handleSave = () => {
+    profileStore.changeName(value);
     console.log('save: ', value);
+    handleClose();
   };
   return (
     <>

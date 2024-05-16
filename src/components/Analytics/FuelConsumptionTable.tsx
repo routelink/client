@@ -1,11 +1,10 @@
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { observer } from 'mobx-react';
 import React from 'react';
-import { observer } from 'mobx-react'; 
+
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
 
 const columns: GridColDef[] = [
-  { field: 'id', 
-    headerName: 'ID', 
-    description: 'Транспорт ID.' },
+  { field: 'id', headerName: 'ID', description: 'Транспорт ID.' },
   {
     field: 'avgConsumption',
     headerName: 'Ср расход топлива',
@@ -22,8 +21,7 @@ const columns: GridColDef[] = [
     type: 'number',
   },
 
-  { field: 'date', headerName: 'Дата', 
-    type: 'date' },
+  { field: 'date', headerName: 'Дата', type: 'date' },
 ];
 
 interface RowData {
@@ -31,9 +29,8 @@ interface RowData {
   avgConsumption: number;
   pathTraveled: number;
   requiredFuel: number;
-  date: Date
+  date: Date;
 }
-
 
 const initialRows: RowData[] = [
   {
@@ -123,7 +120,7 @@ const initialRows: RowData[] = [
 ];
 
 const FuelConsumptionTable: React.FC = observer(() => {
-  const [rows, /*setRows*/] = React.useState<RowData[]>(initialRows);
+  const [rows /*setRows*/] = React.useState<RowData[]>(initialRows);
   return (
     <div style={{ height: '100%', width: '100%' }}>
       <DataGrid
@@ -136,7 +133,5 @@ const FuelConsumptionTable: React.FC = observer(() => {
     </div>
   );
 });
-
-
 
 export default FuelConsumptionTable;

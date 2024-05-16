@@ -1,6 +1,7 @@
 import { Observer } from 'mobx-react-lite';
 import { useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
+import io from 'socket.io-client';
 
 import { Box, Button, Stack } from '@mui/material';
 import { SelectChangeEvent } from '@mui/material/Select';
@@ -10,6 +11,8 @@ import { TMaps } from '@app/models';
 import { useStore } from '@app/store';
 
 import { items as fakeItems } from './transport.fake';
+
+const socket = io(import.meta.env.VITE_APP_BASE_URL);
 
 const style = {
   box: {
@@ -25,6 +28,11 @@ const style = {
 
 export function Maps() {
   const { mapsStore } = useStore();
+  useEffect(() => {
+    socket.on('connect', () => {
+      console.log('connection successful');
+    });
+  }, [socket]);
 
   useEffect(() => {
     if (mapsStore.maps === 'cesium') {
