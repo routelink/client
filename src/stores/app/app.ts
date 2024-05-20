@@ -8,7 +8,9 @@ export class AppStore {
   _error: string | null = null;
 
   constructor() {
-    this.openSidebar = localStorage.getItem('open') === `true`;
+    this.openSidebar = localStorage.getItem('open')
+      ? localStorage.getItem('open') === `true`
+      : true;
     makeAutoObservable(this);
   }
 
