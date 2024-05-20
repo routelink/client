@@ -1,5 +1,5 @@
 import { Observer } from 'mobx-react-lite';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import io from 'socket.io-client';
 
@@ -7,7 +7,7 @@ import { Box, Button, Stack } from '@mui/material';
 import { SelectChangeEvent } from '@mui/material/Select';
 
 import { Cesium, Menu, Yandex } from '@app/components/Maps';
-import { TMaps } from '@app/models';
+import { IMetrica, TMaps } from '@app/models';
 import { useStore } from '@app/store';
 
 import { items as fakeItems } from './transport.fake';
@@ -25,14 +25,45 @@ const style = {
     },
   },
 };
+export type IPoints = Map<IMetrica['id'], IMetrica>;
 
 export function Maps() {
   const { mapsStore } = useStore();
+  const [geo, setGeo] = useState<GeolocationPosition>({} as GeolocationPosition);
+
+  if (navigator.geolocation)
+    navigator.geolocation.watchPosition(
+      (coods: GeolocationPosition) => {
+        setGeo(coods);
+      },
+      (e: GeolocationPositionError) => {
+        console.error(e);
+      },
+    );
+
+  socket.on('metrics:update:item', (data: IMetrica) => {
+    mapsStore.addPoint(data);
+  });
+
   useEffect(() => {
-    socket.on('connect', () => {
-      console.log('connection successful');
-    });
-  }, [socket]);
+    if (mapsStore.isMove) {
+      socket.emit('metrics:update:create', {
+        coords: {
+          latitude: geo.coords.latitude,
+          longitude: geo.coords.longitude,
+        },
+        transportId: '123',
+        userId: 1,
+      });
+    } else {
+      socket.off('metrics:update:create');
+    }
+  }, [mapsStore.isMove, geo?.coords?.latitude, geo?.coords?.longitude]);
+
+  useEffect(
+    () => mapsStore.setCoords(geo),
+    [geo?.coords?.latitude, geo?.coords?.longitude],
+  );
 
   useEffect(() => {
     if (mapsStore.maps === 'cesium') {
@@ -65,10 +96,9 @@ export function Maps() {
               />
               {mapsStore.maps === 'yandex' ? <Yandex /> : <div id="cesium"> </div>}
             </Box>
-            <></>
-
-            <Button fullWidth variant="contained">
-              Начать движение
+            <Button fullWidth onClick={() => mapsStore.switchMove()} variant="contained">
+              {!mapsStore.isMove ? 'Начать' : 'Остановить'}
+              движение
             </Button>
           </Stack>
         );
