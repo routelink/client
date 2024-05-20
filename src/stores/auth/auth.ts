@@ -50,6 +50,7 @@ export class AuthStore {
           return response.data;
         }),
       )
+      .catch((error) => error)
       .finally(action(() => (this.loading = false)));
   }
 

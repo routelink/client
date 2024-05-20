@@ -2,11 +2,13 @@ import api from '@app/services/api/api';
 
 export class AuthService {
   static login<T>(email: string, password: string): Promise<T> {
-    return api.post<any, T>('/auth/login', { email, password });
+    return api.post<any, T>(
+      '/auth/login',
+      { email, password },
+      { withCredentials: true },
+    );
   }
   static refresh<T>(): Promise<T> {
-    console.log('test');
-
     return api.request({
       url: '/auth/refresh',
       method: 'POST',
