@@ -1,4 +1,4 @@
-import api from '../api/api';
+import auth from '@app/services/api/auth.ts';
 
 export interface ProfileParam {
   idUser?: number;
@@ -6,6 +6,6 @@ export interface ProfileParam {
 
 export class ProfileService {
   getProfile(options?: ProfileParam) {
-    return api.get('/users/1', { params: options });
+    return auth.get('/users/1', { params: options });
   }
 }
