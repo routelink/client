@@ -8,4 +8,5 @@ export * from './service';
 export * from './sidebar';
 export * from './transport';
 export * from './user';
+export * from './api';
 export * from '@app/models/maps';
