@@ -61,6 +61,9 @@ export function Personal() {
               container
               sx={{
                 gap: '2rem',
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
               }}>
               <Grid item>
                 <Box
@@ -71,9 +74,7 @@ export function Personal() {
                     gap: '0.5rem',
                   }}>
                   <Avatar alt="Иванов И.И." src={profileStore.data.avatar} />
-                  <Typography variant="subtitle1">
-                    {profileStore.data.username}
-                  </Typography>
+                  <Typography variant="subtitle1">{profileStore?.user?.name}</Typography>
                 </Box>
               </Grid>
               <Grid
@@ -81,7 +82,7 @@ export function Personal() {
                 sx={{
                   alignContent: 'center',
                 }}>
-                <Typography variant="subtitle1">{profileStore.data.email}</Typography>
+                <Typography variant="subtitle1">{profileStore.user?.email}</Typography>
               </Grid>
             </Grid>
             <Grid

@@ -37,7 +37,7 @@ import { SearchField } from '@app/ui';
 
 import { Modal } from '../Modal';
 
-function DateToString(date: Date): String {
+function DateToString(date: Date): string {
   return (
     date.getFullYear() +
     '.' +
