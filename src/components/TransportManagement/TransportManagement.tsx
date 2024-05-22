@@ -1,7 +1,9 @@
 import {
   CellClickedEvent,
+  ColumnState,
   ICellRendererParams,
   PaginationChangedEvent,
+  SortChangedEvent,
 } from '@ag-grid-community/core';
 import { AgGridReact } from 'ag-grid-react';
 import { observer } from 'mobx-react-lite';
@@ -35,14 +37,25 @@ export const TransportManagement: React.FC = observer(() => {
   const search = searchParams.get('search');
 
   const store = useStore();
+
   const [_page, setPage] = useState((page && +page) || defaultPage);
   const [_count, setCount] = useState((count && +count) || defaultCount);
   const [_search, setSearch] = useState(search || defaultSearch);
+  const [sort, setSort] = useState<Pick<ColumnState, 'colId' | 'sort'>>({
+    colId: '',
+    sort: null,
+  });
   const history = useNavigate();
 
   React.useEffect(() => {
-    store.transportStore.getData({ page: _page - 1, count: _count, search: _search });
-  }, [page, count, search]);
+    store.transportStore.getData({
+      page: _page - 1,
+      count: _count,
+      search: _search,
+      sortBy: sort.colId,
+      sortOrder: sort.sort,
+    });
+  }, [_page, _count, _search, sort]);
 
   const rowData = store.transportStore.tableData;
 
@@ -146,6 +159,12 @@ export const TransportManagement: React.FC = observer(() => {
     setSearch(value);
   };
 
+  const onSortChanged = (event: SortChangedEvent) => {
+    const value = event?.api.getColumnState().find((s) => s.sort != null);
+    const { colId = '', sort = null } = value || {};
+    setSort({ colId, sort });
+  };
+
   return (
     <section className="transport-management">
       <div className="header" style={{ marginBottom: '20px' }}>
@@ -178,8 +197,9 @@ export const TransportManagement: React.FC = observer(() => {
                 suppressRowClickSelection={true}
                 suppressColumnVirtualisation={true}
                 suppressRowVirtualisation={true}
+                onSortChanged={onSortChanged}
                 pagination={true}
-                paginationPageSize={_page}
+                paginationPageSize={_count}
                 onPaginationChanged={onPaginationChanged}
                 paginationPageSizeSelector={[10, 20, 50]}
               />
