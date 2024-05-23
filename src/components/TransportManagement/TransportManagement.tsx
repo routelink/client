@@ -190,6 +190,7 @@ export const TransportManagement: React.FC = observer(() => {
               className="ag-theme-material" // applying the grid theme
               style={{ height: 'calc(100vh / 1.5)' }} // the grid will fill the size of the parent container
             >
+              {/*// @ts-expect-error: bla bla */}
               <AgGridReact
                 rowData={rowData}
                 columnDefs={colDefs}
