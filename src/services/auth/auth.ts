@@ -19,4 +19,7 @@ export class AuthService {
   static logout() {
     return api.post('/auth/logout', {}, { withCredentials: true });
   }
+  static logoutAll() {
+    return api.post('/auth/logout/all', {}, { withCredentials: true });
+  }
 }
