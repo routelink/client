@@ -9,11 +9,59 @@ export class UsersStore {
     makeObservable(this, {
       users: observable,
       loadUsers: action,
-      removeUsers: action,
+      addUser: action,
+      updateUser: action,
+      removeUser: action,
     });
   }
 
-  removeUsers(ids: number[]): void {
+  addUser(user: IUser): void {
+    /*  Заглушка. Заменить на добавление данных на сервер
+        и загрузку обновленных данных с сервера */
+    let newuser: IUser = {
+      id: this.users.reduce((max, user) => (user.id > max ? user.id : max), 0) + 1,
+      username: user.username,
+      email: user.email,
+      createdAt: new Date(),
+    };
+
+    if (user.organization) {
+      newuser.organization = user.organization;
+    }
+
+    if (user.organization && user.role) {
+      newuser.role = user.role;
+    }
+
+    this.users.push(newuser);
+  }
+
+  updateUser(user: IUser): void {
+    /*  Заглушка. Заменить на изменение данных на сервере
+        и загрузку обновленных данных с сервера */
+    const index = this.users.findIndex((_user) => _user.id === user.id);
+    if (index === -1) {
+      return;
+    }
+
+    this.users[index] = {
+      ...this.users[index],
+      username: user.username,
+      email: user.email,
+      organization: user.organization,
+      role: user.role,
+    };
+  }
+
+  getUser(userId: number): IUser | undefined {
+    const index = this.users.findIndex((user) => user.id === userId);
+    if (index === -1) {
+      return undefined;
+    }
+    return this.users[index];
+  }
+
+  removeUser(ids: number[]): void {
     /*  Заглушка. Заменить на удаление данных с сервера
         и загрузку обновленных данных с сервера */
     this.users = this.users.filter((user) => !ids.includes(user.id));

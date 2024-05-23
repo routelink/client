@@ -1,5 +1,6 @@
 import { LinksStore } from '@app/stores/links';
 import { MapsStore } from '@app/stores/maps';
+import { RolesStore } from '@app/stores/roles';
 import { TitleStore } from '@app/stores/title';
 
 import { AppStore } from './app';
@@ -17,6 +18,7 @@ export type RootStore = {
   linksStore: LinksStore;
   titleStore: TitleStore;
   profileStore: ProfileStore;
+  rolesStore: RolesStore;
 };
 
 const rootStore: RootStore = {
@@ -28,6 +30,7 @@ const rootStore: RootStore = {
   linksStore: new LinksStore(),
   titleStore: new TitleStore(),
   profileStore: new ProfileStore(),
+  rolesStore: new RolesStore(),
 };
 
 export default rootStore;
