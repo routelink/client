@@ -53,6 +53,9 @@ export class AuthStore {
       .catch((error) => error)
       .finally(action(() => (this.loading = false)));
   }
+  async logout(): Promise<any> {
+    return AuthService.logout().then(() => (this.token = null));
+  }
 
   isAuth(): boolean {
     return !!this.token;

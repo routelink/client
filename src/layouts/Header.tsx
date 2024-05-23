@@ -4,11 +4,15 @@ import { AccountCircle } from '@mui/icons-material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { AppBar, Box, IconButton, Menu, MenuItem, Toolbar } from '@mui/material';
 
+import { useStore } from '@app/store';
+
 interface HeaderProps {
   sidebarOpen: boolean;
   handleSidebarToggle: () => void;
 }
 export function Header(props: HeaderProps) {
+  const { authStore } = useStore();
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -17,6 +21,10 @@ export function Header(props: HeaderProps) {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    authStore.logout();
   };
 
   const { handleSidebarToggle, sidebarOpen } = props;
@@ -66,7 +74,7 @@ export function Header(props: HeaderProps) {
             open={Boolean(anchorEl)}
             onClose={handleClose}>
             <MenuItem onClick={handleClose}>Profile</MenuItem>
-            <MenuItem onClick={handleClose}>My account</MenuItem>
+            <MenuItem onClick={handleLogout}>Logout</MenuItem>
           </Menu>
         </div>
       </Toolbar>
