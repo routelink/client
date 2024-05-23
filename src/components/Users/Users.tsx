@@ -9,6 +9,8 @@ import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Fab from '@mui/material/Fab';
 import FormControl from '@mui/material/FormControl';
@@ -89,9 +91,8 @@ function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) 
 interface IUserTableView {
   id: number;
   name: string;
-  orgId: number;
+  email: string;
   orgName: string;
-  roleId: number;
   roleName: string;
   createdAt: Date;
 }
@@ -102,18 +103,29 @@ interface HeadCell {
 }
 const headCells: readonly HeadCell[] = [
   { id: 'name', label: 'ФИО' },
+  { id: 'email', label: 'Эл. почта' },
   { id: 'orgName', label: 'Организация' },
   { id: 'roleName', label: 'Роль' },
   { id: 'createdAt', label: 'Дата создания' },
 ];
 
 interface TableUsersProps {
-  userData: IUserTableView[];
+  userData: IUser[];
   onSelectChange: (selectedIndexArray: readonly number[]) => void;
 }
 
 function TableUsers(props: TableUsersProps) {
-  const rows = props.userData;
+  const rows = props.userData.map((user: IUser): IUserTableView => {
+    return {
+      id: user.id,
+      name: user.username,
+      email: user.email,
+      orgName: user.organization?.name || '',
+      roleName: user.role?.name || '',
+      createdAt: user.createdAt || new Date(0, 0, 0),
+    };
+  });
+
   const onSelectChange = props.onSelectChange
     ? props.onSelectChange
     : (_: readonly number[]) => {};
@@ -263,6 +275,9 @@ function TableUsers(props: TableUsersProps) {
                     {row.name}
                   </TableCell>
                   <TableCell sx={{ borderWidth: '0px', padding: '12px' }}>
+                    {row.email}
+                  </TableCell>
+                  <TableCell sx={{ borderWidth: '0px', padding: '12px' }}>
                     {row.orgName}
                   </TableCell>
                   <TableCell sx={{ borderWidth: '0px', padding: '12px' }}>
@@ -296,14 +311,17 @@ function TableUsers(props: TableUsersProps) {
 }
 /* таблица пользователей (конец) */
 
-/* панель "добавление пользователя" */
-interface PanelUserAddProps {
+/* диалог "добавление пользователя" */
+interface DialogUserAddProps {
   isOpen: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-function PanelUserAdd(props: PanelUserAddProps) {
+function DialogUserAdd(props: DialogUserAddProps) {
   const { orgsStore } = useStore();
+  const { usersStore } = useStore();
+  const { rolesStore } = useStore();
+
   const [fio, setFio] = React.useState('');
   const [email, setEmail] = React.useState('');
   const [orgId, setOrgId] = React.useState(-1);
@@ -321,6 +339,15 @@ function PanelUserAdd(props: PanelUserAddProps) {
 
   const handleAdd = () => {
     props.setOpen(false);
+
+    usersStore.addUser({
+      id: 0,
+      username: fio,
+      email: email,
+      organization: orgId !== -1 ? orgsStore.getOrg(orgId) : undefined,
+      role: orgId !== -1 && roleId !== -1 ? rolesStore.getRole(roleId) : undefined,
+    });
+
     setFio('');
     setEmail('');
     setRoleId(-1);
@@ -389,15 +416,11 @@ function PanelUserAdd(props: PanelUserAddProps) {
                   <MenuItem key={-1} value={-1}>
                     <em>Не назначена</em>
                   </MenuItem>
-                  <MenuItem key={1} value={1}>
-                    Администратор
-                  </MenuItem>
-                  <MenuItem key={2} value={2}>
-                    Аналитик
-                  </MenuItem>
-                  <MenuItem key={3} value={3}>
-                    Водитель
-                  </MenuItem>
+                  {rolesStore.roles.map((role) => (
+                    <MenuItem key={role.id} value={role.id}>
+                      {role.name}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             ) : null}
@@ -426,28 +449,57 @@ function PanelUserAdd(props: PanelUserAddProps) {
     </Modal>
   );
 }
-/* панель "добавление пользователя" (конец) */
+/* диалог "добавление пользователя" (конец) */
 
-/* панель "изменение пользователя" */
-interface PanelUserEditProps {
+/* диалог "изменение пользователя" */
+interface DialogUserEditProps {
   isOpen: boolean;
+  userId: number;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-function PanelUserEdit(props: PanelUserEditProps) {
-  const [fio, setFio] = React.useState('Иванов И.И.');
-  const [email, setEmail] = React.useState('ii_ivanoff@yandex.ru');
-  const [org, setOrg] = React.useState('ООО Ивановы');
-  const [role, setRole] = React.useState('Аналитик');
+function DialogUserEdit(props: DialogUserEditProps) {
+  const { orgsStore } = useStore();
+  const { usersStore } = useStore();
+  const { rolesStore } = useStore();
+
+  const selectedUser = usersStore.getUser(props.userId);
+  if (!selectedUser) {
+    props.setOpen(false);
+    return <></>;
+  }
+
+  const [fio, setFio] = React.useState(selectedUser.username);
+  const [email, setEmail] = React.useState(selectedUser.email);
+  const [orgId, setOrgId] = React.useState(
+    selectedUser.organization ? selectedUser.organization.id : -1,
+  );
+  const [roleId, setRoleId] = React.useState(
+    selectedUser.organization && selectedUser.role ? selectedUser.role.id : -1,
+  );
 
   const isFormValid =
-    fio.trim() !== '' && email.trim() !== '' && org.trim() !== '' && role.trim() !== '';
+    fio.trim() !== '' &&
+    email.trim() !== '' &&
+    (selectedUser.username !== fio.trim() ||
+      selectedUser.email !== email.trim() ||
+      (selectedUser.organization ? selectedUser.organization.id : -1) !== orgId ||
+      (selectedUser.organization && selectedUser.role ? selectedUser.role.id : -1) !==
+        roleId);
 
   const handleCancel = () => {
     props.setOpen(false);
   };
 
-  const handleAdd = () => {
+  const handleUpdate = () => {
+    usersStore.updateUser({
+      id: props.userId,
+      username: fio,
+      email: email,
+      organization: orgId !== -1 ? orgsStore.getOrg(orgId) : undefined,
+      role: orgId !== -1 && roleId !== -1 ? rolesStore.getRole(roleId) : undefined,
+    });
+
     props.setOpen(false);
   };
 
@@ -481,30 +533,46 @@ function PanelUserEdit(props: PanelUserEditProps) {
               <Select
                 labelId="org-label"
                 variant="standard"
-                value={org}
+                value={orgId}
                 onChange={(event) => {
-                  setOrg(event.target.value);
+                  if (typeof event.target.value === 'number') {
+                    setOrgId(event.target.value);
+                  }
                 }}>
-                <MenuItem value="ООО Ивановы"> ООО Ивановы </MenuItem>
-                <MenuItem value="ЗАО Петровы"> ЗАО Петровы </MenuItem>
-                <MenuItem value="НКО Сидоровы"> НКО Сидоровы </MenuItem>
+                <MenuItem key={-1} value={-1}>
+                  <em>Не назначена</em>
+                </MenuItem>
+                {orgsStore.orgs.map((org) => (
+                  <MenuItem key={org.id} value={org.id}>
+                    {org.name}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
 
-            <FormControl variant="standard">
-              <InputLabel id="role-label">Роль</InputLabel>
-              <Select
-                variant="standard"
-                labelId="role-label"
-                value={role}
-                onChange={(event) => {
-                  setRole(event.target.value);
-                }}>
-                <MenuItem value="Администратор"> Администратор </MenuItem>
-                <MenuItem value="Аналитик"> Аналитик </MenuItem>
-                <MenuItem value="Водитель"> Водитель </MenuItem>
-              </Select>
-            </FormControl>
+            {orgId !== -1 ? (
+              <FormControl variant="standard">
+                <InputLabel id="role-label">Роль</InputLabel>
+                <Select
+                  labelId="role-label"
+                  variant="standard"
+                  value={roleId}
+                  onChange={(event) => {
+                    if (typeof event.target.value === 'number') {
+                      setRoleId(event.target.value);
+                    }
+                  }}>
+                  <MenuItem key={-1} value={-1}>
+                    <em>Не назначена</em>
+                  </MenuItem>
+                  {rolesStore.roles.map((role) => (
+                    <MenuItem key={role.id} value={role.id}>
+                      {role.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            ) : null}
           </Stack>
         </Stack>
 
@@ -521,7 +589,7 @@ function PanelUserEdit(props: PanelUserEditProps) {
             disabled={!isFormValid}
             variant="contained"
             onClick={() => {
-              handleAdd();
+              handleUpdate();
             }}>
             Изменить
           </Button>
@@ -530,7 +598,7 @@ function PanelUserEdit(props: PanelUserEditProps) {
     </Modal>
   );
 }
-/* панель "изменение пользователя" (конец) */
+/* диалог "изменение пользователя" (конец) */
 
 /* диалог "удаления пользователя" */
 interface DialogRemoveUsersProps {
@@ -545,7 +613,7 @@ function DialogRemoveUsers(props: DialogRemoveUsersProps) {
     props.setOpen(false);
   };
   const handleRemove = () => {
-    usersStore.removeUsers(props.usersIds);
+    usersStore.removeUser(props.usersIds);
     props.setOpen(false);
   };
 
@@ -555,7 +623,12 @@ function DialogRemoveUsers(props: DialogRemoveUsersProps) {
         open={props.isOpen}
         onClose={handleCancel}
         aria-labelledby="responsive-dialog-title">
-        <DialogTitle>Удалить выбранных пользователей?</DialogTitle>
+        <DialogTitle>Удаление пользователей</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Запрошено удаление {props.usersIds.length} пользователей. Продолжить удаление?
+          </DialogContentText>
+        </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={handleCancel}>
             Отмена
@@ -570,27 +643,9 @@ function DialogRemoveUsers(props: DialogRemoveUsersProps) {
 }
 /* диалог "удаления пользователя" (конец) */
 
-function IUsers2IUserTableView(users: IUser[]): IUserTableView[] {
-  return users.map((user: IUser): IUserTableView => {
-    const userAsTabView: IUserTableView = {
-      id: user.id,
-      name: user.username,
-      orgId: user.organization ? user.organization.id : -1,
-      orgName: user.organization ? user.organization.name : '',
-      roleId: user.role ? user.role.id : -1,
-      roleName: user.role ? user.role.name : '',
-      createdAt: user.createdAt ? user.createdAt : new Date(0, 0, 0),
-    };
-
-    return userAsTabView;
-  });
-}
-
 export function Users() {
   const { usersStore } = useStore();
-  const [showUserData, setShowUserData] = React.useState<IUserTableView[]>(
-    IUsers2IUserTableView(usersStore.users),
-  );
+  const [showUserData, setShowUserData] = React.useState<IUser[]>(usersStore.users);
 
   const [selectedIds, setSelectedIds] = React.useState<number[]>([]);
   const [findedCount, setFindedCount] = React.useState(-1);
@@ -600,16 +655,16 @@ export function Users() {
   const [removeUsersOpen, setRemoveUsersOpen] = React.useState(false);
 
   React.useEffect(() => {
-    setShowUserData(IUsers2IUserTableView(usersStore.users));
+    setShowUserData(usersStore.users);
   }, [usersStore.users]);
 
   const handleSearchChange = (search: string) => {
-    const newUserData: IUserTableView[] = IUsers2IUserTableView(usersStore.users).filter(
-      (userData) =>
-        userData.name.toLowerCase().includes(search.toLowerCase()) ||
-        userData.orgName.toLowerCase().includes(search.toLowerCase()) ||
-        userData.roleName.toLowerCase().includes(search.toLowerCase()) ||
-        DateToString(userData.createdAt).includes(search.toLowerCase()),
+    const newUserData: IUser[] = usersStore.users.filter(
+      (user) =>
+        user.username.toLowerCase().includes(search.toLowerCase()) ||
+        (user.organization?.name || '').toLowerCase().includes(search.toLowerCase()) ||
+        (user.role?.name || '').toLowerCase().includes(search.toLowerCase()) ||
+        DateToString(user.createdAt || new Date(0, 0, 0)).includes(search.toLowerCase()),
     );
     if (search.length) {
       setFindedCount(newUserData.length);
@@ -626,10 +681,16 @@ export function Users() {
   return (
     <>
       {/* панель "добавление пользователя" */}
-      <PanelUserAdd isOpen={addUserOpen} setOpen={setAddUserOpen} />
+      <DialogUserAdd isOpen={addUserOpen} setOpen={setAddUserOpen} />
 
       {/* панель "изменение пользователя" */}
-      <PanelUserEdit isOpen={editUserOpen} setOpen={setEditUserOpen} />
+      {selectedIds.length === 1 ? (
+        <DialogUserEdit
+          isOpen={editUserOpen}
+          userId={selectedIds[0]}
+          setOpen={setEditUserOpen}
+        />
+      ) : null}
 
       {/* диалог "удаление пользователя" */}
       <DialogRemoveUsers
