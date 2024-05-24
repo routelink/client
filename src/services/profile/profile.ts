@@ -1,15 +1,20 @@
 import auth from '@app/services/api/auth.ts';
 
-export interface ProfileParam {
+export interface GetProfilePayload {
   idUser?: number;
+}
+export interface UpdateProfilePayload {
+  currentPassword?: string;
+  password?: string;
+  name?: string;
 }
 
 export class ProfileService {
-  getProfile(options?: ProfileParam) {
-    return api.get('/api/profile', { params: options });
+  getProfile(options?: GetProfilePayload) {
+    return auth.get('/api/profile', { params: options });
   }
 
-  updateProfile(options: any) {
-    return api.patch('/api/profile', options);
+  updateProfile(options: UpdateProfilePayload) {
+    return auth.patch('/api/profile', options);
   }
 }
