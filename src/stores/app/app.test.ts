@@ -13,11 +13,11 @@ describe('app store', () => {
     expect(store).toBeInstanceOf(AppStore);
   });
   it('set open/hide sidebar', () => {
-    expect(store.openSidebar).toBeFalsy();
-    store.toggleOpenSidebar();
     expect(store.openSidebar).toBeTruthy();
     store.toggleOpenSidebar();
     expect(store.openSidebar).toBeFalsy();
+    store.toggleOpenSidebar();
+    expect(store.openSidebar).toBeTruthy();
   });
   it('set open/hide mobile', () => {
     expect(store.openMobile).toBeFalsy();
