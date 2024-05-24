@@ -32,6 +32,14 @@ export class OrganizatonsStore {
     this.orgs.push({ id: id, name: orgName, createdAt: date });
   }
 
+  getOrg(orgId: number): IOrganization | undefined {
+    const orgsIndex = this.orgs.findIndex((org) => org.id === orgId);
+    if (orgsIndex === -1) {
+      return undefined;
+    }
+    return this.orgs[orgsIndex];
+  }
+
   removeOrgs(ids: number[]): void {
     /*  Заглушка. Заменить на удаление данных с сервера
         и загрузку обновленных данных с сервера */
