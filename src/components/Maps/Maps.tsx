@@ -25,21 +25,17 @@ const style = {
     },
   },
 };
-export type IPoints = Map<IMetrica['id'], IMetrica>;
 
 export function Maps() {
   const { mapsStore } = useStore();
-  const [geo, setGeo] = useState<GeolocationPosition>({} as GeolocationPosition);
+  const [position, setPosition] = useState<GeolocationPosition>(
+    {} as GeolocationPosition,
+  );
 
   if (navigator.geolocation)
-    navigator.geolocation.watchPosition(
-      (coods: GeolocationPosition) => {
-        setGeo(coods);
-      },
-      (e: GeolocationPositionError) => {
-        console.error(e);
-      },
-    );
+    navigator.geolocation.watchPosition((coods: GeolocationPosition) => {
+      setPosition(coods);
+    });
 
   socket.on('metrics:update:item', (data: IMetrica) => {
     mapsStore.addPoint(data);
@@ -49,8 +45,8 @@ export function Maps() {
     if (mapsStore.isMove) {
       socket.emit('metrics:update:create', {
         coords: {
-          latitude: geo.coords.latitude,
-          longitude: geo.coords.longitude,
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
         },
         transportId: '123',
         userId: 1,
@@ -58,11 +54,11 @@ export function Maps() {
     } else {
       socket.off('metrics:update:create');
     }
-  }, [mapsStore.isMove, geo?.coords?.latitude, geo?.coords?.longitude]);
+  }, [mapsStore.isMove, position?.coords?.latitude, position?.coords?.longitude]);
 
   useEffect(
-    () => mapsStore.setCoords(geo),
-    [geo?.coords?.latitude, geo?.coords?.longitude],
+    () => mapsStore.setCoords(position),
+    [position?.coords?.latitude, position?.coords?.longitude],
   );
 
   useEffect(() => {
