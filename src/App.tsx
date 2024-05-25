@@ -17,6 +17,7 @@ import {
   TransportManagement,
   Users,
 } from '@app/components';
+import { RoleGuards } from '@app/guards';
 import AuthGuard from '@app/guards/AuthGuards';
 import { Main } from '@app/layouts';
 import { useStore } from '@app/store';
@@ -37,7 +38,12 @@ function App() {
             <Routes>
               <Route
                 path="/"
-                element={<AuthGuard pathname={pathname.pathname} outlet={<Main />} />}>
+                element={
+                  <AuthGuard
+                    pathname={pathname.pathname}
+                    outlet={<RoleGuards outlet={<Main />} />}
+                  />
+                }>
                 <Route index element={<Profile />} />
                 <Route path="/organizations" element={<Organizations />} />
                 <Route path="/maps" element={<Maps />} />

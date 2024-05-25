@@ -17,36 +17,43 @@ export class LinksStore {
       text: 'Профиль',
       icon: PersonIcon,
       exact: true,
+      role: [1, 2, 3, 4],
     },
     {
       href: '/maps',
       text: 'Карта',
       icon: NearMeIcon,
+      role: [1, 2, 3],
     },
     {
       href: '/transport',
       text: 'Управление транспортом',
       icon: DirectionsCarIcon,
+      role: [1, 2],
     },
     {
       href: '/employees',
       text: 'Управление сотрудниками',
       icon: BadgeIcon,
+      role: [1, 2],
     },
     {
       href: '/analytics',
       text: 'Аналитика',
       icon: InsertChartIcon,
+      role: [1, 2],
     },
     {
       href: '/users',
       text: 'Пользователи',
       icon: PeopleAltIcon,
+      role: [1],
     },
     {
       href: '/organizations',
       text: 'Организации',
       icon: CorporateFareIcon,
+      role: [1],
     },
   ];
   constructor() {

@@ -1,7 +1,8 @@
 import { AxiosResponse } from 'axios';
+import { jwtDecode } from 'jwt-decode';
 import { action, makeAutoObservable } from 'mobx';
 
-import { IAuthResponse } from '@app/models';
+import { IAuthResponse, IPlayload, TRole } from '@app/models';
 import { AuthService } from '@app/services';
 
 export enum AUTH {
@@ -16,6 +17,8 @@ export enum AUTH {
 export class AuthStore {
   loading: boolean = false;
   _token: string | null = null;
+  _role: TRole | null = null;
+
   isAuthProgress: boolean = false;
 
   constructor() {
@@ -26,10 +29,20 @@ export class AuthStore {
       this._token = null;
       return;
     }
+
     this._token = data.token;
+    this.setRole(data.token);
   }
+
   get token(): string | null {
     return this._token;
+  }
+
+  get role(): TRole | null {
+    return this._role;
+  }
+  set role(data: TRole | null) {
+    this._role = data;
   }
 
   async login(login: string, password: string): Promise<IAuthResponse> {
@@ -62,6 +75,10 @@ export class AuthStore {
 
   isAuth(): boolean {
     return !!this.token;
+  }
+
+  setRole(token: string) {
+    this.role = (jwtDecode(token) as IPlayload).role;
   }
 }
 
