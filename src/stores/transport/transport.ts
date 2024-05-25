@@ -38,6 +38,7 @@ export class TransportStore {
   onRowAdd(payload: TransportAddState): void {
     const newRow = {
       ...payload,
+      typeId: +payload.typeId,
       name: 'FILL',
     };
     this.tableData = [...this.tableData, newRow];

@@ -6,7 +6,7 @@ import { TransportService } from '@app/services';
 export class AppStore {
   openSidebar;
   openMobile = false;
-  transportTypes: TransportTypes = {
+  _transportTypes: TransportTypes = {
     ru: {},
     en: {},
   };
@@ -29,13 +29,18 @@ export class AppStore {
   }
 
   async getTransportTypes() {
-    this.transportTypes =
+    this._transportTypes =
       (await this.transportService.getTransportTypes()) as TransportTypes;
   }
 
   toggleOpenMobile(): void {
     this.openMobile = !this.openMobile;
   }
+
+  get transportTypes() {
+    return this._transportTypes['ru'];
+  }
+
   get loading() {
     return this._loading;
   }
