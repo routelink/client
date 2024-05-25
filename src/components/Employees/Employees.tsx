@@ -1,13 +1,27 @@
+import { Observer } from 'mobx-react-lite';
+import { useEffect } from 'react';
+
 import { Box } from '@mui/material';
 
+import { useStore } from '@app/store';
+
 import { AddEmployeeButton } from './AddEmployeeButton';
-import { EMTable } from './emTable';
 
 export function Employees() {
+  const { employeesStore } = useStore();
+  useEffect(() => {
+    employeesStore.getCollection();
+  }, []);
+
   return (
-    <Box>
-      <AddEmployeeButton />
-      <EMTable />
-    </Box>
+    <Observer>
+      {() => {
+        return (
+          <Box>
+            <AddEmployeeButton />
+          </Box>
+        );
+      }}
+    </Observer>
   );
 }

@@ -1,22 +1,15 @@
-import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
+
+import { render, screen } from '@app/tests';
 
 import { Employees } from './Employees';
 
-describe('Renders the Employees Management page', () => {
+describe('Employyes', () => {
   beforeEach(() => {
-    const scrollToMock = vi.fn();
-    Object.defineProperty(window, 'scrollTo', { value: scrollToMock });
-    render(
-      <MemoryRouter>
-        <Employees />
-      </MemoryRouter>,
-    );
+    render(<Employees />);
   });
 
-  it('should be wrapper', () => {
+  it('should be component initialize', () => {
     expect(screen).toBeTruthy();
   });
 });

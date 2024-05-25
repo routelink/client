@@ -48,7 +48,7 @@ export function Maps() {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
         },
-        transportId: '123',
+        transportId: 1,
         userId: 1,
       });
     } else {
