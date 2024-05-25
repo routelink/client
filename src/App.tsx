@@ -21,11 +21,12 @@ import { Main } from '@app/layouts';
 import { useStore } from '@app/store';
 
 function App() {
-  const { titleStore, linksStore } = useStore();
+  const { titleStore, linksStore, appStore } = useStore();
 
   const pathname = useLocation();
   useEffect(() => {
     titleStore.title = linksStore.getTitle(pathname.pathname);
+    appStore.getTransportTypes();
     window.scrollTo(0, 0);
   }, [pathname]);
 

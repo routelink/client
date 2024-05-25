@@ -30,7 +30,7 @@ export class TransportStore {
   }
 
   async getData(params: GetItemsParams) {
-    const data = await this.transportService.getRows(params);
+    const data = (await this.transportService.getRows(params)) as { rows: ITransport[] };
 
     this.setTableData(data.rows);
   }

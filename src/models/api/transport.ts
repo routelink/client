@@ -1,3 +1,5 @@
+export type TransportTypes = { ru: Record<number, string>; en: unknown };
+
 export type GetItemsParams = {
   page?: number;
   count?: number;

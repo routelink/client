@@ -74,7 +74,7 @@ export const TransportManagement: React.FC = observer(() => {
       headerName: 'Тип автомобиля',
       cellRenderer: (props: ICellRendererParams) => {
         // return <span>{getTransportType(props.value.name)}</span>;
-        return <span>{props.value}</span>;
+        return <span>{store.appStore.transportTypes['ru'][props.value]}</span>;
       },
       flex: 1,
     },
