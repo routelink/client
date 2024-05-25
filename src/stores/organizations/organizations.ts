@@ -1,9 +1,12 @@
 import { action, makeObservable, observable } from 'mobx';
 
 import { IOrganization } from '@app/models';
+import { OrganizatonsService } from '@app/services';
 
 export class OrganizatonsStore {
   orgs: IOrganization[] = [];
+  private readonly organizatonsService = new OrganizatonsService();
+
   constructor() {
     this.loadOrgs();
     makeObservable(this, {
@@ -15,13 +18,22 @@ export class OrganizatonsStore {
     });
   }
 
-  loadOrgs(): void {
-    /* Заглушка. Заменить на получении данных с сервера */
-    this.orgs = [
-      { id: 10, name: 'ООО Ивановы', createdAt: new Date(2020, 1, 1) },
-      { id: 11, name: 'ЗАО Петровы', createdAt: new Date(2020, 2, 2) },
-      { id: 12, name: 'НКО Сидоровы', createdAt: new Date(2021, 3, 3) },
-    ];
+  // прежняя реализация
+  // async loadOrgs() : Promise<void> {
+  //   this.organizatonsService.list2
+  //     <AxiosResponse<IOrganization[]>>().then(
+  //       action((response: AxiosResponse<IOrganization[]>) => {
+  //         this.orgs = response.data.map((org): IOrganization => {
+  //           return { ...org, createdAt: new Date(org.createdAt || '') };
+  //         });
+  //       }),
+  //     )
+  // }
+
+  loadOrgs() {
+    this.organizatonsService.list().then((orgs) => {
+      this.orgs = orgs;
+    });
   }
 
   addOrgs(orgName: string): void {
@@ -30,6 +42,14 @@ export class OrganizatonsStore {
     const id = this.orgs.reduce((max, org) => (org.id > max ? org.id : max), 0) + 1;
     const date = new Date();
     this.orgs.push({ id: id, name: orgName, createdAt: date });
+  }
+
+  getOrg(orgId: number): IOrganization | undefined {
+    const orgsIndex = this.orgs.findIndex((org) => org.id === orgId);
+    if (orgsIndex === -1) {
+      return undefined;
+    }
+    return this.orgs[orgsIndex];
   }
 
   removeOrgs(ids: number[]): void {
