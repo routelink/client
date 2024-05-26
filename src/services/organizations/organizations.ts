@@ -6,14 +6,21 @@ import api from '../api/api';
 
 export class OrganizatonsService {
   async list(): Promise<IOrganization[]> {
-    const response: AxiosResponse<IOrganization[]> = await api.get('/api/organizations');
-    return response.data.map((org): IOrganization => {
-      return {
-        ...org,
-        createdAt: org.createdAt ? new Date(org.createdAt) : undefined,
-        updatedAt: org.updatedAt ? new Date(org.updatedAt) : undefined,
-      };
-    });
+    return await api
+      .get('/api/organizations')
+      .then((response: AxiosResponse<IOrganization[]>) => {
+        return response.data.map((org): IOrganization => {
+          return {
+            ...org,
+            createdAt: org.createdAt ? new Date(org.createdAt) : undefined,
+            updatedAt: org.updatedAt ? new Date(org.updatedAt) : undefined,
+          };
+        });
+      })
+      .catch((e) => {
+        console.log(e);
+        return [];
+      });
   }
 
   async create(name: string): Promise<void> {
