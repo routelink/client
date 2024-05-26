@@ -463,36 +463,19 @@ function DialogRemoveOrgs(props: DialogRemoveOrgProps) {
 
 export function Organizations() {
   const { orgsStore } = useStore();
-  const [showOrgData, setShowOrgsData] = React.useState<IOrganization[]>(orgsStore.orgs);
-
   const [selectedIds, setSelectedIds] = React.useState<number[]>([]);
-  const [findedCount, setFindedCount] = React.useState(-1);
+  const [searchString, setSearchString] = React.useState('');
 
   const [dialogOrgAddOpen, setDialogOrgAddOpen] = React.useState(false);
   const [dialogOrgEditOpen, setDialogOrgEditOpen] = React.useState(false);
   const [dialogOrgRemoveOpen, setDialogOrgRemoveOpen] = React.useState(false);
 
-  React.useEffect(() => {
-    setShowOrgsData(orgsStore.orgs);
-  }, [orgsStore.orgs]);
+  const handleReloadButton = () => {
+    orgsStore.loadOrgs();
+  };
 
   const handleSelectChange = (selectedIndexArray: readonly number[]) => {
     setSelectedIds(selectedIndexArray.slice());
-  };
-
-  const handleSearchChange = (search: string) => {
-    const newOrgData: IOrganization[] = orgsStore.orgs.filter(
-      (orgData) =>
-        orgData.name.toLowerCase().includes(search.toLowerCase()) ||
-        (orgData.createdAt &&
-          DateToString(orgData.createdAt).includes(search.toLowerCase())),
-    );
-    if (search.length) {
-      setFindedCount(newOrgData.length);
-    } else {
-      setFindedCount(-1);
-    }
-    setShowOrgsData(newOrgData);
   };
 
   return (
@@ -538,12 +521,12 @@ export function Organizations() {
                       variant="standard"
                       label="Поиск"
                       onChange={(event) => {
-                        handleSearchChange(event.target.value.trim());
+                        setSearchString(event.target.value.trim());
                       }}
                     />
-                    {findedCount >= 0 ? (
+                    {searchString.trim() !== '' ? (
                       <Typography variant="body2">
-                        Найдено {findedCount} записей
+                        Найдено {orgsStore.getOrgs(searchString).length} записей
                       </Typography>
                     ) : null}
                   </Stack>
@@ -581,7 +564,7 @@ export function Organizations() {
                     </Tooltip>
                     <Tooltip title="Обновить данные" placement="top">
                       <span>
-                        <IconButton>
+                        <IconButton onClick={handleReloadButton}>
                           <SyncIcon />
                         </IconButton>
                       </span>
@@ -590,7 +573,10 @@ export function Organizations() {
                 </Stack>
 
                 {/* таблица организаций */}
-                <TableOrg orgData={showOrgData} onSelectChange={handleSelectChange} />
+                <TableOrg
+                  orgData={orgsStore.getOrgs(searchString)}
+                  onSelectChange={handleSelectChange}
+                />
               </Paper>
             </Stack>
           </>
