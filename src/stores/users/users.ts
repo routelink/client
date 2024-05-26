@@ -18,7 +18,7 @@ export class UsersStore {
   addUser(user: IUser): void {
     /*  Заглушка. Заменить на добавление данных на сервер
         и загрузку обновленных данных с сервера */
-    let newuser: IUser = {
+    const newuser: IUser = {
       id: this.users.reduce((max, user) => (user.id > max ? user.id : max), 0) + 1,
       username: user.username,
       email: user.email,
