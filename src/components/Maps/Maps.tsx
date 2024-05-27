@@ -10,9 +10,7 @@ import { Cesium, Menu, Yandex } from '@app/components/Maps';
 import { IMetrica, TMaps } from '@app/models';
 import { useStore } from '@app/store';
 
-import { items as fakeItems } from './transport.fake';
-
-const socket = io(import.meta.env.VITE_APP_BASE_URL);
+const socket = io(import.meta.env.VITE_APP_BASE_URL, { autoConnect: false });
 
 const style = {
   box: {
@@ -27,7 +25,13 @@ const style = {
 };
 
 export function Maps() {
-  const { mapsStore } = useStore();
+  const { mapsStore, authStore } = useStore();
+
+  useEffect(() => {
+    socket.auth = { token: authStore.token };
+    socket.connect();
+  }, []);
+
   const [position, setPosition] = useState<GeolocationPosition>(
     {} as GeolocationPosition,
   );
@@ -48,8 +52,6 @@ export function Maps() {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
         },
-        transportId: '123',
-        userId: 1,
       });
     } else {
       socket.off('metrics:update:create');
@@ -69,7 +71,6 @@ export function Maps() {
     }
   }, [mapsStore.maps]);
 
-  const items = fakeItems;
   const handleChangeMaps = (event: SelectChangeEvent) =>
     (mapsStore.maps = event.target.value as TMaps);
 
@@ -85,11 +86,7 @@ export function Maps() {
               flexDirection: 'column',
             }}>
             <Box style={{ ...style.box }} sx={{ position: 'relative' }}>
-              <Menu
-                items={items}
-                maps={mapsStore.maps}
-                handleChangeMaps={handleChangeMaps}
-              />
+              <Menu maps={mapsStore.maps} handleChangeMaps={handleChangeMaps} />
               {mapsStore.maps === 'yandex' ? <Yandex /> : <div id="cesium"> </div>}
             </Box>
             <Button fullWidth onClick={() => mapsStore.switchMove()} variant="contained">

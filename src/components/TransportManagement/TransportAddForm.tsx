@@ -4,21 +4,29 @@ import { IMaskInput } from 'react-imask';
 import { Button, Container, MenuItem, TextField, Typography } from '@mui/material';
 
 import { ITransport } from '@app/models';
-import { TRANSPORT_TYPES, v4Int } from '@app/utils';
+import { useStore } from '@app/store.tsx';
+import { v4Int } from '@app/utils';
 
 export type TransportAddState = Pick<
   ITransport,
-  'type' | 'regNumber' | 'mileage' | 'createdAt' | 'id'
+  'typeId' | 'regNumber' | 'mileage' | 'createdAt' | 'id'
 >;
 
 type TransportAddFormProps = {
   onApply: (state: TransportAddState) => void;
 };
+
+type ViewType = {
+  id: string;
+  title: string;
+};
+
 interface MaskedInputProps {
   mask: string;
   name?: string;
   onChange: (value: string) => void;
 }
+
 // @TODO возможно вынести позже
 const MaskedInput = React.forwardRef<HTMLElement, MaskedInputProps>((props, ref) => {
   const { mask, onChange, ...other } = props;
@@ -41,13 +49,17 @@ const MaskedInput = React.forwardRef<HTMLElement, MaskedInputProps>((props, ref)
   );
 });
 const VehicleForm: React.FC<TransportAddFormProps> = ({ onApply }) => {
+  const store = useStore();
+
+  const vehicleTypes = Object.keys(store.appStore.transportTypes).map((id) => {
+    return { id, title: store.appStore.transportTypes[id] };
+  });
+
   const [hasRegError, setHasRegError] = useState(false);
-  const [type, setType] = useState<TransportAddState['type']>(TRANSPORT_TYPES[0]);
+  const [type, setType] = useState<ViewType>(vehicleTypes[0]);
   const [regNumber, setRegNumber] = useState<TransportAddState['regNumber']>('');
   const [mileage, setMileage] = useState<TransportAddState['mileage']>('');
-  const vehicleTypes = TRANSPORT_TYPES.map((i) => {
-    return { id: i.id, value: i.name };
-  });
+
   const validateRegNumber = () => {
     if (regNumber?.length && regNumber.length >= 7) {
       setHasRegError(false);
@@ -56,15 +68,15 @@ const VehicleForm: React.FC<TransportAddFormProps> = ({ onApply }) => {
     }
   };
 
-  const onSetTransportType = (value: TransportAddState['type']['id']) => {
-    const vehicleType = TRANSPORT_TYPES.find((i) => i.id === value);
+  const onSetTransportType = (value: ViewType['id']) => {
+    const vehicleType = vehicleTypes.find((i) => i.id === value);
     vehicleType && setType(vehicleType);
   };
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     if (hasRegError) return;
-    onApply({ type, regNumber, mileage, createdAt: new Date(), id: v4Int() });
+    onApply({ typeId: type.id, regNumber, mileage, createdAt: new Date(), id: v4Int() });
   };
 
   return (
@@ -78,14 +90,14 @@ const VehicleForm: React.FC<TransportAddFormProps> = ({ onApply }) => {
           label="Транспортное средство *"
           name="type"
           value={type.id}
-          onChange={({ target }) => onSetTransportType(target.value as unknown as number)}
+          onChange={({ target }) => onSetTransportType(target.value)}
           required
           fullWidth
           margin="normal"
           variant="outlined">
           {vehicleTypes.map((option) => (
             <MenuItem key={option.id} value={option.id}>
-              {option.value}
+              {option.title}
             </MenuItem>
           ))}
         </TextField>

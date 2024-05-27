@@ -7,9 +7,9 @@ import { useStore } from '@app/store';
 export function NameDialog({ handleClose }: { name: string; handleClose: () => void }) {
   const { profileStore } = useStore();
   const { user } = profileStore;
-  const [value, setValue] = useState(user?.name || '');
+  const [value, setValue] = useState(user?.username);
   const handleSave = () => {
-    profileStore.update({ name: value });
+    profileStore.update({ username: value });
     handleClose();
   };
   return (

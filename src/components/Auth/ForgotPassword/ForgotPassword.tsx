@@ -13,8 +13,7 @@ export function ForgotPassword() {
   const [changePassword, setChangePassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    console.log(event);
+  const handleSubmit = (_: FormEvent<HTMLFormElement>) => {
     setChangePassword(!changePassword);
   };
   const handleChangePassword = () => {

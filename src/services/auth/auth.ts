@@ -1,4 +1,4 @@
-import api from '@app/services/api/api';
+import { api } from '@app/services';
 
 export class AuthService {
   static login<T>(email: string, password: string): Promise<T> {

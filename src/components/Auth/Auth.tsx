@@ -10,6 +10,7 @@ import authImage from '@app/assets/Auth/auth-image.svg';
 import confirmImage from '@app/assets/Auth/confirm-image.svg';
 import registerImage from '@app/assets/Auth/register-image.svg';
 import logo from '@app/assets/logo.webp';
+import { Error, Loading } from '@app/layouts';
 
 interface IImage {
   image: string;
@@ -34,6 +35,8 @@ export function Auth() {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   return (
     <Box>
+      <Loading />
+      <Error />
       <Grid
         container
         sx={{
