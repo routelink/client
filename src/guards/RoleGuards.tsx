@@ -13,7 +13,7 @@ interface IRoleGuardsProps {
 export function RoleGuards({ outlet }: IRoleGuardsProps) {
   const { authStore, linksStore } = useStore();
   const { pathname } = useLocation();
-  const [access, setAccess] = useState(false);
+  const [access, setAccess] = useState<boolean | null>(null);
 
   useEffect(() => {
     const data: Link | undefined = linksStore
@@ -26,7 +26,9 @@ export function RoleGuards({ outlet }: IRoleGuardsProps) {
   return (
     <Observer>
       {() => {
-        return <Box>{access ? outlet : <Navigate to="/" />}</Box>;
+        return (
+          <Box>{access ? outlet : access === null ? null : <Navigate to="/" />}</Box>
+        );
       }}
     </Observer>
   );
