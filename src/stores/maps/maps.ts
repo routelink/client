@@ -44,12 +44,7 @@ export class MapsStore {
     this._coords = coords;
   }
 
-  errorCoords(error: GeolocationPositionError) {
-    console.error(error);
-  }
   setCoords(coords: GeolocationPosition) {
-    console.log(coords);
-
     this.coords = coords;
   }
 
@@ -61,8 +56,6 @@ export class MapsStore {
   }
   switchMove(): boolean {
     this.isMove = !this.isMove;
-    console.log(this.isMove);
-
     return this.isMove;
   }
 }

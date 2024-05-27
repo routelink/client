@@ -73,8 +73,10 @@ export function Personal() {
                     alignItems: 'center',
                     gap: '0.5rem',
                   }}>
-                  <Avatar alt="Иванов И.И." src={profileStore.data.avatar} />
-                  <Typography variant="subtitle1">{profileStore?.user?.name}</Typography>
+                  <Avatar alt={profileStore.user?.username} src={''} />
+                  <Typography variant="subtitle1">
+                    {profileStore?.user?.username}
+                  </Typography>
                 </Box>
               </Grid>
               <Grid
@@ -112,7 +114,7 @@ export function Personal() {
                   content={
                     <NameDialog
                       handleClose={handleCloseName}
-                      name={profileStore.data.username}
+                      name={profileStore.user?.username || ''}
                     />
                   }
                 />

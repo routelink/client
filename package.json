@@ -30,6 +30,7 @@
     "ag-grid-react": "^31.3.2",
     "axios": "^1.7.2",
     "cesium": "^1.117.0",
+    "date-fns": "^3.6.0",
     "dayjs": "^1.11.1",
     "dotenv": "^16.4.5",
     "jwt-decode": "^4.0.0",
