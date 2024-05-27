@@ -17,8 +17,7 @@ export class OrganizatonsService {
           };
         });
       })
-      .catch((e) => {
-        console.log(e);
+      .catch(() => {
         return [];
       });
   }

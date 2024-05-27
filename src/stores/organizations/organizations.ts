@@ -8,7 +8,6 @@ export class OrganizatonsStore {
   private readonly organizatonsService = new OrganizatonsService();
 
   constructor() {
-    this.loadOrgs();
     makeObservable(this, {
       orgs: observable,
       loadOrgs: action,
