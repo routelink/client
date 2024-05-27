@@ -17,7 +17,6 @@ import { styled, useTheme } from '@mui/material/styles';
 
 import { List, Search } from '@app/components/Maps/Menu';
 import { MobileMenu } from '@app/components/Maps/Menu';
-import { ITransport } from '@app/models';
 
 const listWidth = 380;
 interface BoxProps extends MuiBoxProps {
@@ -49,13 +48,12 @@ const BoxWrapper = styled(MuiBox, {
   }),
 }));
 interface MenuProps {
-  items: ITransport[];
   maps: string;
 
   handleChangeMaps: (value: SelectChangeEvent) => void;
 }
 export function Menu(props: MenuProps) {
-  const { handleChangeMaps, items, maps } = props;
+  const { handleChangeMaps, maps } = props;
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -110,7 +108,6 @@ export function Menu(props: MenuProps) {
                   open={viewMobile}
                   onClose={handleMenuToggleMobile}
                   onOpen={handleMenuToggleMobile}
-                  items={items}
                 />
               ) : null}
             </>
@@ -137,13 +134,7 @@ export function Menu(props: MenuProps) {
             </Typography>
 
             <Search />
-            <List items={items} />
-            <List items={items} />
-            <List items={items} />
-            <List items={items} />
-            <List items={items} />
-            <List items={items} />
-            <List items={items} />
+            <List />
           </BoxWrapper>
         </Box>
       </Box>
