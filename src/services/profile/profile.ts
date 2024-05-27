@@ -1,4 +1,4 @@
-import api from '../api/api';
+import { api } from '@app/services';
 
 export class ProfileService {
   getProfile() {
