@@ -11,6 +11,7 @@ export interface DialogRemoveUsersProps {
   isOpen: boolean;
   usersIds: number[];
   setClose: () => void;
+  onRemoveEnd?: () => void;
 }
 export function DialogRemoveUsers(props: DialogRemoveUsersProps) {
   const { isOpen, usersIds, setClose } = props;
@@ -19,6 +20,9 @@ export function DialogRemoveUsers(props: DialogRemoveUsersProps) {
     usersIds.forEach((id) => {
       usersStore.delete(id);
     });
+    if (props.onRemoveEnd) {
+      props.onRemoveEnd();
+    }
     setClose();
   };
 

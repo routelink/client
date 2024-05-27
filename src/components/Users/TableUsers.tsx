@@ -1,5 +1,5 @@
 import { Observer } from 'mobx-react-lite';
-import { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
+import { ChangeEvent, MouseEvent, useState } from 'react';
 
 import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
@@ -14,21 +14,79 @@ import TableSortLabel from '@mui/material/TableSortLabel';
 import { visuallyHidden } from '@mui/utils';
 
 import { IUser } from '@app/models';
-import { useStore } from '@app/store';
 import { formatDate } from '@app/utils';
 
-import { IUserTableView, Order, TableUsersProps, headCells } from './Users';
+function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
+  if (b[orderBy] < a[orderBy]) {
+    return -1;
+  }
+  if (b[orderBy] > a[orderBy]) {
+    return 1;
+  }
+  return 0;
+}
+
+export type Order = 'asc' | 'desc';
+
+export function getComparator<Key extends keyof any>(
+  order: Order,
+  orderBy: Key,
+): (
+  a: { [key in Key]: number | string | Date },
+  b: { [key in Key]: number | string | Date },
+) => number {
+  return order === 'desc'
+    ? (a, b) => descendingComparator(a, b, orderBy)
+    : (a, b) => -descendingComparator(a, b, orderBy);
+}
+
+export function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) {
+  const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
+  stabilizedThis.sort((a, b) => {
+    const order = comparator(a[0], b[0]);
+    if (order !== 0) {
+      return order;
+    }
+    return a[1] - b[1];
+  });
+  return stabilizedThis.map((el) => el[0]);
+}
+
+export interface IUserTableView {
+  id: number;
+  username: string;
+  email: string;
+  orgName: string;
+  roleName: string;
+  createdAt: Date;
+}
+
+interface HeadCell {
+  id: keyof IUserTableView;
+  label: string;
+}
+
+export const headCells: readonly HeadCell[] = [
+  { id: 'username', label: 'ФИО' },
+  { id: 'email', label: 'Эл. почта' },
+  { id: 'orgName', label: 'Организация' },
+  { id: 'roleName', label: 'Роль' },
+  { id: 'createdAt', label: 'Дата создания' },
+];
+
+export interface TableUsersProps {
+  userData: IUser[];
+  selectedState?: [
+    selected: number[],
+    setSelected: React.Dispatch<React.SetStateAction<number[]>>,
+  ];
+}
 
 export function TableUsers(props: TableUsersProps) {
-  const { usersStore } = useStore();
-  useEffect(() => {
-    usersStore.getCollection();
-  }, []);
-
-  const rows = usersStore.users.map((user: IUser): IUserTableView => {
+  const rows = props.userData.map((user: IUser): IUserTableView => {
     return {
       id: user.id,
-      name: user.username,
+      username: user.username,
       email: user.email,
       orgName: user.organization?.name || '',
       roleName: user.role?.name || '',
@@ -36,13 +94,13 @@ export function TableUsers(props: TableUsersProps) {
     };
   });
 
-  const onSelectChange = props.onSelectChange
-    ? props.onSelectChange
-    : (_: readonly number[]) => {};
-
   const [order, setOrder] = useState<Order>('asc');
-  const [orderBy, setOrderBy] = useState<keyof IUserTableView>('name');
-  const [selected, setSelected] = useState<readonly number[]>([]);
+  const [orderBy, setOrderBy] = useState<keyof IUserTableView>('username');
+  let [selected, setSelected] = useState<number[]>([]);
+  if (props.selectedState) {
+    [selected, setSelected] = props.selectedState;
+  }
+
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -55,17 +113,15 @@ export function TableUsers(props: TableUsersProps) {
   const handleSelectAllClick = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
       const newSelected = rows.map((n) => n.id);
-      onSelectChange(newSelected);
       setSelected(newSelected);
       return;
     }
-    onSelectChange([]);
     setSelected([]);
   };
 
   const handleClick = (_: MouseEvent<unknown>, id: number) => {
     const selectedIndex = selected.indexOf(id);
-    let newSelected: readonly number[] = [];
+    let newSelected: number[] = [];
 
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, id);
@@ -79,7 +135,6 @@ export function TableUsers(props: TableUsersProps) {
         selected.slice(selectedIndex + 1),
       );
     }
-    onSelectChange(newSelected);
     setSelected(newSelected);
   };
 
@@ -94,12 +149,11 @@ export function TableUsers(props: TableUsersProps) {
 
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
-  /*
-   * TODO : FIX ME 
-   * const visibleRows = stableSort(rows, getComparator(order, orderBy)).slice(
+
+  const visibleRows = stableSort(rows, getComparator(order, orderBy)).slice(
     page * rowsPerPage,
     page * rowsPerPage + rowsPerPage,
-  ); */
+  );
 
   const createSortHandler =
     (property: keyof IUserTableView) => (event: MouseEvent<unknown>) => {
@@ -162,7 +216,7 @@ export function TableUsers(props: TableUsersProps) {
                 </TableHead>
 
                 <TableBody>
-                  {usersStore.users.map((row, index) => {
+                  {visibleRows.map((row, index) => {
                     const isItemSelected = isSelected(row.id);
                     const labelId = `enhanced-table-checkbox-${index}`;
 
@@ -194,10 +248,10 @@ export function TableUsers(props: TableUsersProps) {
                           {row.email}
                         </TableCell>
                         <TableCell sx={{ borderWidth: '0px', padding: '12px' }}>
-                          {row.organization?.name}
+                          {row.orgName}
                         </TableCell>
                         <TableCell sx={{ borderWidth: '0px', padding: '12px' }}>
-                          {row.role?.name}
+                          {row.roleName}
                         </TableCell>
                         <TableCell
                           sx={{ borderWidth: '0px', padding: '12px', width: '180px' }}>

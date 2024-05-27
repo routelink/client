@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
@@ -16,6 +16,7 @@ import { Modal } from '../Modal';
 export interface DialogUserAddProps {
   isOpen: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  onAddEnd?: () => void;
 }
 export function DialogUserAdd(props: DialogUserAddProps) {
   const { orgsStore, usersStore, rolesStore } = useStore();
@@ -27,6 +28,11 @@ export function DialogUserAdd(props: DialogUserAddProps) {
   const [roleId, setRoleId] = useState(-1);
 
   const isFormValid = fio.trim() !== '' && email.trim() !== '';
+
+  useEffect(() => {
+    orgsStore.loadOrgs();
+    rolesStore.loadRoles();
+  }, []);
 
   const handleCancel = () => {
     props.setOpen(false);
@@ -106,29 +112,27 @@ export function DialogUserAdd(props: DialogUserAddProps) {
               </Select>
             </FormControl>
 
-            {orgId !== -1 ? (
-              <FormControl variant="standard">
-                <InputLabel id="role-label">Роль</InputLabel>
-                <Select
-                  labelId="role-label"
-                  variant="standard"
-                  value={roleId}
-                  onChange={(event) => {
-                    if (typeof event.target.value === 'number') {
-                      setRoleId(event.target.value);
-                    }
-                  }}>
-                  <MenuItem key={-1} value={-1}>
-                    <em>Не назначена</em>
+            <FormControl variant="standard">
+              <InputLabel id="role-label">Роль</InputLabel>
+              <Select
+                labelId="role-label"
+                variant="standard"
+                value={roleId}
+                onChange={(event) => {
+                  if (typeof event.target.value === 'number') {
+                    setRoleId(event.target.value);
+                  }
+                }}>
+                <MenuItem key={-1} value={-1}>
+                  <em>Не назначена</em>
+                </MenuItem>
+                {rolesStore.roles.map((role) => (
+                  <MenuItem key={role.id} value={role.id}>
+                    {role.name}
                   </MenuItem>
-                  {rolesStore.roles.map((role) => (
-                    <MenuItem key={role.id} value={role.id}>
-                      {role.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            ) : null}
+                ))}
+              </Select>
+            </FormControl>
           </Stack>
         </Stack>
 
@@ -146,6 +150,9 @@ export function DialogUserAdd(props: DialogUserAddProps) {
             variant="contained"
             onClick={() => {
               handleAdd();
+              if (props.onAddEnd) {
+                props.onAddEnd();
+              }
             }}>
             Добавить
           </Button>

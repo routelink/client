@@ -57,6 +57,25 @@ export class UsersStore {
       .then(() => this.getCollection());
   }
 
+  getUsers(filter?: string): IUser[] {
+    if (!filter || filter.trim() === '') {
+      return this._users;
+    }
+    filter = filter.trim().toLowerCase();
+
+    return this._users.filter((user) => {
+      if (
+        user.username.toLowerCase().includes(filter) ||
+        user.email.toLowerCase().includes(filter) ||
+        user.organization?.name.toLowerCase().includes(filter) ||
+        user.role?.name.toLowerCase().includes(filter)
+      ) {
+        return true;
+      }
+      return false;
+    });
+  }
+
   get users() {
     return this._users;
   }

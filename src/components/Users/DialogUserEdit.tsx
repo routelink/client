@@ -17,12 +17,15 @@ export interface DialogUserEditProps {
   isOpen: boolean;
   userId: number;
   setOpen: Dispatch<SetStateAction<boolean>>;
+  onEditEnd?: () => void;
 }
 
 export function DialogUserEdit(props: DialogUserEditProps) {
   const { orgsStore, rolesStore, usersStore } = useStore();
   useEffect(() => {
     usersStore.getItem(props.userId);
+    orgsStore.loadOrgs();
+    rolesStore.loadRoles();
   }, []);
 
   // const selectedUser = usersStore.getUser(props.userId);
@@ -154,6 +157,9 @@ export function DialogUserEdit(props: DialogUserEditProps) {
             variant="contained"
             onClick={() => {
               handleUpdate();
+              if (props.onEditEnd) {
+                props.onEditEnd();
+              }
             }}>
             Изменить
           </Button>
