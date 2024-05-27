@@ -3,7 +3,7 @@ import { Observer } from 'mobx-react-lite';
 
 import { Backdrop, CircularProgress } from '@mui/material';
 
-import api from '@app/services/api/api';
+import { api } from '@app/services';
 import { useStore } from '@app/store';
 
 export function Loading() {

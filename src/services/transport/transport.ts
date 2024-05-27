@@ -1,6 +1,5 @@
 import { GetItemsParams } from '@app/models';
-
-import api from '../api/api';
+import { api } from '@app/services';
 
 export class TransportService {
   async getRows({ page = 1, count = 10, search = '' }: GetItemsParams) {

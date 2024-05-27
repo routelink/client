@@ -1,4 +1,4 @@
-import auth from '@app/services/api/auth.ts';
+import { api } from '@app/services';
 
 export interface ProfileParam {
   idUser?: number;

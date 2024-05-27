@@ -1,20 +1,8 @@
 import { makeAutoObservable } from 'mobx';
 
-import { TransportAddState } from '@app/components/TransportManagement/TransportAddForm.tsx';
+import { TransportAddState } from '@app/components';
 import { GetItemsParams, ITransport } from '@app/models';
 import { TransportService } from '@app/services';
-
-const fieldDescription = {
-  id: 'int' as const, // auto-increment,
-  name: 'str' as const,
-  type: {
-    name: 'str',
-  } as const,
-  organisation: 'str' as const,
-  regNumber: 'int' as const,
-  avgConsumption: 'float' as const,
-  createdAt: 'date' as const, //@Todo add type
-};
 
 export class TransportStore {
   tableData: ITransport[];
