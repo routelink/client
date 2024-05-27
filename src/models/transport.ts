@@ -2,7 +2,7 @@ import { IMetaContext, IOrganization } from '@app/models';
 
 export interface ITransport extends IMetaContext {
   name: string;
-  type: ITypeTransport;
+  typeId: number | string;
   regNumber?: string;
   avgConsumption?: number;
   organisation?: IOrganization;
@@ -11,9 +11,3 @@ export interface ITransport extends IMetaContext {
 }
 
 export interface ITransportHeaders {}
-
-export interface ITypeTransport {
-  id: number;
-  name: string;
-  image?: string;
-}

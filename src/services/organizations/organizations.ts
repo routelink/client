@@ -1,8 +1,7 @@
 import { AxiosResponse } from 'axios';
 
 import { IOrganization } from '@app/models';
-
-import api from '../api/api';
+import { api } from '@app/services';
 
 export class OrganizatonsService {
   async list(): Promise<IOrganization[]> {

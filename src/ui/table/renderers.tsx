@@ -4,7 +4,7 @@ import React from 'react';
 import { Delete } from '@mui/icons-material';
 
 export const DateRenderer: React.FC<ICellRendererParams> = (props) => {
-  return <span>{new Date(props.value).toString()}</span>;
+  return <span>{new Date(props.value).toLocaleString()}</span>;
 };
 export const RemoveIconRenderer: React.FC<ICellRendererParams> = () => {
   return (
