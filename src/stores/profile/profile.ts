@@ -1,11 +1,10 @@
 import { makeAutoObservable } from 'mobx';
 
 import { IUser } from '@app/models';
-import { ProfileParam, ProfileService } from '@app/services';
+import { ProfileService } from '@app/services';
 
 export class ProfileStore {
   _user: IUser | null = null;
-
   private readonly profileService = new ProfileService();
 
   constructor() {
@@ -20,16 +19,20 @@ export class ProfileStore {
     this._user = value;
   }
 
-  async getProfile(options?: ProfileParam): Promise<IUser> {
-    return this.profileService.getProfile(options).then((response) => {
+  async getProfile(): Promise<IUser> {
+    return this.profileService.getProfile().then((response) => {
       this.user = response.data;
       return response.data;
     });
   }
-
-  async update(options: any): Promise<IUser> {
-    return this.profileService.updateProfile(options).then((response) => {
+  async changeUserName(options: any): Promise<IUser> {
+    return this.profileService.changeUserName(options).then((response) => {
       this.user = response.data;
+      return response.data;
+    });
+  }
+  async changePassword(options: any): Promise<IUser> {
+    return this.profileService.changePassword(options).then((response) => {
       return response.data;
     });
   }

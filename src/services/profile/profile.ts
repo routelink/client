@@ -1,15 +1,15 @@
 import api from '../api/api';
 
-export interface ProfileParam {
-  idUser?: number;
-}
-
 export class ProfileService {
-  getProfile(options?: ProfileParam) {
-    return api.get('/api/profile', { params: options });
+  getProfile() {
+    return api.get('/api/profile');
   }
 
-  updateProfile(options: any) {
-    return api.patch('/api/profile', options);
+  changeUserName(options: any) {
+    return api.patch('/api/profile/username', options);
+  }
+
+  changePassword(options: any) {
+    return api.patch('/api/profile/password', options);
   }
 }
