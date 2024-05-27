@@ -20,8 +20,7 @@ export function AvatarDialog({ handleClose }: { handleClose: () => void }) {
   const { user } = profileStore;
 
   const handleSave = () => {
-    console.log('save');
-    profileStore.changeAvatar('test');
+    /*     profileStore.changeAvatar('test'); */
     handleClose();
   };
   return (
@@ -43,8 +42,8 @@ export function AvatarDialog({ handleClose }: { handleClose: () => void }) {
                   flexDirection: 'row',
                   gap: '0.5rem',
                 }}>
-                <Avatar alt={user?.name} src={profileStore.data.avatar} />
-                <Typography variant="subtitle1">{user?.name}</Typography>
+                <Avatar alt={user?.username} src={''} />
+                <Typography variant="subtitle1">{user?.username}</Typography>
               </Box>
               <Box
                 sx={{

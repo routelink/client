@@ -93,7 +93,6 @@ export function Header(props: HeaderProps) {
             }}
             open={Boolean(anchorEl)}
             onClose={handleClose}>
-            <MenuItem onClick={handleClose}>Profile</MenuItem>
             <MenuItem onClick={() => setOpenDialog(true)}>Выйти</MenuItem>
           </Menu>
         </div>

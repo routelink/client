@@ -8,9 +8,7 @@ import { Button, Divider, Link } from '@mui/material';
 import { Backdrop } from '@app/components/Auth/Backgrop';
 
 export function Register() {
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    console.log(event);
-  };
+  const handleSubmit = (_: FormEvent<HTMLFormElement>) => {};
   const [isLoading, setIsLoading] = useState(false);
   const handleRegister = () => {
     setIsLoading(true);

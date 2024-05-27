@@ -28,8 +28,6 @@ export function Loading() {
       return config;
     },
     function (error: AxiosError) {
-      console.log(error);
-
       appStore.error = `${error.status ?? ''}  ${error.message}`;
       appStore.loading = false;
 
