@@ -1,16 +1,19 @@
-import { AxiosError } from 'axios';
+import { AxiosError, HttpStatusCode, InternalAxiosRequestConfig } from 'axios';
 import { Observer } from 'mobx-react-lite';
 
 import { Backdrop, CircularProgress } from '@mui/material';
 
-import { api } from '@app/services';
+import { AUTH, api } from '@app/services';
 import { useStore } from '@app/store';
 
 export function Loading() {
-  const { appStore } = useStore();
+  const { appStore, authStore } = useStore();
   api.interceptors.request.use(
-    (config) => {
+    (config: InternalAxiosRequestConfig<any>) => {
       appStore.loading = true;
+      if (authStore.token) {
+        config.headers.Authorization = `Bearer ${authStore.token}`;
+      }
       return config;
     },
     function (error) {
@@ -25,10 +28,17 @@ export function Loading() {
       return config;
     },
     function (error: AxiosError) {
-      console.log(error);
-
       appStore.error = `${error.status ?? ''}  ${error.message}`;
       appStore.loading = false;
+
+      if (
+        error.status === HttpStatusCode.Unauthorized &&
+        error.response?.status === AUTH.EXPIRED_REFRESH_TOKEN
+      ) {
+        authStore.refresh();
+        console.log('refresh');
+      }
+
       return Promise.reject(error);
     },
   );

@@ -10,3 +10,4 @@ export * from './transport';
 export * from './user';
 export * from './api';
 export * from '@app/models/maps';
+export * from '@app/models/auth';
