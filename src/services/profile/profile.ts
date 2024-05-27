@@ -1,15 +1,20 @@
 import { api } from '@app/services';
 
-export interface ProfileParam {
+export interface GetProfilePayload {
   idUser?: number;
+}
+export interface UpdateProfilePayload {
+  currentPassword?: string;
+  password?: string;
+  name?: string;
 }
 
 export class ProfileService {
-  getProfile(options?: ProfileParam) {
+  getProfile(options?: GetProfilePayload) {
     return api.get('/api/profile', { params: options });
   }
 
-  updateProfile(options: any) {
+  updateProfile(options: UpdateProfilePayload) {
     return api.patch('/api/profile', options);
   }
 }

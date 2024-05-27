@@ -18,7 +18,7 @@ export class TransportStore {
   }
 
   async getData(params: GetItemsParams) {
-    const data = await this.transportService.getRows(params);
+    const data = (await this.transportService.getRows(params)) as { rows: ITransport[] };
 
     this.setTableData(data.rows);
   }
@@ -26,6 +26,7 @@ export class TransportStore {
   onRowAdd(payload: TransportAddState): void {
     const newRow = {
       ...payload,
+      typeId: +payload.typeId,
       name: 'FILL',
     };
     this.tableData = [...this.tableData, newRow];
