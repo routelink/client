@@ -25,13 +25,17 @@ export class ProfileStore {
       return response.data;
     });
   }
-  async changeUserName(options: any): Promise<IUser> {
-    return this.profileService.changeUserName(options).then((response) => {
+  async changeUsername(options: { username: string }): Promise<IUser> {
+    return this.profileService.changeUsername(options).then((response) => {
       this.user = response.data;
       return response.data;
     });
   }
-  async changePassword(options: any): Promise<IUser> {
+  async changePassword(options: {
+    currentPassword: string;
+    newPassword: string;
+    confirmPassword: string;
+  }): Promise<IUser> {
     return this.profileService.changePassword(options).then((response) => {
       return response.data;
     });

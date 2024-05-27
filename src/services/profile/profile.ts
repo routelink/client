@@ -5,11 +5,15 @@ export class ProfileService {
     return api.get('/api/profile');
   }
 
-  changeUserName(options: any) {
+  changeUsername(options: { username: string }) {
     return api.patch('/api/profile/username', options);
   }
 
-  changePassword(options: any) {
+  changePassword(options: {
+    currentPassword: string;
+    newPassword: string;
+    confirmPassword: string;
+  }) {
     return api.patch('/api/profile/password', options);
   }
 }
