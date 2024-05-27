@@ -478,6 +478,10 @@ export function Organizations() {
   const [dialogOrgRemoveOpen, setDialogOrgRemoveOpen] = React.useState(false);
   const [selected, setSelected] = React.useState<number[]>([]);
 
+  React.useEffect(() => {
+    orgsStore.loadOrgs();
+  }, []);
+
   const handleReloadButton = () => {
     setSelected([]);
     orgsStore.loadOrgs();
