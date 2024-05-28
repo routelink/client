@@ -5,7 +5,7 @@ import MuiBox, { BoxProps as MuiBoxProps } from '@mui/material/Box';
 import { styled, useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
-import { Error, Header, Loading, Sidebar } from '@app/layouts';
+import { Error, Header, Loading, Sidebar, Success } from '@app/layouts';
 import { useStore } from '@app/store';
 
 const drawerWidth = 260;
@@ -98,6 +98,7 @@ export function Main() {
               <Box style={{ ...style.main }} sx={{ flex: 1, position: 'relative' }}>
                 <Loading />
                 <Error />
+                <Success />
                 <Outlet />
               </Box>
             </Box>

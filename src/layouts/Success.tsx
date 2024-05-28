@@ -5,25 +5,23 @@ import { Alert, Snackbar } from '@mui/material';
 import { useStore } from '@app/store';
 
 export function Success() {
-  //const { appStore } = useStore();
-  const { profileStore } = useStore();
+  const { appStore } = useStore();
 
   return (
     <Observer>
       {() => {
         return (
           <Snackbar
-            open={!!profileStore.success}
-            //open={true}
+            open={!!appStore.success}
             autoHideDuration={6000}
             anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-            onClose={() => (profileStore.success = null)}>
+            onClose={() => (appStore.success = null)}>
             <Alert
-              onClose={() => (profileStore.success = null)}
+              onClose={() => (appStore.success = null)}
               severity="success"
               variant="filled"
               sx={{ width: '100%' }}>
-              {profileStore.success}
+              {appStore.success}
             </Alert>
           </Snackbar>
         );

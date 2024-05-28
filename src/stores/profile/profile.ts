@@ -3,11 +3,8 @@ import { makeAutoObservable } from 'mobx';
 import { IUser } from '@app/models';
 import { ProfileService } from '@app/services';
 
-//import { AppStore } from '../app';
-
 export class ProfileStore {
   _user: IUser | null = null;
-  _success: string | null = null;
   private readonly profileService = new ProfileService();
 
   constructor() {
@@ -20,12 +17,6 @@ export class ProfileStore {
 
   set user(value: IUser) {
     this._user = value;
-  }
-  get success(): string | null {
-    return this._success;
-  }
-  set success(msg: string | null) {
-    this._success = msg;
   }
   async getProfile(): Promise<IUser> {
     return this.profileService.getProfile().then((response) => {
@@ -43,11 +34,12 @@ export class ProfileStore {
     currentPassword: string;
     newPassword: string;
     confirmPassword: string;
-  }): Promise<IUser> {
+  }): Promise<string | null> {
     return this.profileService.changePassword(options).then((response) => {
-      //console.log(response.data?.message);
-      this.success = response.data?.message;
-      return response.data;
+      //console.log(response.data);
+      return response.data?.message
+        ? response.data?.message
+        : 'Password update successfuly';
     });
   }
 }

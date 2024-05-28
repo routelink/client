@@ -9,8 +9,8 @@ import {
   Dialog,
   NameDialog,
   PasswordDialog,
-  Success,
 } from '@app/components/Profile/Dialogs';
+import { Success } from '@app/layouts';
 import { useStore } from '@app/store';
 
 export function Personal() {

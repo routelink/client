@@ -13,6 +13,7 @@ export class AppStore {
 
   _loading = false;
   _error: string | null = null;
+  _success: string | null = null;
 
   private readonly transportService = new TransportService();
 
@@ -52,6 +53,12 @@ export class AppStore {
   }
   set error(error: string | null) {
     this._error = error;
+  }
+  get success(): string | null {
+    return this._success;
+  }
+  set success(msg: string | null) {
+    this._success = msg;
   }
 }
 

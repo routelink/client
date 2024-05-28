@@ -13,7 +13,6 @@ import {
   OutlinedInput,
 } from '@mui/material';
 
-import { Success } from '@app/components/Profile/Dialogs';
 import { useStore } from '@app/store';
 
 export function PasswordDialog({ handleClose }: { handleClose: () => void }) {
@@ -29,14 +28,20 @@ export function PasswordDialog({ handleClose }: { handleClose: () => void }) {
   const handleClickShowNewPassword = () => setShowNewPassword((show) => !show);
   const handleClickShowConfirmPassword = () => setShowConfirmPassword((show) => !show);
 
-  const { profileStore } = useStore();
+  const { profileStore, appStore } = useStore();
 
   const handleChange = () => {
-    profileStore.changePassword({
-      currentPassword: currentPassword,
-      newPassword: newPassword,
-      confirmPassword: confirmPassword,
-    });
+    profileStore
+      .changePassword({
+        currentPassword: currentPassword,
+        newPassword: newPassword,
+        confirmPassword: confirmPassword,
+      })
+      .then((resp) => {
+        // console.log(resp);
+        appStore.success = resp;
+        return resp;
+      });
     handleClose();
   };
   return (
@@ -106,7 +111,6 @@ export function PasswordDialog({ handleClose }: { handleClose: () => void }) {
           Сохранить
         </Button>
       </DialogActions>
-      <Success />
     </Box>
   );
 }
