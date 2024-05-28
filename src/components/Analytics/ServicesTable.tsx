@@ -1,11 +1,14 @@
 import { observer } from 'mobx-react';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 
+import { ServiceStore } from '@app/stores/analytics/analytics';
+
+// Пример импорта вашего store
+
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'ID', width: 120, description: 'Транспорт ID.' },
-  { field: 'type', headerName: 'Тип', width: 130 },
   {
     field: 'date',
     headerName: 'Дата',
@@ -22,30 +25,29 @@ const columns: GridColDef[] = [
   },
 ];
 
-interface RowData {
-  id: number;
-  type: string;
-  date: Date;
-  length: number;
-}
-
-const initialRows: RowData[] = [
-  { id: 1, type: 'Мотоцикл', date: new Date(2024, 3, 12), length: 999999 },
-  { id: 2, type: 'Мотоцикл', date: new Date(2024, 5, 12), length: 123441 },
-  { id: 3, type: 'Мотоцикл', date: new Date(2024, 5, 12), length: 12441 },
-  { id: 4, type: 'Мотоцикл', date: new Date(2024, 5, 12), length: 123441 },
-  { id: 5, type: 'Грузовик', date: new Date(2024, 5, 12), length: 12341 },
-  { id: 6, type: 'Грузовик', date: new Date(2024, 5, 12), length: 13441 },
-  { id: 7, type: 'Грузовик', date: new Date(2024, 5, 12), length: 12341 },
-  { id: 8, type: 'Грузовик', date: new Date(2024, 5, 12), length: 23441 },
-  { id: 9, type: 'Электрокар', date: new Date(2024, 5, 12), length: 13441 },
-  { id: 10, type: 'Электрокар', date: new Date(2024, 5, 12), length: 12341 },
-  { id: 11, type: 'Электрокар', date: new Date(2024, 5, 12), length: 13441 },
-  { id: 12, type: 'Электрокар', date: new Date(2024, 5, 12), length: 12344 },
-];
-
 const ServicesTable: React.FC = observer(() => {
-  const [rows /*setRows*/] = React.useState<RowData[]>(initialRows);
+  const serviceStore = new ServiceStore();
+  const { services, loading, error } = serviceStore;
+
+  useEffect(() => {
+    serviceStore.fetchServices(); // Загружаем данные при монтировании компонента
+  }, [serviceStore]);
+
+  // Преобразуем данные из store в формат, подходящий для таблицы
+  const rows = services.map((service) => ({
+    id: service.transport.id,
+    date: service.createdAt ? new Date(service.createdAt) : null,
+    length: service.length,
+  }));
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   return (
     <div style={{ height: 700, width: '100%' }}>
       <DataGrid
