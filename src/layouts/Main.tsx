@@ -1,4 +1,5 @@
 import { Observer } from 'mobx-react-lite';
+import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 
 import MuiBox, { BoxProps as MuiBoxProps } from '@mui/material/Box';
@@ -50,6 +51,15 @@ export function Main() {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const { appStore } = useStore();
+
+  useEffect(() => {
+    //@todo
+    const fetchDataAsync = async () => {
+      await appStore.getTransportTypes();
+    };
+
+    fetchDataAsync();
+  }, []);
 
   const handleMobile = () => appStore.toggleOpenMobile();
   const handleSidebar = () => appStore.toggleOpenSidebar();
