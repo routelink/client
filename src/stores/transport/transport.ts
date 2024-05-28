@@ -1,7 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 
 import { TransportAddState } from '@app/components';
-import { GetItemsParams, ITransport } from '@app/models';
+import { ITransport } from '@app/models';
 import { TransportService } from '@app/services';
 
 export class TransportStore {
@@ -17,8 +17,8 @@ export class TransportStore {
     this.tableData = value;
   }
 
-  async getData(params: GetItemsParams) {
-    const data = (await this.transportService.getRows(params)) as { rows: ITransport[] };
+  async getData(query: string) {
+    const data = (await this.transportService.getRows(query)) as { rows: ITransport[] };
 
     this.setTableData(data.rows);
   }
@@ -33,8 +33,11 @@ export class TransportStore {
     //api.onRowAdd
   }
 
-  onRowDelete(id: number) {
-    this.tableData = this.tableData.filter((row) => row.id !== id);
+  async onRowDelete(id: number) {
+    if (await this.transportService.deleteRow(id)) {
+      this.tableData = this.tableData.filter((row) => row.id !== id);
+    }
+
     // api.onRowDelete
   }
 
