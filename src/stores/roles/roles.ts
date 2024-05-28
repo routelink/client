@@ -17,8 +17,8 @@ export class RolesStore {
     this.roles = [
       { id: 1, name: 'Администратор платформы' },
       { id: 2, name: 'Администратор' },
-      { id: 3, name: 'Аналитик' },
-      { id: 4, name: 'Водитель' },
+      { id: 3, name: 'Водитель' },
+      { id: 4, name: 'Аналитик' },
     ];
   }
 

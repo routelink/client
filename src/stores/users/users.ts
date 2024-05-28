@@ -40,11 +40,14 @@ export class UsersStore {
       .then(() => this.getCollection());
   }
 
-  async update(data: any) {
-    return await this.usersService.update(data).then((response: AxiosResponse<IUser>) => {
-      this.user = response.data;
-      return this.user;
-    });
+  async update(id: number, user: Partial<IUser>) {
+    return await this.usersService
+      .update(id, user)
+      .then((response: AxiosResponse<IUser>) => {
+        this.user = response.data;
+        return this.user;
+      })
+      .then(() => this.getCollection());
   }
 
   async delete(id: number) {
@@ -74,6 +77,14 @@ export class UsersStore {
       }
       return false;
     });
+  }
+
+  getUser(id: number): IUser | undefined {
+    const index = this._users.findIndex((user) => user.id === id);
+    if (index === -1) {
+      return undefined;
+    }
+    return this._users[index];
   }
 
   get users() {
