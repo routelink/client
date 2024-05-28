@@ -30,9 +30,9 @@ export class UsersStore {
     });
   }
 
-  async create(data: any) {
+  async create(user: Partial<IUser>) {
     return await this.usersService
-      .create(data)
+      .create(user)
       .then((response: AxiosResponse<IUser>) => {
         this.user = response.data;
         return this.user;

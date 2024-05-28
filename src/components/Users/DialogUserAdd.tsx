@@ -27,7 +27,14 @@ export function DialogUserAdd(props: DialogUserAddProps) {
   const [orgId, setOrgId] = useState(-1);
   const [roleId, setRoleId] = useState(-1);
 
-  const isFormValid = fio.trim() !== '' && email.trim() !== '';
+  const isFormValid =
+    fio.trim() !== '' &&
+    email.trim() !== '' &&
+    password.trim() !== '' &&
+    /* RL-admin not have org */
+    ((roleId === 1 && orgId === -1) ||
+      /* all other role must have org */
+      (roleId !== 1 && roleId !== -1 && orgId !== -1));
 
   useEffect(() => {
     orgsStore.loadOrgs();
@@ -48,8 +55,8 @@ export function DialogUserAdd(props: DialogUserAddProps) {
         username: fio,
         email: email,
         password: password,
-        organization: orgId !== -1 ? orgsStore.getOrg(orgId) : undefined,
-        role: orgId !== -1 && roleId !== -1 ? rolesStore.getRole(roleId) : undefined,
+        role: rolesStore.getRole(roleId),
+        organization: orgsStore.getOrg(orgId),
       })
       .then(() => {
         props.setOpen(false);
@@ -112,7 +119,7 @@ export function DialogUserAdd(props: DialogUserAddProps) {
               </Select>
             </FormControl>
 
-            <FormControl variant="standard">
+            <FormControl variant="standard" required>
               <InputLabel id="role-label">Роль</InputLabel>
               <Select
                 labelId="role-label"
@@ -135,6 +142,12 @@ export function DialogUserAdd(props: DialogUserAddProps) {
             </FormControl>
           </Stack>
         </Stack>
+
+        {roleId === 1 && orgId !== -1 ? (
+          <Typography variant="body2">
+            Примечание: администратор платформы не может быть членом организации
+          </Typography>
+        ) : null}
 
         <Stack direction="row" justifyContent="flex-end" spacing={2}>
           <Button

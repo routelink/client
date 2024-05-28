@@ -44,6 +44,7 @@ export function Users() {
         setOpen={setAddUserOpen}
         onAddEnd={() => {
           setSelected([]);
+          usersStore.getCollection();
         }}
       />
 
@@ -54,6 +55,7 @@ export function Users() {
           setOpen={setEditUserOpen}
           onEditEnd={() => {
             setSelected([]);
+            usersStore.getCollection();
           }}
         />
       ) : null}
@@ -63,6 +65,7 @@ export function Users() {
         setClose={() => setRemoveUsersOpen(false)}
         onRemoveEnd={() => {
           setSelected([]);
+          usersStore.getCollection();
         }}
       />
       <Stack direction="column" spacing={2}>
