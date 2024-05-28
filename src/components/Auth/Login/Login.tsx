@@ -14,7 +14,7 @@ export function Login() {
     const data = new FormData(event.currentTarget);
     authStore
       .login(data.get('login') as string, data.get('password') as string)
-      .catch((error) => console.error(error));
+      .catch(() => {});
   };
 
   return (

@@ -3,7 +3,7 @@ import { createElement } from 'react';
 import { NavLink } from 'react-router-dom';
 
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
-import { IconButton, Stack, useMediaQuery, useTheme } from '@mui/material';
+import { Box, IconButton, Stack, useMediaQuery, useTheme } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import Drawer, { DrawerProps } from '@mui/material/Drawer';
 import List from '@mui/material/List';
@@ -13,6 +13,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 
 import logo from '@app/assets/logo-white.png';
+import { Link } from '@app/models';
 import { useStore } from '@app/store';
 
 interface SidebarProps extends DrawerProps {
@@ -23,10 +24,61 @@ interface SidebarProps extends DrawerProps {
 export function Sidebar(props: SidebarProps) {
   const { handleSidebarToggle, sidebarOpen, ...other } = props;
 
-  const { linksStore } = useStore();
+  const { linksStore, authStore } = useStore();
+
+  const handleDisableLink = (link: Link): boolean => {
+    if (link.role === null) return true;
+    return link.role?.includes(authStore.role!) ? true : false;
+  };
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+  function renderLink(index: number, link: Link) {
+    return (
+      <ListItem key={index} disablePadding sx={{ display: 'block' }}>
+        <ListItemButton
+          component={NavLink}
+          to={link.href}
+          onClick={isMobile ? handleSidebarToggle : () => {}}
+          selected={
+            link.exact && true === link.exact
+              ? location.pathname === link.href
+              : location.pathname.indexOf(link.href) === 0
+          }
+          sx={{
+            minHeight: 48,
+            justifyContent: 'center',
+            px: 2.5,
+            ':hover': {
+              bgcolor: theme.palette.primary.dark,
+            },
+          }}>
+          <ListItemIcon
+            sx={{
+              minWidth: 0,
+              color: theme.palette.common.white,
+              mr: 2,
+              justifyContent: 'center',
+            }}>
+            {createElement(link.icon)}
+          </ListItemIcon>
+          <ListItemText
+            primary={link.text}
+            sx={{
+              opacity: 1,
+              color: theme.palette.common.white,
+            }}
+          />
+        </ListItemButton>
+        {link.children
+          ? link.children.map((child, i) => (
+              <Box paddingLeft={1}> {renderLink(i, child)}</Box>
+            ))
+          : null}
+      </ListItem>
+    );
+  }
 
   return (
     <Observer>
@@ -92,44 +144,11 @@ export function Sidebar(props: SidebarProps) {
               </ListItem>
               <Divider sx={{ opacity: 1 }} />
               <Stack sx={{ flexGrow: 1, py: 0 }}>
-                {linksStore.getLinks().map((item, index) => (
-                  <ListItem key={index} disablePadding sx={{ display: 'block' }}>
-                    <ListItemButton
-                      component={NavLink}
-                      to={item.href}
-                      onClick={isMobile ? handleSidebarToggle : () => {}}
-                      selected={
-                        item.exact && true === item.exact
-                          ? location.pathname === item.href
-                          : location.pathname.indexOf(item.href) === 0
-                      }
-                      sx={{
-                        minHeight: 48,
-                        justifyContent: 'center',
-                        px: 2.5,
-                        ':hover': {
-                          bgcolor: theme.palette.primary.dark,
-                        },
-                      }}>
-                      <ListItemIcon
-                        sx={{
-                          minWidth: 0,
-                          color: theme.palette.common.white,
-                          mr: 2,
-                          justifyContent: 'center',
-                        }}>
-                        {createElement(item.icon)}
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={item.text}
-                        sx={{
-                          opacity: 1,
-                          color: theme.palette.common.white,
-                        }}
-                      />
-                    </ListItemButton>
-                  </ListItem>
-                ))}
+                {linksStore
+                  .getLinks()
+                  .map((link: Link, index) =>
+                    handleDisableLink(link) ? renderLink(index, link) : null,
+                  )}
               </Stack>
             </List>
           </Drawer>

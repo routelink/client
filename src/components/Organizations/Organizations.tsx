@@ -102,7 +102,10 @@ const headCells: readonly HeadCell[] = [
 
 interface TableOrgProps {
   orgData: IOrganization[];
-  onSelectChange: (selectedIndexArray: readonly number[]) => void;
+  selectedState?: [
+    selected: number[],
+    setSelected: React.Dispatch<React.SetStateAction<number[]>>,
+  ];
 }
 
 function TableOrg(props: TableOrgProps) {
@@ -110,13 +113,13 @@ function TableOrg(props: TableOrgProps) {
     return { ...org, createdAt: org.createdAt || new Date(0, 0, 0) };
   });
 
-  const onSelectChange = props.onSelectChange
-    ? props.onSelectChange
-    : (_: readonly number[]) => {};
-
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof IOrgTableView>('name');
-  const [selected, setSelected] = React.useState<readonly number[]>([]);
+  let [selected, setSelected] = React.useState<number[]>([]);
+  if (props.selectedState) {
+    [selected, setSelected] = props.selectedState;
+  }
+
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
@@ -132,17 +135,15 @@ function TableOrg(props: TableOrgProps) {
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
       const newSelected = rows.map((n) => n.id);
-      onSelectChange(newSelected);
       setSelected(newSelected);
       return;
     }
-    onSelectChange([]);
     setSelected([]);
   };
 
   const handleClick = (_: React.MouseEvent<unknown>, id: number) => {
     const selectedIndex = selected.indexOf(id);
-    let newSelected: readonly number[] = [];
+    let newSelected: number[] = [];
 
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, id);
@@ -156,7 +157,6 @@ function TableOrg(props: TableOrgProps) {
         selected.slice(selectedIndex + 1),
       );
     }
-    onSelectChange(newSelected);
     setSelected(newSelected);
   };
 
@@ -294,6 +294,7 @@ function TableOrg(props: TableOrgProps) {
 interface DialogOrgAddProps {
   isOpen: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  onAddEnd?: () => void;
 }
 
 function DialogOrgAdd(props: DialogOrgAddProps) {
@@ -307,10 +308,12 @@ function DialogOrgAdd(props: DialogOrgAddProps) {
   };
 
   const handleAdd = () => {
-    /* добавить проверку "already exists" */
     orgsStore.addOrgs(orgName);
     props.setOpen(false);
     setOrgName('');
+    if (props.onAddEnd) {
+      props.onAddEnd();
+    }
   };
 
   return (
@@ -358,6 +361,7 @@ interface DialogOrgEditProps {
   isOpen: boolean;
   orgId: number;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  onEditEnd?: () => void;
 }
 
 function DialogOrgEdit(props: DialogOrgEditProps) {
@@ -373,6 +377,9 @@ function DialogOrgEdit(props: DialogOrgEditProps) {
   const handleEdit = () => {
     orgsStore.updateOrgName(props.orgId, newOrgName);
     props.setOpen(false);
+    if (props.onEditEnd) {
+      props.onEditEnd();
+    }
   };
 
   return (
@@ -421,18 +428,19 @@ interface DialogRemoveOrgProps {
   isOpen: boolean;
   orgIds: number[];
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  onRemove?: () => void;
 }
 
 function DialogRemoveOrgs(props: DialogRemoveOrgProps) {
-  const { orgsStore } = useStore();
-
   const handleCancel = () => {
     props.setOpen(false);
   };
 
   const handleRemove = () => {
-    orgsStore.removeOrgs(props.orgIds);
     props.setOpen(false);
+    if (props.onRemove) {
+      props.onRemove();
+    }
   };
 
   return (
@@ -463,36 +471,20 @@ function DialogRemoveOrgs(props: DialogRemoveOrgProps) {
 
 export function Organizations() {
   const { orgsStore } = useStore();
-  const [showOrgData, setShowOrgsData] = React.useState<IOrganization[]>(orgsStore.orgs);
-
-  const [selectedIds, setSelectedIds] = React.useState<number[]>([]);
-  const [findedCount, setFindedCount] = React.useState(-1);
+  const [searchString, setSearchString] = React.useState('');
 
   const [dialogOrgAddOpen, setDialogOrgAddOpen] = React.useState(false);
   const [dialogOrgEditOpen, setDialogOrgEditOpen] = React.useState(false);
   const [dialogOrgRemoveOpen, setDialogOrgRemoveOpen] = React.useState(false);
+  const [selected, setSelected] = React.useState<number[]>([]);
 
   React.useEffect(() => {
-    setShowOrgsData(orgsStore.orgs);
-  }, [orgsStore.orgs]);
+    orgsStore.loadOrgs();
+  }, []);
 
-  const handleSelectChange = (selectedIndexArray: readonly number[]) => {
-    setSelectedIds(selectedIndexArray.slice());
-  };
-
-  const handleSearchChange = (search: string) => {
-    const newOrgData: IOrganization[] = orgsStore.orgs.filter(
-      (orgData) =>
-        orgData.name.toLowerCase().includes(search.toLowerCase()) ||
-        (orgData.createdAt &&
-          DateToString(orgData.createdAt).includes(search.toLowerCase())),
-    );
-    if (search.length) {
-      setFindedCount(newOrgData.length);
-    } else {
-      setFindedCount(-1);
-    }
-    setShowOrgsData(newOrgData);
+  const handleReloadButton = () => {
+    setSelected([]);
+    orgsStore.loadOrgs();
   };
 
   return (
@@ -500,19 +492,32 @@ export function Organizations() {
       {() => {
         return (
           <>
-            <DialogOrgAdd isOpen={dialogOrgAddOpen} setOpen={setDialogOrgAddOpen} />
-            {selectedIds.length === 1 ? (
+            <DialogOrgAdd
+              isOpen={dialogOrgAddOpen}
+              setOpen={setDialogOrgAddOpen}
+              onAddEnd={() => {
+                setSelected([]);
+              }}
+            />
+            {selected.length === 1 ? (
               <DialogOrgEdit
                 isOpen={dialogOrgEditOpen}
-                orgId={selectedIds[0]}
+                orgId={selected[0]}
                 setOpen={setDialogOrgEditOpen}
+                onEditEnd={() => {
+                  setSelected([]);
+                }}
               />
             ) : null}
 
             <DialogRemoveOrgs
               isOpen={dialogOrgRemoveOpen}
-              orgIds={selectedIds}
+              orgIds={selected}
               setOpen={setDialogOrgRemoveOpen}
+              onRemove={() => {
+                orgsStore.removeOrgs(selected);
+                setSelected([]);
+              }}
             />
 
             <Stack direction="column" spacing={2}>
@@ -538,29 +543,28 @@ export function Organizations() {
                       variant="standard"
                       label="Поиск"
                       onChange={(event) => {
-                        handleSearchChange(event.target.value.trim());
+                        setSearchString(event.target.value.trim());
                       }}
                     />
-                    {findedCount >= 0 ? (
+                    {searchString.trim() !== '' ? (
                       <Typography variant="body2">
-                        Найдено {findedCount} записей
+                        Найдено {orgsStore.getOrgs(searchString).length} записей
                       </Typography>
                     ) : null}
                   </Stack>
 
                   {/* панель редактирования */}
                   <Stack direction="row" alignItems="flex-end">
-                    {selectedIds.length ? (
+                    {selected.length ? (
                       <Typography variant="body2" sx={{ mr: 1 }}>
-                        {' '}
-                        Выбрано {selectedIds.length} записей{' '}
+                        Выбрано {selected.length} записей
                       </Typography>
                     ) : null}
 
                     <Tooltip title="Изменить выбранное" placement="top">
                       <span>
                         <IconButton
-                          disabled={selectedIds.length !== 1}
+                          disabled={selected.length !== 1}
                           onClick={() => {
                             setDialogOrgEditOpen(true);
                           }}>
@@ -571,7 +575,7 @@ export function Organizations() {
                     <Tooltip title="Удалить выбранное" placement="top">
                       <span>
                         <IconButton
-                          disabled={selectedIds.length === 0}
+                          disabled={selected.length === 0}
                           onClick={() => {
                             setDialogOrgRemoveOpen(true);
                           }}>
@@ -581,7 +585,7 @@ export function Organizations() {
                     </Tooltip>
                     <Tooltip title="Обновить данные" placement="top">
                       <span>
-                        <IconButton>
+                        <IconButton onClick={handleReloadButton}>
                           <SyncIcon />
                         </IconButton>
                       </span>
@@ -590,7 +594,10 @@ export function Organizations() {
                 </Stack>
 
                 {/* таблица организаций */}
-                <TableOrg orgData={showOrgData} onSelectChange={handleSelectChange} />
+                <TableOrg
+                  orgData={orgsStore.getOrgs(searchString)}
+                  selectedState={[selected, setSelected]}
+                />
               </Paper>
             </Stack>
           </>

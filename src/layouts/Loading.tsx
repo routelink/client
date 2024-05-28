@@ -3,7 +3,7 @@ import { Observer } from 'mobx-react-lite';
 
 import { Backdrop, CircularProgress } from '@mui/material';
 
-import api, { AUTH } from '@app/services/api/api';
+import { AUTH, api } from '@app/services';
 import { useStore } from '@app/store';
 
 export function Loading() {
@@ -28,8 +28,6 @@ export function Loading() {
       return config;
     },
     function (error: AxiosError) {
-      console.log(error);
-
       appStore.error = `${error.status ?? ''}  ${error.message}`;
       appStore.loading = false;
 

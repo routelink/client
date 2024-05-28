@@ -1,7 +1,14 @@
-import { CellClickedEvent, ICellRendererParams } from '@ag-grid-community/core';
+import {
+  CellClickedEvent,
+  ColumnState,
+  ICellRendererParams,
+  PaginationChangedEvent,
+  SortChangedEvent,
+} from '@ag-grid-community/core';
 import { AgGridReact } from 'ag-grid-react';
 import { observer } from 'mobx-react-lite';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Add } from '@mui/icons-material';
 import { Box, Paper, Stack } from '@mui/material';
@@ -12,19 +19,48 @@ import { DateRenderer, RemoveIconRenderer, SearchField } from '@app/ui';
 import RoundIconButton from '@app/ui/button/RoundIconButton.tsx';
 
 import TransportAddForm, { TransportAddState } from './TransportAddForm';
-// import { TRANSPORT_TYPES } from '@app/utils';
 import './styles.scss';
 
 export const TransportManagement: React.FC = observer(() => {
-  // const getTransportType = (id: number) =>
-  //   TRANSPORT_TYPES.find((i) => i.id === id)?.name || '';
+  const defaultPage = 1;
+  const defaultCount = 10;
+  const defaultSearch = '';
+
+  const location = useLocation();
+
+  // Создаем объект URLSearchParams на основе текущего location.search
+  const searchParams = new URLSearchParams(location.search);
+
+  // Извлекаем значение параметра 'count'
+  const count = searchParams.get('count');
+  const page = searchParams.get('page');
+  const search = searchParams.get('search');
 
   const store = useStore();
+
+  const [_page, setPage] = useState((page && +page) || defaultPage);
+  const [_count, setCount] = useState((count && +count) || defaultCount);
+  const [_search, setSearch] = useState(search || defaultSearch);
+  const [sort, setSort] = useState<Pick<ColumnState, 'colId' | 'sort'>>({
+    colId: '',
+    sort: null,
+  });
+  const history = useNavigate();
+
+  React.useEffect(() => {
+    store.transportStore.getData({
+      page: _page - 1,
+      count: _count,
+      search: _search,
+      sortBy: sort.colId,
+      sortOrder: sort.sort,
+    });
+  }, [_page, _count, _search, sort]);
 
   const rowData = store.transportStore.tableData;
 
   const [open, setOpen] = useState(false);
-  const [colDefs, setColDefs] = useState<any>([
+  const [colDefs, setColDefs] = useState<unknown>([
     {
       field: 'regNumber',
       headerName: 'Гос. номер',
@@ -34,11 +70,11 @@ export const TransportManagement: React.FC = observer(() => {
       showDisabledCheckboxes: true,
     },
     {
-      field: 'type',
+      field: 'typeId',
       headerName: 'Тип автомобиля',
       cellRenderer: (props: ICellRendererParams) => {
         // return <span>{getTransportType(props.value.name)}</span>;
-        return <span>{props.value.name}</span>;
+        return <span>{store.appStore.transportTypes[props.value]}</span>;
       },
       flex: 1,
     },
@@ -85,6 +121,32 @@ export const TransportManagement: React.FC = observer(() => {
   const onRowAdd = () => {
     toggleDrawer(true);
   };
+  const onPaginationChanged = useCallback((params: PaginationChangedEvent) => {
+    if (params.newPageSize) {
+      const count = params.api.paginationGetPageSize();
+      setCount(count);
+    }
+    if (params.newPage) {
+      const page = params.api.paginationGetCurrentPage();
+      setPage(page);
+    }
+  }, []);
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (_page !== defaultPage) {
+      params.set('page', `${_page}`);
+    }
+    if (_count !== defaultCount) {
+      params.set('count', `${_count}`);
+    }
+    if (_search !== defaultSearch) {
+      params.set('search', _search);
+    }
+    if (!params.size) return;
+
+    history(`?${params.toString()}`);
+  }, [_page, _count, _search]);
+
   const toggleDrawer = (value: boolean) => {
     setOpen(value);
   };
@@ -94,8 +156,13 @@ export const TransportManagement: React.FC = observer(() => {
   };
 
   const onFilter = (value: string) => {
-    // store.transportStore.getData({ search: value });
-    return value;
+    setSearch(value);
+  };
+
+  const onSortChanged = (event: SortChangedEvent) => {
+    const value = event?.api.getColumnState().find((s) => s.sort != null);
+    const { colId = '', sort = null } = value || {};
+    setSort({ colId, sort });
   };
 
   return (
@@ -123,6 +190,7 @@ export const TransportManagement: React.FC = observer(() => {
               className="ag-theme-material" // applying the grid theme
               style={{ height: 'calc(100vh / 1.5)' }} // the grid will fill the size of the parent container
             >
+              {/* @ts-ignore */}
               <AgGridReact
                 rowData={rowData}
                 columnDefs={colDefs}
@@ -130,6 +198,11 @@ export const TransportManagement: React.FC = observer(() => {
                 suppressRowClickSelection={true}
                 suppressColumnVirtualisation={true}
                 suppressRowVirtualisation={true}
+                onSortChanged={onSortChanged}
+                pagination={true}
+                paginationPageSize={_count}
+                onPaginationChanged={onPaginationChanged}
+                paginationPageSizeSelector={[10, 20, 50]}
               />
             </div>
           </Stack>
