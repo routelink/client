@@ -9,6 +9,7 @@ import {
   Dialog,
   NameDialog,
   PasswordDialog,
+  Success,
 } from '@app/components/Profile/Dialogs';
 import { useStore } from '@app/store';
 
@@ -131,6 +132,7 @@ export function Personal() {
                 />
               </Grid>
             </Grid>
+            <Success />
           </Box>
         );
       }}

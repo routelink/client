@@ -13,6 +13,7 @@ import {
   OutlinedInput,
 } from '@mui/material';
 
+import { Success } from '@app/components/Profile/Dialogs';
 import { useStore } from '@app/store';
 
 export function PasswordDialog({ handleClose }: { handleClose: () => void }) {
@@ -105,6 +106,7 @@ export function PasswordDialog({ handleClose }: { handleClose: () => void }) {
           Сохранить
         </Button>
       </DialogActions>
+      <Success />
     </Box>
   );
 }
