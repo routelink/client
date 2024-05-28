@@ -32,10 +32,38 @@ import Typography from '@mui/material/Typography';
 import { alpha } from '@mui/material/styles';
 import { visuallyHidden } from '@mui/utils';
 
+import { IUser } from '@app/models';
 import { useStore } from '@app/store';
 
-// import { SearchField } from '@app/ui';
 import { Modal } from '../Modal';
+
+interface IUserTableView {
+  id: number;
+  name: string;
+  email: string;
+  orgName: string;
+  roleName: string;
+  createdAt: Date;
+}
+function emp_test_log() {
+  const { employeeStore } = useStore();
+  React.useEffect(() => {
+    employeeStore.getCollection();
+  }, []);
+
+  // const rows =
+  employeeStore.employees.map((user: IUser): IUserTableView => {
+    return {
+      id: user.id,
+      name: user.username,
+      email: user.email,
+      orgName: user.organization?.name || '',
+      roleName: user.role?.name || '',
+      createdAt: user.createdAt || new Date(0, 0, 0),
+    };
+  });
+  console.log(employeeStore.employees);
+}
 
 /* диалог "добавление сотрудника" */
 interface DialogEmployeeAddProps {
@@ -387,6 +415,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
 }
 
 export function Employees() {
+  console.log(emp_test_log());
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof Data>('name');
   const [selected, setSelected] = React.useState<readonly number[]>([]);

@@ -5,6 +5,7 @@ import { TitleStore } from '@app/stores/title';
 
 import { AppStore } from './app';
 import { AuthStore } from './auth';
+import { EmployeesStore } from './employees';
 import { OrganizatonsStore } from './organizations';
 import { ProfileStore } from './profile';
 import { TransportStore } from './transport';
@@ -21,6 +22,7 @@ export type RootStore = {
   profileStore: ProfileStore;
   authStore: AuthStore;
   rolesStore: RolesStore;
+  employeeStore: EmployeesStore;
 };
 
 const rootStore: RootStore = {
@@ -34,6 +36,7 @@ const rootStore: RootStore = {
   profileStore: new ProfileStore(),
   authStore: new AuthStore(),
   rolesStore: new RolesStore(),
+  employeeStore: new EmployeesStore(),
 };
 
 export default rootStore;
