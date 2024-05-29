@@ -3,6 +3,7 @@ import { MapsStore } from '@app/stores/maps';
 import { RolesStore } from '@app/stores/roles';
 import { TitleStore } from '@app/stores/title';
 
+import { ServiceStore } from './analytics';
 import { AppStore } from './app';
 import { AuthStore } from './auth';
 import { EmployeesStore } from './employees';
@@ -23,6 +24,7 @@ export type RootStore = {
   authStore: AuthStore;
   rolesStore: RolesStore;
   employeesStore: EmployeesStore;
+  servicesStore: ServiceStore;
 };
 
 const rootStore: RootStore = {
@@ -37,6 +39,7 @@ const rootStore: RootStore = {
   authStore: new AuthStore(),
   rolesStore: new RolesStore(),
   employeesStore: new EmployeesStore(),
+  servicesStore: new ServiceStore(),
 };
 
 export default rootStore;
