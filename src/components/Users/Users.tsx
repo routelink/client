@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import PasswordIcon from '@mui/icons-material/Password';
 import SyncIcon from '@mui/icons-material/Sync';
 import Fab from '@mui/material/Fab';
 import IconButton from '@mui/material/IconButton';
@@ -14,6 +15,7 @@ import Typography from '@mui/material/Typography';
 import { useStore } from '@app/store';
 import { SearchField } from '@app/ui';
 
+import { DialogPasswordChange } from './DialogPasswordChange';
 import { DialogRemoveUsers } from './DialogRemoveUsers';
 import { DialogUserAdd } from './DialogUserAdd';
 import { DialogUserEdit } from './DialogUserEdit';
@@ -26,6 +28,7 @@ export function Users() {
   const [addUserOpen, setAddUserOpen] = useState(false);
   const [editUserOpen, setEditUserOpen] = useState(false);
   const [removeUsersOpen, setRemoveUsersOpen] = useState(false);
+  const [passwordChangeOpen, setPasswordChangeOpen] = useState(false);
   const [selected, setSelected] = useState<number[]>([]);
 
   useEffect(() => {
@@ -49,16 +52,27 @@ export function Users() {
       />
 
       {selected.length === 1 ? (
-        <DialogUserEdit
-          isOpen={editUserOpen}
-          userId={selected[0]}
-          setOpen={setEditUserOpen}
-          onEditEnd={() => {
-            setSelected([]);
-            usersStore.getCollection();
-          }}
-        />
+        <span>
+          <DialogUserEdit
+            isOpen={editUserOpen}
+            userId={selected[0]}
+            setOpen={setEditUserOpen}
+            onEditEnd={() => {
+              setSelected([]);
+              usersStore.getCollection();
+            }}
+          />
+          <DialogPasswordChange
+            isOpen={passwordChangeOpen}
+            userId={selected[0]}
+            setClose={() => setPasswordChangeOpen(false)}
+            onPasswordChangeEnd={() => {
+              setSelected([]);
+            }}
+          />
+        </span>
       ) : null}
+
       <DialogRemoveUsers
         isOpen={removeUsersOpen}
         usersIds={selected}
@@ -91,6 +105,17 @@ export function Users() {
                   Выбрано {selected.length} записей
                 </Typography>
               ) : null}
+              <Tooltip title="Изменить пароль" placement="top">
+                <span>
+                  <IconButton
+                    disabled={selected.length !== 1}
+                    onClick={() => {
+                      setPasswordChangeOpen(true);
+                    }}>
+                    <PasswordIcon />
+                  </IconButton>
+                </span>
+              </Tooltip>
               <Tooltip title="Изменить выбранное" placement="top">
                 <span>
                   <IconButton
