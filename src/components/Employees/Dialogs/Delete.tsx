@@ -20,6 +20,7 @@ export function Delete(props: DialogProps) {
     usersIds.forEach((id) => {
       employeesStore.delete(id);
     });
+    employeesStore.getCollection();
     if (props.onRemoveEnd) {
       props.onRemoveEnd();
     }
