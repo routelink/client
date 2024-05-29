@@ -29,7 +29,7 @@ export function Login() {
               id="login"
               label="Логин"
               name="login"
-              autoComplete="login"
+              autoComplete="email"
               autoFocus
             />
             <TextField
@@ -47,17 +47,13 @@ export function Login() {
                 <Link
                   color={'#68B5B9'}
                   component={NavLink}
-                  to="/auth/forgot-password"
+                  to="/forgot-password"
                   variant="body2">
                   Забыли пароль?
                 </Link>
               </Grid>
               <Grid item>
-                <Link
-                  color="#1F1F1F"
-                  component={NavLink}
-                  to="/auth/register"
-                  variant="body2">
+                <Link color="#1F1F1F" component={NavLink} to="/register" variant="body2">
                   Регистрация
                 </Link>
               </Grid>

@@ -22,4 +22,9 @@ export class AuthService {
   static logoutAll() {
     return api.post('/auth/logout/all', {}, { withCredentials: true });
   }
+  static registration(option: any) {
+    return api.post('/auth/registration', {
+      ...option,
+    });
+  }
 }
