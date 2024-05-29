@@ -18,7 +18,6 @@ export class ProfileStore {
   set user(value: IUser) {
     this._user = value;
   }
-
   async getProfile(): Promise<IUser> {
     return this.profileService.getProfile().then((response) => {
       this.user = response.data;
@@ -35,9 +34,12 @@ export class ProfileStore {
     currentPassword: string;
     newPassword: string;
     confirmPassword: string;
-  }): Promise<IUser> {
+  }): Promise<string | null> {
     return this.profileService.changePassword(options).then((response) => {
-      return response.data;
+      //console.log(response.data);
+      return response.data?.message
+        ? response.data?.message
+        : 'Password update successfuly';
     });
   }
 }
