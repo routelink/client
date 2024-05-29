@@ -13,7 +13,9 @@ export class TransportService {
   }
   async getRows(query: string): Promise<{ rows: ITransport[] } | null> {
     try {
+
       const { data } = await api.get(`/api/transports?${query}`);
+
       return data as { rows: ITransport[] };
     } catch (err) {
       return null;
@@ -22,7 +24,9 @@ export class TransportService {
 
   async deleteRow(id: ITransport['id']) {
     try {
+
       await api.delete('/api/transports', {
+
         data: {
           id,
         },
