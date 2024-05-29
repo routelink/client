@@ -40,7 +40,7 @@ export function Update(props: UpdateProps) {
             }
           };
           getEmployye();
-          transportStore.getData({});
+          transportStore.getData('');
           rolesStore.loadRoles();
         }, []);
         useEffect(() => {
