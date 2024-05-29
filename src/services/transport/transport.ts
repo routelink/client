@@ -1,4 +1,4 @@
-import { GetItemsParams, ITransport, TransportTypes } from '@app/models';
+import { ITransport, TransportTypes } from '@app/models';
 import { api } from '@app/services';
 
 export class TransportService {
@@ -11,22 +11,23 @@ export class TransportService {
       return null;
     }
   }
-  async getRows({
-    page = 1,
-    count = 10,
-    search = '',
-    sortBy,
-    sortOrder,
-  }: GetItemsParams): Promise<{ rows: ITransport[] } | null> {
+  async getRows(query: string): Promise<{ rows: ITransport[] } | null> {
     try {
-      const { data } = await api.post('/api/transports', {
-        page,
-        count,
-        search,
-        sortBy,
-        sortOrder,
-      });
+      const { data } = await api.get(`/api/transports?${query}`);
       return data as { rows: ITransport[] };
+    } catch (err) {
+      return null;
+    }
+  }
+
+  async deleteRow(id: ITransport['id']) {
+    try {
+      await api.delete('/api/transports', {
+        data: {
+          id,
+        },
+      });
+      return true;
     } catch (err) {
       return null;
     }

@@ -47,15 +47,29 @@ export const TransportManagement: React.FC = observer(() => {
   });
   const history = useNavigate();
 
-  React.useEffect(() => {
-    store.transportStore.getData({
-      page: _page - 1,
-      count: _count,
-      search: _search,
-      sortBy: sort.colId,
-      sortOrder: sort.sort,
-    });
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (_page !== defaultPage) {
+      params.set('page', `${_page}`);
+    }
+    if (_count !== defaultCount) {
+      params.set('count', `${_count}`);
+    }
+    if (_search !== defaultSearch) {
+      params.set('search', _search);
+    }
+    if (sort.colId && sort.sort) {
+      params.set('sortBy', sort.colId);
+      params.set('sortOrder', sort.sort);
+    }
+
+    const _params = params.toString();
+
+    history(`?${_params}`);
+
+    store.transportStore.getData(_params);
   }, [_page, _count, _search, sort]);
+  React.useEffect(() => {}, [_page, _count, _search, sort]);
 
   const rowData = store.transportStore.tableData;
 
@@ -131,21 +145,6 @@ export const TransportManagement: React.FC = observer(() => {
       setPage(page);
     }
   }, []);
-  useEffect(() => {
-    const params = new URLSearchParams();
-    if (_page !== defaultPage) {
-      params.set('page', `${_page}`);
-    }
-    if (_count !== defaultCount) {
-      params.set('count', `${_count}`);
-    }
-    if (_search !== defaultSearch) {
-      params.set('search', _search);
-    }
-    if (!params.size) return;
-
-    history(`?${params.toString()}`);
-  }, [_page, _count, _search]);
 
   const toggleDrawer = (value: boolean) => {
     setOpen(value);
