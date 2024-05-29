@@ -10,7 +10,9 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+
 import FormControlLabel from '@mui/material/FormControlLabel';
+
 
 import { AddTransport, ITransport } from '@app/models';
 import { useStore } from '@app/store.tsx';
@@ -60,7 +62,9 @@ const VehicleForm: React.FC<TransportAddFormProps> = ({ onApply, editRow }) => {
   });
 
   const [hasRegError, setHasRegError] = useState(false);
+
   const [hasConsumptionError, setHasConsumptionError] = useState(false);
+
   const [type, setType] = useState<ViewType>(
     editRow
       ? (vehicleTypes.find((i) => i.id == editRow.typeId) as ViewType)
@@ -72,8 +76,10 @@ const VehicleForm: React.FC<TransportAddFormProps> = ({ onApply, editRow }) => {
   const [name, setName] = useState<AddTransport['name']>(
     editRow ? editRow.name || '' : '',
   );
+
   const [consumption, setConsumption] = useState<number | undefined>(
     editRow ? editRow.avgConsumption : undefined,
+
   );
   const [unit, setUnit] = useState<AddTransport['unit']>(editRow ? editRow.unit : 'L');
 
@@ -88,6 +94,7 @@ const VehicleForm: React.FC<TransportAddFormProps> = ({ onApply, editRow }) => {
       setHasRegError(true);
     }
   };
+
   const validateConsumption = () => {
     if (regNumber?.length) {
       setHasConsumptionError(false);
@@ -95,6 +102,7 @@ const VehicleForm: React.FC<TransportAddFormProps> = ({ onApply, editRow }) => {
       setHasConsumptionError(true);
     }
   };
+
 
   const onSetTransportType = (value: ViewType['id']) => {
     const vehicleType = vehicleTypes.find((i) => i.id === value);
@@ -173,6 +181,7 @@ const VehicleForm: React.FC<TransportAddFormProps> = ({ onApply, editRow }) => {
         <Box display="flex" justifyContent="space-between">
           <TextField
             label="Расход на 100 км"
+
             value={consumption}
             name={'avgConsumption'}
             required
