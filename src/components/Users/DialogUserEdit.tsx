@@ -126,7 +126,6 @@ export function DialogUserEdit(props: DialogUserEditProps) {
                 onChange={(event) => {
                   if (typeof event.target.value === 'number') {
                     setRoleId(event.target.value);
-                    console.log(event.target.value);
                   }
                 }}>
                 {rolesStore.roles.map((role) => (
