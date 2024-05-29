@@ -10,10 +10,21 @@ export class UserService {
   }
 
   create(user: Partial<IUser>) {
-    return api.post('/api/users', user);
+    return api.post('/api/users', {
+      ...user,
+      roleId: user.role?.id,
+      organizationId: user.organization?.id,
+      transportId: user.transport?.id,
+    });
   }
-  update(user: Partial<IUser>) {
-    return api.patch(`/api/users/${user.id}`, user);
+
+  update(id: number, user: Partial<IUser>) {
+    return api.patch(`/api/users/${id}`, {
+      ...user,
+      roleId: user.role?.id,
+      organizationId: user.organization?.id,
+      transportId: user.transport?.id,
+    });
   }
 
   delete(id: number) {

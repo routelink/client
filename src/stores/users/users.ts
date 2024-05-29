@@ -30,9 +30,9 @@ export class UsersStore {
     });
   }
 
-  async create(data: any) {
+  async create(user: Partial<IUser>) {
     return await this.usersService
-      .create(data)
+      .create(user)
       .then((response: AxiosResponse<IUser>) => {
         this.user = response.data;
         return this.user;
@@ -40,11 +40,14 @@ export class UsersStore {
       .then(() => this.getCollection());
   }
 
-  async update(data: any) {
-    return await this.usersService.update(data).then((response: AxiosResponse<IUser>) => {
-      this.user = response.data;
-      return this.user;
-    });
+  async update(id: number, user: Partial<IUser>) {
+    return await this.usersService
+      .update(id, user)
+      .then((response: AxiosResponse<IUser>) => {
+        this.user = response.data;
+        return this.user;
+      })
+      .then(() => this.getCollection());
   }
 
   async delete(id: number) {
@@ -55,6 +58,33 @@ export class UsersStore {
         return this.user;
       })
       .then(() => this.getCollection());
+  }
+
+  getUsers(filter?: string): IUser[] {
+    if (!filter || filter.trim() === '') {
+      return this._users;
+    }
+    filter = filter.trim().toLowerCase();
+
+    return this._users.filter((user) => {
+      if (
+        user.username.toLowerCase().includes(filter) ||
+        user.email.toLowerCase().includes(filter) ||
+        user.organization?.name.toLowerCase().includes(filter) ||
+        user.role?.name.toLowerCase().includes(filter)
+      ) {
+        return true;
+      }
+      return false;
+    });
+  }
+
+  getUser(id: number): IUser | undefined {
+    const index = this._users.findIndex((user) => user.id === id);
+    if (index === -1) {
+      return undefined;
+    }
+    return this._users[index];
   }
 
   get users() {
