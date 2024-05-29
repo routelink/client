@@ -1,4 +1,4 @@
-import { ITransport, TransportTypes } from '@app/models';
+import { AddTransport, ITransport, TransportTypes } from '@app/models';
 import { api } from '@app/services';
 
 export class TransportService {
@@ -13,7 +13,6 @@ export class TransportService {
   }
   async getRows(query: string): Promise<{ rows: ITransport[] } | null> {
     try {
-
       const { data } = await api.get(`/api/transports?${query}`);
 
       return data as { rows: ITransport[] };
@@ -22,11 +21,29 @@ export class TransportService {
     }
   }
 
+  async editRow(payload: AddTransport, id: number) {
+    try {
+      const { data } = await api.post(`/api/transports/edit/${id}`, payload);
+
+      return data as ITransport;
+    } catch (err) {
+      return null;
+    }
+  }
+
+  async addRow(payload: AddTransport) {
+    try {
+      const { data } = await api.post(`/api/transports`, payload);
+
+      return data as ITransport;
+    } catch (err) {
+      return null;
+    }
+  }
+
   async deleteRow(id: ITransport['id']) {
     try {
-
       await api.delete('/api/transports', {
-
         data: {
           id,
         },
