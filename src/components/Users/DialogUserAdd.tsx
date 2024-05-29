@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
@@ -16,6 +16,7 @@ import { Modal } from '../Modal';
 export interface DialogUserAddProps {
   isOpen: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  onAddEnd?: () => void;
 }
 export function DialogUserAdd(props: DialogUserAddProps) {
   const { orgsStore, usersStore, rolesStore } = useStore();
@@ -26,7 +27,19 @@ export function DialogUserAdd(props: DialogUserAddProps) {
   const [orgId, setOrgId] = useState(-1);
   const [roleId, setRoleId] = useState(-1);
 
-  const isFormValid = fio.trim() !== '' && email.trim() !== '';
+  const isFormValid =
+    fio.trim() !== '' &&
+    email.trim() !== '' &&
+    password.trim() !== '' &&
+    /* RL-admin not have org */
+    ((roleId === 1 && orgId === -1) ||
+      /* all other role must have org */
+      (roleId !== 1 && roleId !== -1 && orgId !== -1));
+
+  useEffect(() => {
+    orgsStore.loadOrgs();
+    rolesStore.loadRoles();
+  }, []);
 
   const handleCancel = () => {
     props.setOpen(false);
@@ -42,8 +55,8 @@ export function DialogUserAdd(props: DialogUserAddProps) {
         username: fio,
         email: email,
         password: password,
-        organization: orgId !== -1 ? orgsStore.getOrg(orgId) : undefined,
-        role: orgId !== -1 && roleId !== -1 ? rolesStore.getRole(roleId) : undefined,
+        role: rolesStore.getRole(roleId),
+        organization: orgsStore.getOrg(orgId),
       })
       .then(() => {
         props.setOpen(false);
@@ -106,31 +119,35 @@ export function DialogUserAdd(props: DialogUserAddProps) {
               </Select>
             </FormControl>
 
-            {orgId !== -1 ? (
-              <FormControl variant="standard">
-                <InputLabel id="role-label">Роль</InputLabel>
-                <Select
-                  labelId="role-label"
-                  variant="standard"
-                  value={roleId}
-                  onChange={(event) => {
-                    if (typeof event.target.value === 'number') {
-                      setRoleId(event.target.value);
-                    }
-                  }}>
-                  <MenuItem key={-1} value={-1}>
-                    <em>Не назначена</em>
+            <FormControl variant="standard" required>
+              <InputLabel id="role-label">Роль</InputLabel>
+              <Select
+                labelId="role-label"
+                variant="standard"
+                value={roleId}
+                onChange={(event) => {
+                  if (typeof event.target.value === 'number') {
+                    setRoleId(event.target.value);
+                  }
+                }}>
+                <MenuItem key={-1} value={-1}>
+                  <em>Не назначена</em>
+                </MenuItem>
+                {rolesStore.roles.map((role) => (
+                  <MenuItem key={role.id} value={role.id}>
+                    {role.name}
                   </MenuItem>
-                  {rolesStore.roles.map((role) => (
-                    <MenuItem key={role.id} value={role.id}>
-                      {role.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            ) : null}
+                ))}
+              </Select>
+            </FormControl>
           </Stack>
         </Stack>
+
+        {roleId === 1 && orgId !== -1 ? (
+          <Typography variant="body2">
+            Примечание: администратор платформы не может быть членом организации
+          </Typography>
+        ) : null}
 
         <Stack direction="row" justifyContent="flex-end" spacing={2}>
           <Button
@@ -146,6 +163,9 @@ export function DialogUserAdd(props: DialogUserAddProps) {
             variant="contained"
             onClick={() => {
               handleAdd();
+              if (props.onAddEnd) {
+                props.onAddEnd();
+              }
             }}>
             Добавить
           </Button>

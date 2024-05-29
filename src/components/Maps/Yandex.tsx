@@ -6,6 +6,7 @@ import {
   YMaps,
 } from '@pbe/react-yandex-maps';
 import { Observer } from 'mobx-react-lite';
+import { IMapState } from 'yandex-maps';
 
 import { Box } from '@mui/material';
 
@@ -14,15 +15,16 @@ import { useStore } from '@app/store';
 
 export function Yandex() {
   const { mapsStore } = useStore();
-
-  const defaultState = {
-    center: [55.751574, 37.573856],
-    zoom: 1,
-  };
-
   return (
     <Observer>
       {() => {
+        const defaultState: IMapState = {
+          center: [
+            mapsStore.coords.coords?.latitude ?? 55.751574,
+            mapsStore.coords.coords?.longitude ?? 37.573856,
+          ],
+          zoom: 10,
+        };
         return (
           <Box
             sx={{
@@ -41,15 +43,18 @@ export function Yandex() {
                   />
                 ))}
 
-                <Placemark
-                  options={{
-                    preset: 'islands#redCircleDotIcon',
-                  }}
-                  geometry={[
-                    mapsStore.coords.coords?.latitude,
-                    mapsStore.coords?.coords?.longitude,
-                  ]}
-                />
+                {mapsStore.coords?.coords?.latitude &&
+                mapsStore.coords?.coords?.longitude ? (
+                  <Placemark
+                    options={{
+                      preset: 'islands#redCircleDotIcon',
+                    }}
+                    geometry={[
+                      mapsStore?.coords?.coords?.latitude,
+                      mapsStore?.coords?.coords?.longitude,
+                    ]}
+                  />
+                ) : null}
               </Map>
             </YMaps>
           </Box>

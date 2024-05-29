@@ -1,18 +1,17 @@
 import { makeAutoObservable } from 'mobx';
 
-import { TransportTypes } from '@app/models';
 import { TransportService } from '@app/services';
+
+type TransportType = Record<number | string, string>;
 
 export class AppStore {
   openSidebar;
   openMobile = false;
-  _transportTypes: TransportTypes = {
-    ru: {},
-    en: {},
-  };
+  _transportTypes: TransportType = {};
 
   _loading = false;
   _error: string | null = null;
+  _success: string | null = null;
 
   private readonly transportService = new TransportService();
 
@@ -29,8 +28,14 @@ export class AppStore {
   }
 
   async getTransportTypes() {
-    this._transportTypes =
-      (await this.transportService.getTransportTypes()) as TransportTypes;
+    const res = await this.transportService.getTransportTypes();
+    if (res) {
+      this._transportTypes = res.reduce((acc: TransportType, cur) => {
+        acc[cur.id] = cur.name;
+        return acc;
+      }, {});
+    }
+    console.log(this._transportTypes);
   }
 
   toggleOpenMobile(): void {
@@ -38,7 +43,7 @@ export class AppStore {
   }
 
   get transportTypes() {
-    return this._transportTypes['ru'];
+    return this._transportTypes;
   }
 
   get loading() {
@@ -52,6 +57,12 @@ export class AppStore {
   }
   set error(error: string | null) {
     this._error = error;
+  }
+  get success(): string | null {
+    return this._success;
+  }
+  set success(msg: string | null) {
+    this._success = msg;
   }
 }
 

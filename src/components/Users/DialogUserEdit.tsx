@@ -9,6 +9,7 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
+import { IUser } from '@app/models';
 import { useStore } from '@app/store';
 
 import { Modal } from '../Modal';
@@ -17,52 +18,53 @@ export interface DialogUserEditProps {
   isOpen: boolean;
   userId: number;
   setOpen: Dispatch<SetStateAction<boolean>>;
+  onEditEnd?: () => void;
 }
 
 export function DialogUserEdit(props: DialogUserEditProps) {
   const { orgsStore, rolesStore, usersStore } = useStore();
   useEffect(() => {
-    usersStore.getItem(props.userId);
+    usersStore.getCollection();
+    orgsStore.loadOrgs();
+    rolesStore.loadRoles();
   }, []);
 
-  // const selectedUser = usersStore.getUser(props.userId);
-  if (!usersStore.user) {
+  const selectedUser: IUser | undefined = usersStore.getUser(props.userId);
+  if (!selectedUser) {
     props.setOpen(false);
     return <></>;
   }
 
-  const [fio, setFio] = useState(usersStore.user.username);
-  const [email, setEmail] = useState(usersStore.user.email);
-  const [orgId, setOrgId] = useState(
-    usersStore.user.organization ? usersStore.user.organization.id : -1,
-  );
-  const [roleId, setRoleId] = useState(
-    usersStore.user.role ? usersStore.user.role.id : -1,
-  );
+  const [fio, setFio] = useState(selectedUser.username);
+  const [email, setEmail] = useState(selectedUser.email);
+  const [orgId, setOrgId] = useState(selectedUser.organization?.id || -1);
+  const [roleId, setRoleId] = useState(selectedUser.role?.id || -1);
 
-  /* 
-   * TODO: FIX
-   * const isFormValid =
+  const isFormHaveChange =
+    fio.trim() !== selectedUser.username ||
+    email.trim() !== selectedUser.email ||
+    orgId !== selectedUser.organization?.id ||
+    roleId !== selectedUser.role?.id;
+
+  const isFormValid =
     fio.trim() !== '' &&
     email.trim() !== '' &&
-    (usersStore.user.username !== fio.trim() ||
-      usersStore.user.email !== email.trim() ||
-      (usersStore.user.organization ? usersStore.user.organization.id : -1) !== orgId ||
-      (usersStore.user.organization && usersStore.user.role
-        ? usersStore.user.role.id
-        : -1) !== roleId); */
+    isFormHaveChange &&
+    /* RL-admin not have org */
+    ((roleId === 1 && orgId === -1) ||
+      /* all other role must have org */
+      (roleId !== 1 && roleId !== -1 && orgId !== -1));
 
   const handleCancel = () => {
     props.setOpen(false);
   };
 
   const handleUpdate = () => {
-    usersStore.update({
-      id: props.userId,
+    usersStore.update(props.userId, {
       username: fio,
       email: email,
-      organization: orgId !== -1 ? orgsStore.getOrg(orgId) : undefined,
-      role: orgId !== -1 && roleId !== -1 ? rolesStore.getRole(roleId) : undefined,
+      role: rolesStore.getRole(roleId),
+      organization: orgsStore.getOrg(orgId),
     });
 
     props.setOpen(false);
@@ -115,28 +117,34 @@ export function DialogUserEdit(props: DialogUserEditProps) {
               </Select>
             </FormControl>
 
-            {orgId !== -1 ? (
-              <FormControl variant="standard">
-                <InputLabel id="role-label">Роль</InputLabel>
-                <Select
-                  labelId="role-label"
-                  variant="standard"
-                  value={roleId}
-                  onChange={(event) => {
-                    if (typeof event.target.value === 'number') {
-                      setRoleId(event.target.value);
-                    }
-                  }}>
-                  <MenuItem key={-1} value={-1}>
-                    <em>Не назначена</em>
+            <FormControl variant="standard">
+              <InputLabel id="role-label">Роль</InputLabel>
+              <Select
+                labelId="role-label"
+                variant="standard"
+                value={roleId}
+                onChange={(event) => {
+                  if (typeof event.target.value === 'number') {
+                    setRoleId(event.target.value);
+                    console.log(event.target.value);
+                  }
+                }}>
+                {rolesStore.roles.map((role) => (
+                  <MenuItem key={role.id} value={role.id}>
+                    {role.name}
                   </MenuItem>
-                  {rolesStore.roles.map((role) => (
-                    <MenuItem key={role.id} value={role.id}>
-                      {role.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+                ))}
+              </Select>
+            </FormControl>
+
+            {roleId === 1 && orgId !== -1 ? (
+              <Typography variant="body2">
+                Примечание: администратор платформы не может быть членом организации
+              </Typography>
+            ) : null}
+
+            {!isFormHaveChange ? (
+              <Typography variant="body2">Примечание: не выбраны изменения</Typography>
             ) : null}
           </Stack>
         </Stack>
@@ -151,9 +159,13 @@ export function DialogUserEdit(props: DialogUserEditProps) {
           </Button>
 
           <Button
+            disabled={!isFormValid}
             variant="contained"
             onClick={() => {
               handleUpdate();
+              if (props.onEditEnd) {
+                props.onEditEnd();
+              }
             }}>
             Изменить
           </Button>

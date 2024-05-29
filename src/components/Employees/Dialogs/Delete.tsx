@@ -7,19 +7,20 @@ import DialogTitle from '@mui/material/DialogTitle';
 
 import { useStore } from '@app/store';
 
-export interface DialogRemoveUsersProps {
+interface DialogProps {
   isOpen: boolean;
-  usersIds: number[];
+  employeesIds: number[];
   setClose: () => void;
   onRemoveEnd?: () => void;
 }
-export function DialogRemoveUsers(props: DialogRemoveUsersProps) {
-  const { isOpen, usersIds, setClose } = props;
-  const { usersStore } = useStore();
+export function Delete(props: DialogProps) {
+  const { isOpen, employeesIds: usersIds, setClose } = props;
+  const { employeesStore } = useStore();
   const handleRemove = () => {
     usersIds.forEach((id) => {
-      usersStore.delete(id);
+      employeesStore.delete(id);
     });
+    employeesStore.getCollection();
     if (props.onRemoveEnd) {
       props.onRemoveEnd();
     }
@@ -29,10 +30,11 @@ export function DialogRemoveUsers(props: DialogRemoveUsersProps) {
   return (
     <>
       <Dialog open={isOpen} onClose={setClose} aria-labelledby="responsive-dialog-title">
-        <DialogTitle>Удаление пользователей</DialogTitle>
+        <DialogTitle>Удаление сотрудников</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Запрошено удаление {props.usersIds.length} пользователей. Продолжить удаление?
+            Запрошено удаление {props.employeesIds.length} сотрудников. Продолжить
+            удаление?
           </DialogContentText>
         </DialogContent>
         <DialogActions>

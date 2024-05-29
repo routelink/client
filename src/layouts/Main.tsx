@@ -1,11 +1,12 @@
 import { Observer } from 'mobx-react-lite';
+import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 
 import MuiBox, { BoxProps as MuiBoxProps } from '@mui/material/Box';
 import { styled, useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
-import { Error, Header, Loading, Sidebar } from '@app/layouts';
+import { Error, Header, Loading, Sidebar, Success } from '@app/layouts';
 import { useStore } from '@app/store';
 
 const drawerWidth = 260;
@@ -50,6 +51,15 @@ export function Main() {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const { appStore } = useStore();
+
+  useEffect(() => {
+    //@todo
+    const fetchDataAsync = async () => {
+      await appStore.getTransportTypes();
+    };
+
+    fetchDataAsync();
+  }, []);
 
   const handleMobile = () => appStore.toggleOpenMobile();
   const handleSidebar = () => appStore.toggleOpenSidebar();
@@ -98,6 +108,7 @@ export function Main() {
               <Box style={{ ...style.main }} sx={{ flex: 1, position: 'relative' }}>
                 <Loading />
                 <Error />
+                <Success />
                 <Outlet />
               </Box>
             </Box>

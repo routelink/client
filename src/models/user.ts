@@ -7,4 +7,5 @@ export interface IUser extends IMetaContext {
   role: IRole;
   avatar?: string;
   transport?: ITransport;
+  password?: string;
 }

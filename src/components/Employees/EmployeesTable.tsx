@@ -1,5 +1,5 @@
 import { Observer } from 'mobx-react-lite';
-import { ChangeEvent, MouseEvent, useState } from 'react';
+import { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
 
 import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
@@ -14,6 +14,7 @@ import TableSortLabel from '@mui/material/TableSortLabel';
 import { visuallyHidden } from '@mui/utils';
 
 import { IUser } from '@app/models';
+import { useStore } from '@app/store';
 import { formatDate } from '@app/utils';
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -52,71 +53,54 @@ export function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => n
   return stabilizedThis.map((el) => el[0]);
 }
 
-export interface IUserTableView {
+export interface IEmployeesTableView {
   id: number;
   username: string;
-  email: string;
-  orgName: string;
   roleName: string;
+  transport: string;
   createdAt: Date;
 }
 
 interface HeadCell {
-  id: keyof IUserTableView;
+  id: keyof IEmployeesTableView;
   label: string;
 }
 
 export const headCells: readonly HeadCell[] = [
   { id: 'username', label: 'ФИО' },
-  { id: 'email', label: 'Эл. почта' },
-  { id: 'orgName', label: 'Организация' },
   { id: 'roleName', label: 'Роль' },
+  { id: 'transport', label: 'Транспортное средство' },
   { id: 'createdAt', label: 'Дата создания' },
 ];
 
-export interface TableUsersProps {
-  userData: IUser[];
+export interface TableEmployeesProps {
+  search: string;
   selectedState?: [
     selected: number[],
     setSelected: React.Dispatch<React.SetStateAction<number[]>>,
   ];
 }
 
-export function TableUsers(props: TableUsersProps) {
-  const rows = props.userData.map((user: IUser): IUserTableView => {
-    return {
-      id: user.id,
-      username: user.username,
-      email: user.email,
-      orgName: user.organization?.name || '',
-      roleName: user.role?.name || '',
-      createdAt: user.createdAt || new Date(0, 0, 0),
-    };
-  });
-
+export function EmployeesTable(props: TableEmployeesProps) {
+  const { employeesStore } = useStore();
+  const [page, setPage] = useState(0);
   const [order, setOrder] = useState<Order>('asc');
-  const [orderBy, setOrderBy] = useState<keyof IUserTableView>('username');
+  const [orderBy, setOrderBy] = useState<keyof IEmployeesTableView>('username');
   let [selected, setSelected] = useState<number[]>([]);
+  useEffect(() => {
+    employeesStore.getCollection();
+  }, []);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   if (props.selectedState) {
     [selected, setSelected] = props.selectedState;
   }
-
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-
-  const handleRequestSort = (_: MouseEvent<unknown>, property: keyof IUserTableView) => {
+  const handleRequestSort = (
+    _: MouseEvent<unknown>,
+    property: keyof IEmployeesTableView,
+  ) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
-  };
-
-  const handleSelectAllClick = (event: ChangeEvent<HTMLInputElement>) => {
-    if (event.target.checked) {
-      const newSelected = rows.map((n) => n.id);
-      setSelected(newSelected);
-      return;
-    }
-    setSelected([]);
   };
 
   const handleClick = (_: MouseEvent<unknown>, id: number) => {
@@ -138,31 +122,49 @@ export function TableUsers(props: TableUsersProps) {
     setSelected(newSelected);
   };
 
-  const handleChangePage = (_: unknown, newPage: number) => {
-    setPage(newPage);
-  };
-
+  const isSelected = (id: number) => selected.indexOf(id) !== -1;
   const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-
-  const isSelected = (id: number) => selected.indexOf(id) !== -1;
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
-
-  const visibleRows = stableSort(rows, getComparator(order, orderBy)).slice(
-    page * rowsPerPage,
-    page * rowsPerPage + rowsPerPage,
-  );
-
-  const createSortHandler =
-    (property: keyof IUserTableView) => (event: MouseEvent<unknown>) => {
-      handleRequestSort(event, property);
-    };
+  const handleChangePage = (_: unknown, newPage: number) => {
+    setPage(newPage);
+  };
 
   return (
     <Observer>
       {() => {
+        const rows = employeesStore.employees
+          .map((user: IUser): IEmployeesTableView => {
+            return {
+              id: user.id,
+              username: user.username,
+              roleName: user.role.name,
+              transport: user.transport?.name || '',
+              createdAt: user.createdAt || new Date(0, 0, 0),
+            };
+          })
+          .filter((item) => filter(item, props.search));
+
+        const visibleRows = stableSort(rows, getComparator(order, orderBy)).slice(
+          page * rowsPerPage,
+          page * rowsPerPage + rowsPerPage,
+        );
+        const emptyRows =
+          page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+        const handleSelectAllClick = (event: ChangeEvent<HTMLInputElement>) => {
+          if (event.target.checked) {
+            const newSelected = rows.map((n) => n.id);
+            setSelected(newSelected);
+            return;
+          }
+          setSelected([]);
+        };
+
+        const createSortHandler =
+          (property: keyof IEmployeesTableView) => (event: MouseEvent<unknown>) => {
+            handleRequestSort(event, property);
+          };
         return (
           <Box>
             <TableContainer
@@ -245,13 +247,10 @@ export function TableUsers(props: TableUsersProps) {
                           {row.username}
                         </TableCell>
                         <TableCell sx={{ borderWidth: '0px', padding: '12px' }}>
-                          {row.email}
-                        </TableCell>
-                        <TableCell sx={{ borderWidth: '0px', padding: '12px' }}>
-                          {row.orgName}
-                        </TableCell>
-                        <TableCell sx={{ borderWidth: '0px', padding: '12px' }}>
                           {row.roleName}
+                        </TableCell>
+                        <TableCell sx={{ borderWidth: '0px', padding: '12px' }}>
+                          {row.transport}
                         </TableCell>
                         <TableCell
                           sx={{ borderWidth: '0px', padding: '12px', width: '180px' }}>
@@ -281,5 +280,12 @@ export function TableUsers(props: TableUsersProps) {
         );
       }}
     </Observer>
+  );
+}
+function filter(item: IEmployeesTableView, search: string): boolean {
+  return (
+    item.username.toLowerCase().includes(search.toLowerCase()) ||
+    (item.transport || '').toLowerCase().includes(search.toLowerCase()) ||
+    (item.roleName || '').toLowerCase().includes(search.toLowerCase())
   );
 }
