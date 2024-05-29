@@ -14,11 +14,12 @@ import { Add } from '@mui/icons-material';
 import { Box, Paper, Stack } from '@mui/material';
 
 import { Modal } from '@app/components';
+import { AddTransport, ITransport } from '@app/models';
 import { useStore } from '@app/store.tsx';
-import { DateRenderer, RemoveIconRenderer, SearchField } from '@app/ui';
+import { DateRenderer, EditIconRenderer, RemoveIconRenderer, SearchField } from '@app/ui';
 import RoundIconButton from '@app/ui/button/RoundIconButton.tsx';
 
-import TransportAddForm, { TransportAddState } from './TransportAddForm';
+import VehicleForm from './VehicleForm.tsx';
 import './styles.scss';
 
 export const TransportManagement: React.FC = observer(() => {
@@ -74,6 +75,7 @@ export const TransportManagement: React.FC = observer(() => {
   const rowData = store.transportStore.tableData;
 
   const [open, setOpen] = useState(false);
+  const [editRow, setEditRow] = useState<ITransport | null>(null);
   const [colDefs, setColDefs] = useState<unknown>([
     {
       field: 'regNumber',
@@ -125,6 +127,13 @@ export const TransportManagement: React.FC = observer(() => {
       cellRenderer: RemoveIconRenderer,
       flex: 1,
     },
+    {
+      headerName: '',
+      width: '10px',
+      onCellClicked: (event: CellClickedEvent) => onRowEdit(event.data),
+      cellRenderer: EditIconRenderer,
+      flex: 1,
+    },
   ]);
 
   useEffect(() => {
@@ -149,11 +158,22 @@ export const TransportManagement: React.FC = observer(() => {
   const toggleDrawer = (value: boolean) => {
     setOpen(value);
   };
-  const onApply = (val: TransportAddState) => {
-    store.transportStore.onRowAdd(val);
+  const onApply = (val: AddTransport, edit: boolean) => {
+    if (edit) {
+      if (!editRow) return;
+
+      store.transportStore.onRowEdit(val, editRow.id);
+      setEditRow(null);
+    } else {
+      store.transportStore.onRowAdd(val);
+    }
     toggleDrawer(false);
   };
 
+  const onRowEdit = (row: ITransport) => {
+    setEditRow(row);
+    toggleDrawer(true);
+  };
   const onFilter = (value: string) => {
     setSearch(value);
   };
@@ -189,7 +209,7 @@ export const TransportManagement: React.FC = observer(() => {
               className="ag-theme-material" // applying the grid theme
               style={{ height: 'calc(100vh / 1.5)' }} // the grid will fill the size of the parent container
             >
-              {/* @ts-ignore */}
+              {/* @ts-expect-error: 'ssssas as' */}
               <AgGridReact
                 rowData={rowData}
                 columnDefs={colDefs}
@@ -208,7 +228,7 @@ export const TransportManagement: React.FC = observer(() => {
         </Paper>
       </Box>
       <Modal isOpen={open} toggle={() => toggleDrawer(false)}>
-        <TransportAddForm onApply={(val) => onApply(val)}></TransportAddForm>
+        <VehicleForm editRow={editRow} onApply={onApply}></VehicleForm>
       </Modal>
     </section>
   );
