@@ -5,12 +5,14 @@ import {
   Box,
   Button,
   Container,
-  FormControlLabel,
   MenuItem,
   Switch,
   TextField,
   Typography,
 } from '@mui/material';
+
+import FormControlLabel from '@mui/material/FormControlLabel';
+
 
 import { AddTransport, ITransport } from '@app/models';
 import { useStore } from '@app/store.tsx';
@@ -60,6 +62,9 @@ const VehicleForm: React.FC<TransportAddFormProps> = ({ onApply, editRow }) => {
   });
 
   const [hasRegError, setHasRegError] = useState(false);
+
+  const [hasConsumptionError, setHasConsumptionError] = useState(false);
+
   const [type, setType] = useState<ViewType>(
     editRow
       ? (vehicleTypes.find((i) => i.id == editRow.typeId) as ViewType)
@@ -71,8 +76,10 @@ const VehicleForm: React.FC<TransportAddFormProps> = ({ onApply, editRow }) => {
   const [name, setName] = useState<AddTransport['name']>(
     editRow ? editRow.name || '' : '',
   );
-  const [consumption, setConsumption] = useState<string | undefined | number>(
-    editRow ? editRow.avgConsumption : '',
+
+  const [consumption, setConsumption] = useState<number | undefined>(
+    editRow ? editRow.avgConsumption : undefined,
+
   );
   const [unit, setUnit] = useState<AddTransport['unit']>(editRow ? editRow.unit : 'L');
 
@@ -88,6 +95,15 @@ const VehicleForm: React.FC<TransportAddFormProps> = ({ onApply, editRow }) => {
     }
   };
 
+  const validateConsumption = () => {
+    if (regNumber?.length) {
+      setHasConsumptionError(false);
+    } else {
+      setHasConsumptionError(true);
+    }
+  };
+
+
   const onSetTransportType = (value: ViewType['id']) => {
     const vehicleType = vehicleTypes.find((i) => i.id === value);
     vehicleType && setType(vehicleType);
@@ -102,7 +118,7 @@ const VehicleForm: React.FC<TransportAddFormProps> = ({ onApply, editRow }) => {
         regNumber,
         name,
         unit,
-        avgConsumption: parseFloat((consumption as string) || '0'),
+        avgConsumption: consumption,
       },
       !!editRow,
     );
@@ -165,14 +181,26 @@ const VehicleForm: React.FC<TransportAddFormProps> = ({ onApply, editRow }) => {
         <Box display="flex" justifyContent="space-between">
           <TextField
             label="Расход на 100 км"
-            name="consumption" // This must match the state object's property name
+
             value={consumption}
-            onChange={({ target }) => setConsumption(target.value)}
+            name={'avgConsumption'}
             required
             type={'number'}
+            onChange={(value: unknown) => setConsumption(value as number)}
             margin="normal"
             variant="outlined"
-          />{' '}
+            error={hasConsumptionError}
+            helperText={hasConsumptionError && 'Поле должно быть заполнено'}
+            onBlur={validateConsumption}
+            InputProps={{
+              /* @ts-expect-error: input component error */
+              inputComponent: MaskedInput,
+              inputProps: {
+                mask: Number,
+                scale: 0,
+              },
+            }}
+          />
           <FormControlLabel
             control={<Switch onChange={onChangeUnit} />}
             className={'bold'}
