@@ -100,7 +100,7 @@ export function Create(props: Create) {
                           }}>
                           {employees.map((user) => (
                             <MenuItem key={user.id} value={user.id}>
-                              {user.id} / {user.username}
+                              {user.username}
                             </MenuItem>
                           ))}
                           {employees.length === 0 && (
