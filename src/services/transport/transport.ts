@@ -23,6 +23,7 @@ export class TransportService {
 
   async editRow(payload: AddTransport, id: number) {
     try {
+
       const { data } = await api.post(`/api/transports/edit/${id}`, payload);
 
       return data as ITransport;
