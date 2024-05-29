@@ -9,7 +9,10 @@ export class MapsStore {
 
   _isMove = false;
 
+  private _search = '';
+
   _coords: GeolocationPosition = {} as GeolocationPosition;
+
   constructor() {
     this._maps = (localStorage.getItem('maps') as TMaps) ?? `yandex`;
 
@@ -26,7 +29,7 @@ export class MapsStore {
   }
 
   get points(): IMetrica[] {
-    return Array.from(this._points.values());
+    return Array.from(this._points.values()).filter((item) => filter(item, this._search));
   }
   set points(points: Map<number, IMetrica>) {
     this._points = points;
@@ -58,4 +61,16 @@ export class MapsStore {
     this.isMove = !this.isMove;
     return this.isMove;
   }
+  get search(): string {
+    return this._search;
+  }
+  set search(search: string) {
+    this._search = search;
+  }
+}
+function filter(item: IMetrica, search: string): boolean {
+  return (
+    item.transport?.name.toLowerCase().includes(search.toLowerCase()) ||
+    item.transport?.regNumber.toLowerCase().includes(search.toLowerCase())
+  );
 }

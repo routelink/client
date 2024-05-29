@@ -1,76 +1,57 @@
-import { AxiosResponse } from 'axios';
 import { makeAutoObservable } from 'mobx';
 
 import { IUser } from '@app/models';
-import { EmployeeService } from '@app/services';
+import { EmployeesService } from '@app/services';
 
 export class EmployeesStore {
-  _users: IUser[] = [];
-  _user: IUser = {} as IUser;
+  private _employees: IUser[] = [];
+  private _employee: IUser | null = null;
 
-  private readonly employeesService = new EmployeeService();
+  private readonly employeesService = new EmployeesService();
 
   constructor() {
     makeAutoObservable(this);
   }
-
-  async getCollection() {
-    return await this.employeesService
-      .getCollection()
-      .then((response: AxiosResponse<IUser[]>) => {
-        this.employees = response.data;
-        return this.employees;
-      });
+  async getCollection(): Promise<IUser[]> {
+    return this.employeesService.getCollection().then((response) => {
+      this.employees = response.data;
+      return response.data;
+    });
   }
-
-  async getItem(id: number) {
-    return await this.employeesService
-      .getItem(id)
-      .then((response: AxiosResponse<IUser>) => {
-        this._user = response.data;
-        return this.employee;
-      });
+  async getFreeCollection(): Promise<IUser[]> {
+    return this.employeesService.getFreeCollection().then((response) => {
+      return response.data;
+    });
   }
+  async getItem(id: number): Promise<IUser> {
+    return this.employeesService.getItem(id).then((response) => {
+      this.employee = response.data;
 
-  async create(data: any) {
-    return await this.employeesService
-      .create(data)
-      .then((response: AxiosResponse<IUser>) => {
-        this._user = response.data;
-        return this.employee;
-      })
-      .then(() => this.getCollection());
+      return response.data;
+    });
   }
-
-  async update(data: any) {
-    return await this.employeesService
-      .update(data)
-      .then((response: AxiosResponse<IUser>) => {
-        this._user = response.data;
-        return this.employee;
-      });
+  async create(options: { roleId: number; userId: number; transportId?: number }) {
+    return this.employeesService.create(options).then((response) => {
+      this.getCollection();
+      return response.data;
+    });
   }
-
   async delete(id: number) {
-    return await this.employeesService
-      .delete(id)
-      .then((response: AxiosResponse<IUser>) => {
-        this._user = response.data;
-        return this.employee;
-      })
-      .then(() => this.getCollection());
+    return this.employeesService.delete(id).then((response) => {
+      return response.data;
+    });
+  }
+  get employees(): IUser[] {
+    return this._employees;
   }
 
-  get employees() {
-    return this._users;
-  }
   set employees(value: IUser[]) {
-    this._users = value;
+    this._employees = value;
   }
-  get employee() {
-    return this._user;
+  get employee(): IUser | null {
+    return this._employee;
   }
-  set employee(value: IUser) {
-    this._user = value;
+  set employee(value: IUser | null) {
+    this._employee = value;
   }
 }
