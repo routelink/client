@@ -4,7 +4,7 @@ import { api } from '@app/services';
 export class TransportService {
   async getTransportTypes(): Promise<TransportTypes | null> {
     try {
-      const { data } = await api.get('/api/transport/types');
+      const { data } = await api.get('/api/transports/types');
       return data as TransportTypes;
     } catch (err) {
       console.log(err);
@@ -13,7 +13,7 @@ export class TransportService {
   }
   async getRows(query: string): Promise<{ rows: ITransport[] } | null> {
     try {
-      const { data } = await api.get(`/api/transport?${query}`);
+      const { data } = await api.get(`/api/transports?${query}`);
       return data as { rows: ITransport[] };
     } catch (err) {
       return null;
@@ -22,7 +22,7 @@ export class TransportService {
 
   async deleteRow(id: ITransport['id']) {
     try {
-      await api.delete('/api/transport', {
+      await api.delete('/api/transports', {
         data: {
           id,
         },
