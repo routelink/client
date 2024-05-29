@@ -36,7 +36,7 @@ export function Create(props: Create) {
       if (!id) {
         setEmployees(await employeesStore.getFreeCollection());
       }
-      transportStore.getData({});
+      transportStore.getData('');
     };
     getEmployyes();
   }, []);

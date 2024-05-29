@@ -25,7 +25,7 @@ export function Update(props: UpdateProps) {
       {() => {
         const { isOpen, setIsOpen, id } = props;
         const { rolesStore, employeesStore, transportStore } = useStore();
-        // const [user, setUser] = useState<IUser | null>(null);
+
         const [role, setRole] = useState<number | null>(null);
         const [transport, setTransport] = useState<number | null>(null);
         const [visible, setVisible] = useState(false);
@@ -33,14 +33,14 @@ export function Update(props: UpdateProps) {
         useEffect(() => {
           const getEmployye = async () => {
             const user = await employeesStore.getItem(id);
-            // setUser(user);
+
             setRole(user.role.id);
             if (user.role.id === 3 && user.transport) {
               setTransport(user.transport.id);
             }
           };
           getEmployye();
-          transportStore.getData({});
+          transportStore.getData('');
           rolesStore.loadRoles();
         }, []);
         useEffect(() => {
