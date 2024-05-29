@@ -14,6 +14,12 @@ export enum AUTH {
   EXPIRED_REFRESH_TOKEN = 5,
   REFRESH_ERROR = 6,
 }
+export interface IRegistrationData {
+  username: string;
+  email: string;
+  password: string;
+  password2: string;
+}
 export class AuthStore {
   loading: boolean = false;
   _token: string | null = null;
@@ -71,6 +77,10 @@ export class AuthStore {
   }
   async logoutAll(): Promise<any> {
     return AuthService.logoutAll().then(() => (this.token = null));
+  }
+
+  async registration(option: IRegistrationData) {
+    return AuthService.registration(option);
   }
 
   isAuth(): boolean {

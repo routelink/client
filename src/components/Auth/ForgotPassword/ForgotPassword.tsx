@@ -39,20 +39,12 @@ export function ForgotPassword() {
           />
           <Grid container>
             <Grid item xs>
-              <Link
-                color={'#68B5B9'}
-                component={NavLink}
-                to="/auth/login"
-                variant="body2">
+              <Link color={'#68B5B9'} component={NavLink} to="/login" variant="body2">
                 Войти
               </Link>
             </Grid>
             <Grid item>
-              <Link
-                color="#1F1F1F"
-                component={NavLink}
-                to="/auth/register"
-                variant="body2">
+              <Link color="#1F1F1F" component={NavLink} to="/register" variant="body2">
                 Регистрация
               </Link>
             </Grid>
