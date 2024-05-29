@@ -1,38 +1,32 @@
 import { makeAutoObservable } from 'mobx';
 
-import { TransportAddState } from '@app/components/TransportManagement/TransportAddForm.tsx';
-import { ITransport } from '@app/models';
-import { generateRows } from '@app/utils';
-
-const fieldDescription = {
-  id: 'int' as const, // auto-increment,
-  name: 'str' as const,
-  type: {
-    name: 'str',
-  } as const,
-  organisation: 'str' as const,
-  regNumber: 'int' as const,
-  avgConsumption: 'float' as const,
-  createdAt: 'date' as const, //@Todo add type
-};
+import { TransportAddState } from '@app/components';
+import { GetItemsParams, ITransport } from '@app/models';
+import { TransportService } from '@app/services';
 
 export class TransportStore {
   tableData: ITransport[];
+  private readonly transportService = new TransportService();
 
   constructor() {
-    this.tableData = this.getData();
+    this.tableData = [];
     makeAutoObservable(this);
   }
 
-  getData(payload?: { search: string; count: string; page: string }) {
-    if (payload?.search === 'b')
-      return generateRows(100, fieldDescription) as ITransport[];
-    return generateRows(100, fieldDescription) as ITransport[];
+  setTableData(value: ITransport[]) {
+    this.tableData = value;
+  }
+
+  async getData(params: GetItemsParams) {
+    const data = (await this.transportService.getRows(params)) as { rows: ITransport[] };
+
+    this.setTableData(data.rows);
   }
 
   onRowAdd(payload: TransportAddState): void {
     const newRow = {
       ...payload,
+      typeId: +payload.typeId,
       name: 'FILL',
     };
     this.tableData = [...this.tableData, newRow];

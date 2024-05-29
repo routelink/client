@@ -1,5 +1,5 @@
 import { IUser } from '@app/models';
-import api from '@app/services/api/api';
+import { api } from '@app/services';
 
 export class UserService {
   getCollection(params?: any) {

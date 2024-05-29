@@ -9,7 +9,10 @@ export function NameDialog({ handleClose }: { name: string; handleClose: () => v
   const { user } = profileStore;
   const [value, setValue] = useState(user?.username);
   const handleSave = () => {
-    profileStore.update({ name: value });
+    if (value !== undefined) {
+      profileStore.changeUsername({ username: value });
+      handleClose();
+    }
     handleClose();
   };
   return (

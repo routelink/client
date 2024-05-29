@@ -9,12 +9,9 @@ export enum AUTH {
   EXPIRED_REFRESH_TOKEN = 5,
   REFRESH_ERROR = 6,
 }
-const api = axios.create({
+export const api = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
-  // withCredentials: true,
 });
-
-export default api;

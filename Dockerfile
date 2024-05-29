@@ -2,7 +2,7 @@ FROM node:20-alpine3.19 as builder
 
 WORKDIR /app
 
-COPY package.json package-lock.json .
+COPY package.json package-lock.json ./
 
 RUN set -eux; \
     npm ci
@@ -20,6 +20,7 @@ LABEL org.opencontainers.image.authors="RouteLink <support@routelink.ru>" \
     org.opencontainers.image.description="React based client application"
 
 COPY --from=builder /app/dist /usr/share/nginx/html/
+
 
 EXPOSE 80
 

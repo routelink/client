@@ -1,11 +1,20 @@
 import { makeAutoObservable } from 'mobx';
 
+import { TransportTypes } from '@app/models';
+import { TransportService } from '@app/services';
+
 export class AppStore {
   openSidebar;
   openMobile = false;
+  _transportTypes: TransportTypes = {
+    ru: {},
+    en: {},
+  };
 
   _loading = false;
   _error: string | null = null;
+
+  private readonly transportService = new TransportService();
 
   constructor() {
     this.openSidebar = localStorage.getItem('open')
@@ -19,9 +28,19 @@ export class AppStore {
     localStorage.setItem('open', String(this.openSidebar));
   }
 
+  async getTransportTypes() {
+    this._transportTypes =
+      (await this.transportService.getTransportTypes()) as TransportTypes;
+  }
+
   toggleOpenMobile(): void {
     this.openMobile = !this.openMobile;
   }
+
+  get transportTypes() {
+    return this._transportTypes['ru'];
+  }
+
   get loading() {
     return this._loading;
   }
