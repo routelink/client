@@ -31,7 +31,11 @@ export function PasswordDialog({ handleClose }: { handleClose: () => void }) {
   const { profileStore } = useStore();
 
   const handleChange = () => {
-    profileStore.update({ currentPassword: currentPassword, password: newPassword });
+    profileStore.changePassword({
+      currentPassword: currentPassword,
+      newPassword: newPassword,
+      confirmPassword: confirmPassword,
+    });
     handleClose();
   };
   return (
