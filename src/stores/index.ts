@@ -22,7 +22,7 @@ export type RootStore = {
   profileStore: ProfileStore;
   authStore: AuthStore;
   rolesStore: RolesStore;
-  employeeStore: EmployeesStore;
+  employeesStore: EmployeesStore;
 };
 
 const rootStore: RootStore = {
@@ -36,7 +36,7 @@ const rootStore: RootStore = {
   profileStore: new ProfileStore(),
   authStore: new AuthStore(),
   rolesStore: new RolesStore(),
-  employeeStore: new EmployeesStore(),
+  employeesStore: new EmployeesStore(),
 };
 
 export default rootStore;
