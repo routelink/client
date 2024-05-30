@@ -1,7 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 
-import { IService } from '@app/models';
-import { ServiceService } from '@app/services/analytics/analytics';
+import { IInsure, IService } from '@app/models';
+import { InsureService, ServiceService } from '@app/services/analytics/analytics';
 
 export class ServiceStore {
   services: IService[] = [];
@@ -23,6 +23,32 @@ export class ServiceStore {
       // this.services = response.data as IService[]; // Извлекаем данные из ответа и приводим их к типу IService[]
     } catch (error: any) {
       this.error = error.message || 'Failed to fetch services';
+    } finally {
+      this.loading = false;
+    }
+  }
+}
+
+export class InsureStore {
+  insures: IInsure[] = [];
+  loading: boolean = false;
+  error: string | null = null;
+
+  private readonly insureService = new InsureService();
+
+  constructor() {
+    makeAutoObservable(this);
+  }
+
+  async fetchInsures(data?: { step: number }) {
+    this.loading = true;
+    try {
+      await this.insureService.getInsure(data).then((response) => {
+        this.insures = response.data;
+      });
+      //  this.insures = response.data as IInsure[]; // Извлекаем данные из ответа и приводим их к типу IService[]
+    } catch (error: any) {
+      this.error = error.message || 'Failed to fetch insures';
     } finally {
       this.loading = false;
     }

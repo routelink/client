@@ -10,11 +10,12 @@ import {
 
 import AutoEfficiencyDifferentLength from './AutoEfficiencyDifferentLength';
 import AutoEfficiencyTable from './AutoEfficiencyTable';
+//import ServicesStepper from './ServicesStepper'
 import DateChooser from './DateChooser';
 import FuelConsumptionTable from './FuelConsumptionTable';
 import OvertimeTable from './OvertimeTable';
 import { ServicesTable } from './ServicesTable';
-import TrafficAccidentTable from './TrafficAccidentTable';
+import { TrafficAccidentTable } from './TrafficAccidentTable';
 
 interface AnalyticsSwitchProps {
   analyticsType: string;
@@ -47,8 +48,7 @@ function AnalyticsSwitch({ analyticsType }: AnalyticsSwitchProps) {
     case 'Потребление топлива':
       return (
         <div>
-          {' '}
-          <DateChooser /> <FuelConsumptionTable />{' '}
+          <DateChooser /> <FuelConsumptionTable />
         </div>
       );
     case 'Страховка авто':
