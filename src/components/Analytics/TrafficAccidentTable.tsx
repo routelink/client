@@ -42,7 +42,7 @@ export function TrafficAccidentTable() {
           id: insure.id,
           transport: insure.transport.name,
           date: insure.createdAt ? new Date(insure.createdAt) : null,
-          //totalInsures: service.length,
+          totalInsures: 12,
         }));
         const [step, setStep] = useState<number>(0);
 
