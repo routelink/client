@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.6.0](https://github.com/routelink/client/compare/v1.5.0...v1.6.0) (2024-05-30)
+
+
+### Features
+
+* integration of analytics ([#189](https://github.com/routelink/client/issues/189)) ([4d3bdaf](https://github.com/routelink/client/commit/4d3bdaf6f8df7c0130190130056d5239caeaffb7))
+
+
+### Bug Fixes
+
+* modal in `Transport` component ([#188](https://github.com/routelink/client/issues/188)) ([17274d4](https://github.com/routelink/client/commit/17274d47c631ae591fcac3b0a204b7733f8678ae))
+* refresh token after access expired ([8dc1004](https://github.com/routelink/client/commit/8dc1004f29ad0610195a565540fb85f7ccae97f5))
+* roles in `sidebar` ([#186](https://github.com/routelink/client/issues/186)) ([b7e03f6](https://github.com/routelink/client/commit/b7e03f6e9c2ad917d929bc6128a782f57e9750c6))
+* view organization in `Profile` component ([#187](https://github.com/routelink/client/issues/187)) ([172caca](https://github.com/routelink/client/commit/172caca31cbadd1a2f9d09be6ee5de0bb859aec3))
+
 ## [1.5.0](https://github.com/routelink/client/compare/v1.4.0...v1.5.0) (2024-05-30)
 
 
