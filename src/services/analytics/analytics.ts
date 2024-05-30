@@ -1,6 +1,4 @@
-import axios from 'axios';
-
-import { api } from '@app/services';
+import { api } from '@app/services/api/api';
 
 export class InsureService {
   getInsure(params?: any) {
@@ -10,7 +8,7 @@ export class InsureService {
 
 export class ServiceService {
   getService(params?: any) {
-    return axios.get('/api/analytics/service', { params: params });
+    return api.get('/api/analytics/service', { params: params });
   }
 }
 

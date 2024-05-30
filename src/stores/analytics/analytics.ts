@@ -14,11 +14,13 @@ export class ServiceStore {
     makeAutoObservable(this);
   }
 
-  async fetchServices() {
+  async fetchServices(data?: { beginDate: Date; endDate: Date }) {
     this.loading = true;
     try {
-      const response = await this.serviceService.getService();
-      this.services = response.data as IService[]; // Извлекаем данные из ответа и приводим их к типу IService[]
+      await this.serviceService.getService(data).then((response) => {
+        this.services = response.data;
+      });
+      // this.services = response.data as IService[]; // Извлекаем данные из ответа и приводим их к типу IService[]
     } catch (error: any) {
       this.error = error.message || 'Failed to fetch services';
     } finally {

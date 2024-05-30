@@ -11,10 +11,9 @@ import {
 import AutoEfficiencyDifferentLength from './AutoEfficiencyDifferentLength';
 import AutoEfficiencyTable from './AutoEfficiencyTable';
 import DateChooser from './DateChooser';
-import DateRangePicker from './DateRangePicker';
 import FuelConsumptionTable from './FuelConsumptionTable';
 import OvertimeTable from './OvertimeTable';
-import ServicesTable from './ServicesTable';
+import { ServicesTable } from './ServicesTable';
 import TrafficAccidentTable from './TrafficAccidentTable';
 
 interface AnalyticsSwitchProps {
@@ -23,12 +22,14 @@ interface AnalyticsSwitchProps {
 
 function AnalyticsSwitch({ analyticsType }: AnalyticsSwitchProps) {
   switch (analyticsType) {
-    case 'Необходимость технического обслуживания':
+    case 'Необходимость технического обслуживания': {
       return (
         <div>
-          <DateRangePicker /> <ServicesTable />
+          <ServicesTable />
         </div>
       );
+    }
+
     case 'Эффективность использования транспорта':
       return (
         <div>
