@@ -23,7 +23,7 @@ export class TransportService {
 
   async editRow(payload: AddTransport, id: number) {
     try {
-      const { data } = await api.post(`/api/transports/edit/${id}`, payload);
+      const { data } = await api.patch(`/api/transports/${id}`, payload);
 
       return data as ITransport;
     } catch (err) {
@@ -43,11 +43,7 @@ export class TransportService {
 
   async deleteRow(id: ITransport['id']) {
     try {
-      await api.delete('/api/transports', {
-        data: {
-          id,
-        },
-      });
+      await api.delete(`/api/transports/${id}`);
       return true;
     } catch (err) {
       return null;
