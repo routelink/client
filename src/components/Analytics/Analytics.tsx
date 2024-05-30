@@ -23,7 +23,7 @@ interface AnalyticsSwitchProps {
 
 function AnalyticsSwitch({ analyticsType }: AnalyticsSwitchProps) {
   switch (analyticsType) {
-    case 'Необходимость технического обслуживания': {
+    case 'Последние техническое обслуживание': {
       return (
         <div>
           <ServicesTable />
@@ -75,8 +75,8 @@ export function Analytics() {
           value={analyticsType}
           label="Выберите тип аналитики"
           onChange={handleAnalyticsTypeChange}>
-          <MenuItem value={'Необходимость технического обслуживания'}>
-            Необходимость технического обслуживания
+          <MenuItem value={'Последние техническое обслуживание'}>
+            Последние техническое обслуживание
           </MenuItem>
           <MenuItem value={'Эффективность использования транспорта'}>
             Эффективность использования транспорта
