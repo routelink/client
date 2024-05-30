@@ -23,7 +23,7 @@ export class LinksStore {
       href: '/maps',
       text: 'Карта',
       icon: NearMeIcon,
-      role: [2, 3],
+      role: [2, 3, 4],
     },
     {
       href: '/transport',
@@ -41,7 +41,7 @@ export class LinksStore {
       href: '/analytics',
       text: 'Аналитика',
       icon: InsertChartIcon,
-      role: [2],
+      role: [2, 4],
     },
     {
       href: '/users',
