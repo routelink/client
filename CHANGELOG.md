@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.6.1](https://github.com/routelink/client/compare/v1.6.0...v1.6.1) (2024-05-30)
+
+
+### Bug Fixes
+
+* change user field ([c2f8810](https://github.com/routelink/client/commit/c2f8810223a77e32ab6f9a440c12b0549efd35b6))
+
 ## [1.6.0](https://github.com/routelink/client/compare/v1.5.0...v1.6.0) (2024-05-30)
 
 
