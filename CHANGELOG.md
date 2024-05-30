@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.1](https://github.com/routelink/client/compare/v1.4.0...v1.4.1) (2024-05-30)
+
+
+### Features
+
+* improve handler `api/analitycs/services/` ([#183](https://github.com/routelink/client/issues/183)) ([fa30132](https://github.com/routelink/client/commit/fa301321c66380f2cecee251fdd0fe1e78a6f821))
+
+
+### Bug Fixes
+
+* change endpoint to update transport ([b85ceff](https://github.com/routelink/client/commit/b85cefff7eee09e38381a57de4108650e24756b0))
+
 ## [1.4.0](https://github.com/routelink/client/compare/v1.3.0...v1.4.0) (2024-05-29)
 
 ### Features
