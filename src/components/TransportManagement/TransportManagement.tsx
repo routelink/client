@@ -98,10 +98,10 @@ export const TransportManagement: React.FC = observer(() => {
       flex: 1,
     },
     {
-      field: 'organisation',
+      field: 'user',
       headerName: 'Водитель',
       cellRenderer: (props: ICellRendererParams) => {
-        return <span>{props.value?.name}</span>;
+        return <span>{props.value?.username}</span>;
       },
       flex: 1,
     },
