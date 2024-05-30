@@ -34,20 +34,23 @@ export function General() {
                 flexDirection: 'column',
                 alignItems: 'left',
               }}>
-              <Grid item>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    gap: '0.5rem',
-                  }}>
-                  <Typography variant="subtitle1">Организация</Typography>
-                  <Typography variant="subtitle1">
-                    "{profileStore?.user?.organization?.name}"
-                  </Typography>
-                </Box>
-              </Grid>
+              {profileStore.user?.organization?.name && (
+                <Grid item>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                    }}>
+                    <Typography variant="subtitle1">Организация</Typography>
+                    <Typography variant="subtitle1">
+                      "{profileStore?.user?.organization?.name}"
+                    </Typography>
+                  </Box>
+                </Grid>
+              )}
+
               <Grid item>
                 <Box
                   sx={{
