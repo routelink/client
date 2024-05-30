@@ -6,7 +6,7 @@ import {
   SortChangedEvent,
 } from '@ag-grid-community/core';
 import { AgGridReact } from 'ag-grid-react';
-import { observer } from 'mobx-react-lite';
+import { Observer, observer } from 'mobx-react-lite';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -71,8 +71,6 @@ export const TransportManagement: React.FC = observer(() => {
     store.transportStore.getData(_params);
   }, [_page, _count, _search, sort]);
   React.useEffect(() => {}, [_page, _count, _search, sort]);
-
-  const rowData = store.transportStore.tableData;
 
   const [open, setOpen] = useState(false);
   const [editRow, setEditRow] = useState<ITransport | null>(null);
@@ -185,51 +183,58 @@ export const TransportManagement: React.FC = observer(() => {
   };
 
   return (
-    <section className="transport-management">
-      <div className="header" style={{ marginBottom: '20px' }}>
-        <RoundIconButton
-          background="#004d40" //@TODO
-          color="white"
-          width="48px"
-          height="48px"
-          fontSize="24px"
-          onClick={onRowAdd}>
-          <Add />
-        </RoundIconButton>
-        <span>Транспортное средство</span>
-      </div>
-      <Box sx={{ width: '100%' }}>
-        <Paper sx={{ width: '100%' }}>
-          <Stack spacing={2} sx={{ padding: '1.25rem 0 ' }}>
-            <SearchField
-              style={{ alignItems: 'center', paddingLeft: '0.9rem' }}
-              count={rowData.length}
-              onInput={onFilter}></SearchField>
-            <div
-              className="ag-theme-material" // applying the grid theme
-              style={{ height: 'calc(100vh / 1.5)' }} // the grid will fill the size of the parent container
-            >
-              {/* @ts-expect-error: 'ssssas as' */}
-              <AgGridReact
-                rowData={rowData}
-                columnDefs={colDefs}
-                rowSelection={'multiple'}
-                suppressRowClickSelection={true}
-                suppressColumnVirtualisation={true}
-                suppressRowVirtualisation={true}
-                onSortChanged={onSortChanged}
-                pagination={true}
-                paginationPageSize={_count}
-                onPaginationChanged={onPaginationChanged}
-                paginationPageSizeSelector={[10, 20, 50]}
-              />
+    <Observer>
+      {() => {
+        const rowData = store.transportStore.tableData;
+        return (
+          <section className="transport-management">
+            <div className="header" style={{ marginBottom: '20px' }}>
+              <RoundIconButton
+                background="#004d40" //@TODO
+                color="white"
+                width="48px"
+                height="48px"
+                fontSize="24px"
+                onClick={onRowAdd}>
+                <Add />
+              </RoundIconButton>
+              <span>Транспортное средство</span>
             </div>
-          </Stack>
-        </Paper>
-      </Box>
-      <Modal isOpen={open} toggle={() => toggleDrawer(false)}>
-        <VehicleForm editRow={editRow} onApply={onApply}></VehicleForm>
-      </Modal>
-    </section>
+            <Box sx={{ width: '100%' }}>
+              <Paper sx={{ width: '100%' }}>
+                <Stack spacing={2} sx={{ padding: '1.25rem 0 ' }}>
+                  <SearchField
+                    style={{ alignItems: 'center', paddingLeft: '0.9rem' }}
+                    count={rowData.length}
+                    onInput={onFilter}></SearchField>
+                  <div
+                    className="ag-theme-material" // applying the grid theme
+                    style={{ height: 'calc(100vh / 1.5)' }} // the grid will fill the size of the parent container
+                  >
+                    {/* @ts-expect-error: 'ssssas as' */}
+                    <AgGridReact
+                      rowData={rowData}
+                      columnDefs={colDefs}
+                      rowSelection={'multiple'}
+                      suppressRowClickSelection={true}
+                      suppressColumnVirtualisation={true}
+                      suppressRowVirtualisation={true}
+                      onSortChanged={onSortChanged}
+                      pagination={true}
+                      paginationPageSize={_count}
+                      onPaginationChanged={onPaginationChanged}
+                      paginationPageSizeSelector={[10, 20, 50]}
+                    />
+                  </div>
+                </Stack>
+              </Paper>
+            </Box>
+            <Modal isOpen={open} toggle={() => toggleDrawer(false)}>
+              {open && <VehicleForm editRow={editRow} onApply={onApply}></VehicleForm>}
+            </Modal>
+          </section>
+        );
+      }}
+    </Observer>
   );
 });

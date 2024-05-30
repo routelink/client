@@ -10,9 +10,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-
 import FormControlLabel from '@mui/material/FormControlLabel';
-
 
 import { AddTransport, ITransport } from '@app/models';
 import { useStore } from '@app/store.tsx';
@@ -78,8 +76,7 @@ const VehicleForm: React.FC<TransportAddFormProps> = ({ onApply, editRow }) => {
   );
 
   const [consumption, setConsumption] = useState<number | undefined>(
-    editRow ? editRow.avgConsumption : undefined,
-
+    editRow ? Number(editRow.avgConsumption) : 0,
   );
   const [unit, setUnit] = useState<AddTransport['unit']>(editRow ? editRow.unit : 'L');
 
@@ -102,7 +99,6 @@ const VehicleForm: React.FC<TransportAddFormProps> = ({ onApply, editRow }) => {
       setHasConsumptionError(true);
     }
   };
-
 
   const onSetTransportType = (value: ViewType['id']) => {
     const vehicleType = vehicleTypes.find((i) => i.id === value);
@@ -181,25 +177,16 @@ const VehicleForm: React.FC<TransportAddFormProps> = ({ onApply, editRow }) => {
         <Box display="flex" justifyContent="space-between">
           <TextField
             label="Расход на 100 км"
-
             value={consumption}
             name={'avgConsumption'}
             required
-            type={'number'}
-            onChange={(value: unknown) => setConsumption(value as number)}
+            type="number"
+            onChange={(value) => setConsumption(Number(value.target.value))}
             margin="normal"
             variant="outlined"
             error={hasConsumptionError}
             helperText={hasConsumptionError && 'Поле должно быть заполнено'}
             onBlur={validateConsumption}
-            InputProps={{
-              /* @ts-expect-error: input component error */
-              inputComponent: MaskedInput,
-              inputProps: {
-                mask: Number,
-                scale: 0,
-              },
-            }}
           />
           <FormControlLabel
             control={<Switch onChange={onChangeUnit} />}
