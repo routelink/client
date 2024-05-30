@@ -1,55 +1,119 @@
-import { observer } from 'mobx-react';
-import React from 'react';
+import { Observer } from 'mobx-react';
+import { useEffect, useState } from 'react';
 
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 
-interface RowData {
-  id: number;
-  trafficAccidentSum: number;
-}
+import { useStore } from '@app/store';
+
+import ServiceStepper from './ServicesStepper';
 
 const columns: GridColDef[] = [
-  { field: 'id', headerName: 'ID', width: 120, description: 'Транспорт ID.' },
   {
-    field: 'trafficAccidentSum',
-    headerName: 'Количество ДТП',
-    width: 130,
-    type: 'number',
+    field: 'id',
+    headerName: 'ID',
+    width: 120,
+    description: 'Транспорт ID.',
+  },
+  // {
+  //   field: 'totalInsures',
+  //   headerName: 'Количество ДТП',
+  //   width: 130,
+  //   type: 'number',
+  // },
+  {
+    field: 'date',
+    headerName: 'Дата',
+    description: 'Дата последнего ДТП.',
+    type: 'date',
+    width: 100,
   },
 ];
 
-const initialRows: RowData[] = [
-  { id: 1, trafficAccidentSum: 9 },
-  { id: 2, trafficAccidentSum: 9 },
-  { id: 3, trafficAccidentSum: 9 },
-  { id: 4, trafficAccidentSum: 9 },
-  { id: 5, trafficAccidentSum: 9 },
-  { id: 6, trafficAccidentSum: 9 },
-  { id: 7, trafficAccidentSum: 9 },
-  { id: 8, trafficAccidentSum: 9 },
-  { id: 9, trafficAccidentSum: 9 },
-  { id: 10, trafficAccidentSum: 9 },
-  { id: 11, trafficAccidentSum: 9 },
-  { id: 12, trafficAccidentSum: 9 },
-];
-
-const TrafficAccidentTable: React.FC = observer(() => {
-  const [rows /*setRows*/] = React.useState<RowData[]>(initialRows);
+export function TrafficAccidentTable() {
+  const { insuresStore } = useStore();
   return (
-    <div style={{ height: 800, width: '100%' }}>
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: { page: 0, pageSize: 5 },
-          },
-        }}
-        autoHeight
-        pageSizeOptions={[5, 10, 25, 50]}
-      />
-    </div>
-  );
-});
+    <Observer>
+      {() => {
+        useEffect(() => {
+          insuresStore.fetchInsures(); // Загружаем данные при монтировании компонента
+        }, []);
 
-export default TrafficAccidentTable;
+        const rows = insuresStore.insures.map((insure) => ({
+          id: insure.id,
+          transport: insure.transport.name,
+          date: insure.createdAt ? new Date(insure.createdAt) : null,
+          totalInsures: 12,
+        }));
+        const [step, setStep] = useState<number>(0);
+
+        useEffect(() => {
+          console.log(step);
+
+          if (step) {
+            insuresStore.fetchInsures({
+              step: step,
+            });
+          }
+        }, [step]);
+
+        return (
+          <>
+            <ServiceStepper step={step} setStep={setStep} />
+            <DataGrid
+              rows={rows}
+              columns={columns}
+              initialState={{
+                pagination: {
+                  paginationModel: { page: 0, pageSize: 5 },
+                },
+              }}
+              autoHeight
+              pageSizeOptions={[5, 10, 25, 50]}
+            />
+          </>
+        );
+      }}
+    </Observer>
+  );
+}
+
+// const TrafficAccidentTable: React.FC = observer(() => {
+//   const insureStore = new InsureStore();
+//   const { insures, loading, error } = insureStore;
+
+//   useEffect(() => {
+//     insureStore.fetchInsures(); // Загружаем данные при монтировании компонента
+//   }, []);
+
+//   // Преобразуем данные из store в формат, подходящий для таблицы
+//   const rows = insures.map((insure) => ({
+//     id: insure.transport.id,
+//     date: insure.createdAt ? new Date(insure.createdAt) : null,
+//   }));
+
+//   if (loading) {
+//     return <div>Loading...</div>;
+//   }
+
+//   if (error) {
+//     return <div>Error: {error}</div>;
+//   }
+
+//   return (
+//     <div style={{ height: 800, width: '100%' }}>
+//       <DataGrid
+//         rows={rows}
+//         columns={columns}
+//         initialState={{
+//           pagination: {
+//             paginationModel: { page: 0, pageSize: 5 },
+//           },
+//         }}
+//         autoHeight
+//         pageSizeOptions={[5, 10, 25, 50]}
+//       />
+//     </div>
+//   );
+// });
+
+// export default TrafficAccidentTable;

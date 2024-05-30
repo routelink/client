@@ -10,11 +10,12 @@ import {
 
 import AutoEfficiencyDifferentLength from './AutoEfficiencyDifferentLength';
 import AutoEfficiencyTable from './AutoEfficiencyTable';
+//import ServicesStepper from './ServicesStepper'
 import DateChooser from './DateChooser';
 import FuelConsumptionTable from './FuelConsumptionTable';
 import OvertimeTable from './OvertimeTable';
 import { ServicesTable } from './ServicesTable';
-import TrafficAccidentTable from './TrafficAccidentTable';
+import { TrafficAccidentTable } from './TrafficAccidentTable';
 
 interface AnalyticsSwitchProps {
   analyticsType: string;
@@ -22,7 +23,7 @@ interface AnalyticsSwitchProps {
 
 function AnalyticsSwitch({ analyticsType }: AnalyticsSwitchProps) {
   switch (analyticsType) {
-    case 'Необходимость технического обслуживания': {
+    case 'Последние техническое обслуживание': {
       return (
         <div>
           <ServicesTable />
@@ -47,8 +48,7 @@ function AnalyticsSwitch({ analyticsType }: AnalyticsSwitchProps) {
     case 'Потребление топлива':
       return (
         <div>
-          {' '}
-          <DateChooser /> <FuelConsumptionTable />{' '}
+          <DateChooser /> <FuelConsumptionTable />
         </div>
       );
     case 'Страховка авто':
@@ -75,8 +75,8 @@ export function Analytics() {
           value={analyticsType}
           label="Выберите тип аналитики"
           onChange={handleAnalyticsTypeChange}>
-          <MenuItem value={'Необходимость технического обслуживания'}>
-            Необходимость технического обслуживания
+          <MenuItem value={'Последние техническое обслуживание'}>
+            Последние техническое обслуживание
           </MenuItem>
           <MenuItem value={'Эффективность использования транспорта'}>
             Эффективность использования транспорта
