@@ -1,4 +1,4 @@
-import { AxiosError, HttpStatusCode, InternalAxiosRequestConfig } from 'axios';
+import { HttpStatusCode, InternalAxiosRequestConfig } from 'axios';
 import { Observer } from 'mobx-react-lite';
 
 import { Backdrop, CircularProgress } from '@mui/material';
@@ -27,19 +27,28 @@ export function Loading() {
       appStore.loading = false;
       return config;
     },
-    function (error: AxiosError) {
-      if (error.response?.data) {
-        appStore.error = `Ошибка: ${(error.response.data as any).message}`;
-      } else appStore.error = `${error.status ?? ''}  ${error.message}`;
-
+    async function (error) {
+      const expired =
+        error.response?.status === HttpStatusCode.Unauthorized &&
+        (error.response?.data as any).status === AUTH.EXPIRED_ACCESS_TOKEN;
+      if (!expired) {
+        if (error.response?.data) {
+          appStore.error = `Ошибка: ${(error.response.data as any).message}`;
+        } else {
+          appStore.error = `${error.status ?? ''}  ${error.message}`;
+        }
+      }
       appStore.loading = false;
+      const originalRequest = error.config;
+      if (expired && !originalRequest._retry) {
+        try {
+          originalRequest._isRetry = true;
 
-      if (
-        error.status === HttpStatusCode.Unauthorized &&
-        error.response?.status === AUTH.EXPIRED_REFRESH_TOKEN
-      ) {
-        authStore.refresh();
-        console.log('refresh');
+          await authStore.refresh();
+          return api(originalRequest);
+        } catch (e) {
+          console.error(e);
+        }
       }
 
       return Promise.reject(error);
