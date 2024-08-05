@@ -48,7 +48,7 @@
     "socket.io-client": "^4.7.5"
   },
   "devDependencies": {
-    "@taiga-ui/commitlint-config": "^0.7.5",
+    "@taiga-ui/commitlint-config": "^0.129.0",
     "@testing-library/jest-dom": "^6.4.5",
     "@testing-library/react": "^15.0.7",
     "@testing-library/user-event": "^14.5.2",
