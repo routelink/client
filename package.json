@@ -29,7 +29,7 @@
     "@mui/x-date-pickers": "^7.5.1",
     "@pbe/react-yandex-maps": "^1.2.5",
     "ag-grid-react": "^31.3.2",
-    "axios": "^1.7.2",
+    "axios": "^1.7.3",
     "cesium": "^1.117.0",
     "date-fns": "^3.6.0",
     "dayjs": "^1.11.1",
