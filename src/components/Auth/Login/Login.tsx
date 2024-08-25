@@ -27,7 +27,7 @@ export function Login() {
               margin="normal"
               required
               id="login"
-              label="Логин"
+              label="E-mail"
               name="login"
               autoComplete="email"
               autoFocus
