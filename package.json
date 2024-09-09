@@ -29,7 +29,7 @@
     "@pbe/react-yandex-maps": "^1.2.5",
     "ag-grid-react": "^31.3.2",
     "axios": "^1.7.3",
-    "cesium": "^1.117.0",
+    "cesium": "^1.121.1",
     "date-fns": "^3.6.0",
     "dayjs": "^1.11.1",
     "dotenv": "^16.4.5",
